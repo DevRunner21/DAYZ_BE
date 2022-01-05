@@ -21,32 +21,49 @@ import org.hibernate.annotations.Where;
 @Table(name = "onedayclass")
 public class OneDayClass extends BaseEntity {
 
-    @OneToMany(mappedBy = "oneDayClass", cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-        CascadeType.DETACH})
-    List<OneDayClassImage> oneDayClassImages = new ArrayList<>();
-    @OneToMany(mappedBy = "oneDayClass", cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-        CascadeType.DETACH})
-    List<Curriculum> curriculums = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "onedayclass_id")
     private Long id;
+
     @Column(name = "name", length = 50, nullable = false)
     private String name;
+
     @Column(name = "intro", length = 1000, nullable = false)
     private String intro;
+
     @Column(name = "price", nullable = false)
     private int price;
+
     @Column(name = "required_time", nullable = false)
     private Long requiredTime;
+
     @Column(name = "max_people_number", nullable = false)
     private int maxPeopleNumber;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atelier_id")
     private Atelier atelier;
+
+    @OrderBy("sequence ASC")
+    @OneToMany(
+        mappedBy = "oneDayClass",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    List<OneDayClassImage> oneDayClassImages = new ArrayList<>();
+
+    @OrderBy("step ASC")
+    @OneToMany(
+        mappedBy = "oneDayClass",
+        cascade = CascadeType.ALL,
+        orphanRemoval = true
+    )
+    List<Curriculum> curriculums = new ArrayList<>();
 
     public static OneDayClass of(Long id, String name, String intro, int price, Long requiredTime,
         int maxPeopleNumber, Category category,

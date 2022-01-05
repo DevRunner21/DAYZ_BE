@@ -37,6 +37,7 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "onedayclass_id")
     private OneDayClass oneDayClass;
 
+    @OrderBy("sequence ASC")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
 

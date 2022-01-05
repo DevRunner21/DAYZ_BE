@@ -41,6 +41,7 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "onedayclass_id")
     private OneDayClass oneDayClass;
 
+    @OrderBy("sequence ASC")
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
