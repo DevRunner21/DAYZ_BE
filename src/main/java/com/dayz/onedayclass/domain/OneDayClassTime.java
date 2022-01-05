@@ -3,27 +3,18 @@ package com.dayz.onedayclass.domain;
 import com.dayz.common.entity.BaseEntity;
 import com.dayz.common.enums.TimeStatus;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "onedayclass_time")
 public class OneDayClassTime extends BaseEntity {
 
@@ -49,11 +40,11 @@ public class OneDayClassTime extends BaseEntity {
     private OneDayClass oneDayClass;
 
     public static OneDayClassTime of(Long id,
-            LocalDate classDate,
-            Long startTime,
-            Long endTime,
-            TimeStatus status,
-            OneDayClass oneDayClass
+        LocalDate classDate,
+        Long startTime,
+        Long endTime,
+        TimeStatus status,
+        OneDayClass oneDayClass
     ) {
         OneDayClassTime oneDayClassTime = new OneDayClassTime();
         oneDayClassTime.setId(id);
@@ -67,10 +58,10 @@ public class OneDayClassTime extends BaseEntity {
     }
 
     public static OneDayClassTime of(LocalDate classDate,
-            Long startTime,
-            Long endTime,
-            TimeStatus status,
-            OneDayClass oneDayClass
+        Long startTime,
+        Long endTime,
+        TimeStatus status,
+        OneDayClass oneDayClass
     ) {
         OneDayClassTime oneDayClassTime = new OneDayClassTime();
         oneDayClassTime.setClassDate(classDate);
@@ -83,9 +74,9 @@ public class OneDayClassTime extends BaseEntity {
     }
 
     public static OneDayClassTime of(LocalDate classDate,
-            Long startTime,
-            Long endTime,
-            TimeStatus status
+        Long startTime,
+        Long endTime,
+        TimeStatus status
     ) {
         OneDayClassTime oneDayClassTime = new OneDayClassTime();
         oneDayClassTime.setClassDate(classDate);

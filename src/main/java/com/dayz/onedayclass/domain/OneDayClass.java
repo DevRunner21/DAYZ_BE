@@ -6,65 +6,51 @@ import com.dayz.common.entity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "onedayclass")
 public class OneDayClass extends BaseEntity {
 
+    @OneToMany(mappedBy = "oneDayClass", cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+        CascadeType.DETACH})
+    List<OneDayClassImage> oneDayClassImages = new ArrayList<>();
+    @OneToMany(mappedBy = "oneDayClass", cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+        CascadeType.DETACH})
+    List<Curriculum> curriculums = new ArrayList<>();
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "onedayclass_id")
     private Long id;
-
     @Column(name = "name", length = 50, nullable = false)
     private String name;
-
     @Column(name = "intro", length = 1000, nullable = false)
     private String intro;
-
     @Column(name = "price", nullable = false)
     private int price;
-
     @Column(name = "required_time", nullable = false)
     private Long requiredTime;
-
     @Column(name = "max_people_number", nullable = false)
     private int maxPeopleNumber;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id")
     private Category category;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "atelier_id")
     private Atelier atelier;
 
-    @OneToMany(mappedBy = "oneDayClass", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
-    List<OneDayClassImage> oneDayClassImages = new ArrayList<>();
-
-    @OneToMany(mappedBy = "oneDayClass", cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.DETACH})
-    List<Curriculum> curriculums = new ArrayList<>();
-
-    public static OneDayClass of(Long id, String name, String intro, int price, Long requiredTime, int maxPeopleNumber, Category category,
-            Atelier atelier, List<OneDayClassImage> oneDayClassImages, List<Curriculum> curriculums) {
+    public static OneDayClass of(Long id, String name, String intro, int price, Long requiredTime,
+        int maxPeopleNumber, Category category,
+        Atelier atelier, List<OneDayClassImage> oneDayClassImages, List<Curriculum> curriculums) {
         OneDayClass oneDayClass = new OneDayClass();
         oneDayClass.setId(id);
         oneDayClass.setName(name);
@@ -86,8 +72,9 @@ public class OneDayClass extends BaseEntity {
         return oneDayClass;
     }
 
-    public static OneDayClass of(String name, String intro, int price, Long requiredTime, int maxPeopleNumber, Category category, Atelier atelier,
-            List<OneDayClassImage> oneDayClassImages, List<Curriculum> curriculums) {
+    public static OneDayClass of(String name, String intro, int price, Long requiredTime,
+        int maxPeopleNumber, Category category, Atelier atelier,
+        List<OneDayClassImage> oneDayClassImages, List<Curriculum> curriculums) {
         OneDayClass oneDayClass = new OneDayClass();
         oneDayClass.setName(name);
         oneDayClass.setIntro(intro);

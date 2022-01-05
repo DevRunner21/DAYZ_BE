@@ -5,30 +5,19 @@ import com.dayz.common.entity.BaseEntity;
 import com.dayz.follow.domain.Follow;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "member")
 public class Member extends BaseEntity {
 
@@ -53,7 +42,8 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "permission_id")
     private Permission permission;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
+        CascadeType.REFRESH})
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -64,18 +54,18 @@ public class Member extends BaseEntity {
     private List<Follow> follows = new ArrayList<>();
 
     public static Member of(Long id,
-            String username,
-            String provider,
-            String providerId,
-            String profileImageUrl,
-            Permission permission,
-            Address address
+        String username,
+        String provider,
+        String providerId,
+        String profileImageUrl,
+        Permission permission,
+        Address address
     ) {
-        Assert.notNull(id,"id must not be null!");
-        Assert.notNull(username,"username must not be null!");
-        Assert.notNull(provider,"provider must not be null!");
-        Assert.notNull(providerId,"providerId must not be null!");
-        Assert.notNull(permission,"permission must not be null!");
+        Assert.notNull(id, "id must not be null!");
+        Assert.notNull(username, "username must not be null!");
+        Assert.notNull(provider, "provider must not be null!");
+        Assert.notNull(providerId, "providerId must not be null!");
+        Assert.notNull(permission, "permission must not be null!");
 
         Member member = new Member();
         member.setId(id);
@@ -90,16 +80,16 @@ public class Member extends BaseEntity {
     }
 
     public static Member of(String username,
-            String provider,
-            String providerId,
-            String profileImageUrl,
-            Permission permission,
-            Address address
+        String provider,
+        String providerId,
+        String profileImageUrl,
+        Permission permission,
+        Address address
     ) {
-        Assert.notNull(username,"username must not be null!");
-        Assert.notNull(provider,"provider must not be null!");
-        Assert.notNull(providerId,"providerId must not be null!");
-        Assert.notNull(permission,"permission must not be null!");
+        Assert.notNull(username, "username must not be null!");
+        Assert.notNull(provider, "provider must not be null!");
+        Assert.notNull(providerId, "providerId must not be null!");
+        Assert.notNull(permission, "permission must not be null!");
 
         Member member = new Member();
         member.setUsername(username);

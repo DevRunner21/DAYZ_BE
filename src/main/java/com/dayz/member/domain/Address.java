@@ -1,21 +1,18 @@
 package com.dayz.member.domain;
 
 import com.dayz.common.entity.BaseEntity;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "address")
 public class Address extends BaseEntity {
 
@@ -36,7 +33,8 @@ public class Address extends BaseEntity {
     @Column(name = "region_name")
     private String regionName;
 
-    public static Address of(Long id, Long cityId, Long regionId, String cityName, String regionName) {
+    public static Address of(Long id, Long cityId, Long regionId, String cityName,
+        String regionName) {
         Address address = new Address();
         address.setId(id);
         address.setCityId(cityId);

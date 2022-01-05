@@ -42,7 +42,7 @@ public class ReviewService {
         return CustomPageResponse.of(reviewsResponses);
     }
 
-    //    공방별 후기 목록 조회
+    // 공방별 후기 목록 조회
     public CustomPageResponse getAllAtelierReviews(CustomPageRequest pageRequest, Long atelierId) {
         PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
 
