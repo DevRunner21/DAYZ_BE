@@ -10,15 +10,15 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReadAllCategoriesResponse {
+public class ReadCategoriesResponse {
 
     private List<CategoryResult> categories = new ArrayList<>();
 
-    public static ReadAllCategoriesResponse of(List<CategoryResult> categories) {
-        ReadAllCategoriesResponse readAllCategoriesResponse = new ReadAllCategoriesResponse();
-        readAllCategoriesResponse.setCategories(categories);
+    public static ReadCategoriesResponse of(List<CategoryResult> categories) {
+        ReadCategoriesResponse readCategoriesResponse = new ReadCategoriesResponse();
+        readCategoriesResponse.setCategories(categories);
 
-        return readAllCategoriesResponse;
+        return readCategoriesResponse;
     }
 
     @Getter

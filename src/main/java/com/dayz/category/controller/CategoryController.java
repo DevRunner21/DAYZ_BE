@@ -1,6 +1,6 @@
 package com.dayz.category.controller;
 
-import com.dayz.category.dto.ReadAllCategoriesResponse;
+import com.dayz.category.dto.ReadCategoriesResponse;
 import com.dayz.category.service.CategoryService;
 import com.dayz.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAllCategoriesResponse> categories() {
-        ReadAllCategoriesResponse response = categoryService.getAllCategoryList();
+    public ApiResponse<ReadCategoriesResponse> readAllCategories() {
+        ReadCategoriesResponse response = categoryService.getAllCategoryList();
 
-        return ApiResponse.<ReadAllCategoriesResponse>ok(response);
+        return ApiResponse.<ReadCategoriesResponse>ok(response);
     }
 
 }

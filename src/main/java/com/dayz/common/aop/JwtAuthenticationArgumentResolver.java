@@ -15,20 +15,21 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 @RequiredArgsConstructor
 public class JwtAuthenticationArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final MemberService memberService;
-    //컨트롤러에서 어노테이션 작용
-    //@login
-    @Override
-    public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(LoginMember.class);
-    }
+  private final MemberService memberService;
 
-    //동작하는 부분
-    @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
-            NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        JwtAuthentication principal = (JwtAuthentication) SecurityContextHolder.getContext()
-                .getAuthentication().getPrincipal();
-        return memberService.findById(principal.getId());
-    }
+  //컨트롤러에서 어노테이션 작용
+  //@login
+  @Override
+  public boolean supportsParameter(MethodParameter parameter) {
+    return parameter.hasParameterAnnotation(LoginMember.class);
+  }
+
+  //동작하는 부분
+  @Override
+  public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+      NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    JwtAuthentication principal = (JwtAuthentication) SecurityContextHolder.getContext()
+        .getAuthentication().getPrincipal();
+    return memberService.getMemberById(principal.getId());
+  }
 }

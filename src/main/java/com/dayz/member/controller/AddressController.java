@@ -1,9 +1,7 @@
 package com.dayz.member.controller;
 
-import com.dayz.common.aop.LoginMember;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.member.domain.Member;
-import com.dayz.member.dto.ReadAllAddressResponse;
+import com.dayz.member.dto.ReadAddressesResponse;
 import com.dayz.member.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -22,8 +20,8 @@ public class AddressController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAllAddressResponse> addresses() {
-        return ApiResponse.<ReadAllAddressResponse>ok(addressService.getAllAddresses());
+    public ApiResponse<ReadAddressesResponse> readAddresses() {
+        return ApiResponse.<ReadAddressesResponse>ok(addressService.getAllAddresses());
     }
 
 }

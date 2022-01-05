@@ -15,7 +15,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PostCreateRequest {
+public class RegisterPostRequest {
 
     @NotNull(message = "atelierId must be not null")
     private Long atelierId;
@@ -29,16 +29,17 @@ public class PostCreateRequest {
     @NotNull(message = "postImages must be not null")
     private List<PostImagesRequest> images = new ArrayList<>();
 
-    public static PostCreateRequest of(String content, Long atelierId, Long oneDayClassId, List<PostImagesRequest> images) {
-        PostCreateRequest postCreateRequest = new PostCreateRequest();
-        postCreateRequest.setContent(content);
-        postCreateRequest.setAtelierId(atelierId);
-        postCreateRequest.setOneDayClassId(oneDayClassId);
-        if(images.size() > 0) {
-            postCreateRequest.setImages(images);
+    public static RegisterPostRequest of(String content, Long atelierId, Long oneDayClassId,
+        List<PostImagesRequest> images) {
+        RegisterPostRequest registerPostRequest = new RegisterPostRequest();
+        registerPostRequest.setContent(content);
+        registerPostRequest.setAtelierId(atelierId);
+        registerPostRequest.setOneDayClassId(oneDayClassId);
+        if (images.size() > 0) {
+            registerPostRequest.setImages(images);
         }
 
-        return postCreateRequest;
+        return registerPostRequest;
     }
 
     @Getter

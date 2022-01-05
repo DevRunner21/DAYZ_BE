@@ -1,6 +1,5 @@
 package com.dayz.reservation.dto;
 
-import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,7 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadAllMyReservationResponse {
+public class ReadReservationsByAtelierResponse {
 
     private Long reservationId;
 
@@ -25,11 +24,11 @@ public class ReadAllMyReservationResponse {
 
     private String status;
 
-    public static ReadAllMyReservationResponse of(Long reservationId, String className,
+    public static ReadReservationsByAtelierResponse of(Long reservationId, String className,
         String reservationDate, String classDate, String startTime, String endTime,
         String status) {
 
-        ReadAllMyReservationResponse readAllMyReservationResponse = new ReadAllMyReservationResponse();
+        ReadReservationsByAtelierResponse readAllMyReservationResponse = new ReadReservationsByAtelierResponse();
         readAllMyReservationResponse.setReservationId(reservationId);
         readAllMyReservationResponse.setClassName(className);
         readAllMyReservationResponse.setReservationDate(reservationDate);
@@ -40,4 +39,5 @@ public class ReadAllMyReservationResponse {
 
         return readAllMyReservationResponse;
     }
+
 }

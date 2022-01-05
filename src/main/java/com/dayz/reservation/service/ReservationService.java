@@ -10,9 +10,9 @@ import com.dayz.onedayclass.domain.OneDayClassTimeRepository;
 import com.dayz.reservation.converter.ReservationConverter;
 import com.dayz.reservation.domain.Reservation;
 import com.dayz.reservation.domain.ReservationRepository;
-import com.dayz.reservation.dto.ReadAllAtelierReservationResponse;
-import com.dayz.reservation.dto.ReadAllMyReservationResponse;
-import com.dayz.reservation.dto.SaveReservationRequest;
+import com.dayz.reservation.dto.ReadReservationsByAtelierResponse;
+import com.dayz.reservation.dto.ReadReservationsByMemberResponse;
+import com.dayz.reservation.dto.RegisterReservationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,28 +31,42 @@ public class ReservationService {
     private final OneDayClassTimeRepository oneDayClassTimeRepository;
 
     @Transactional
-    public Long saveReservation(SaveReservationRequest saveReservationRequest, Member member) {
-        OneDayClassTime oneDayClassTime = oneDayClassTimeRepository.findById(saveReservationRequest.getClassTimeId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_TIME_NOT_FOUND));
-        Reservation reservation = reservationConverter.convertReservation(saveReservationRequest, member, oneDayClassTime);
+    public Long saveReservation(
+        RegisterReservationRequest registerReservationRequest,
+        Member member
+    ) {
+        OneDayClassTime oneDayClassTime = oneDayClassTimeRepository.findById(
+            registerReservationRequest.getClassTimeId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_TIME_NOT_FOUND));
+
+        Reservation reservation = reservationConverter.convertToReservation(
+            registerReservationRequest, member, oneDayClassTime);
 
         return reservationRepository.save(reservation).getId();
     }
 
-    public CustomPageResponse<ReadAllMyReservationResponse> getMyReservation(CustomPageRequest pageRequest, Long memberId) {
+    public CustomPageResponse<ReadReservationsByMemberResponse> getReservationsByMember(
+        CustomPageRequest pageRequest,
+        Long memberId
+    ) {
         PageRequest pageable = pageRequest.convertToPageRequest(Reservation.class);
 
-        Page<ReadAllMyReservationResponse> responsePage = reservationRepository.findMyReservation(memberId, pageable)
-                .map(reservationConverter::convertReadAllMyReviewsResponse);
+        Page<ReadReservationsByMemberResponse> responsePage = reservationRepository
+            .findReservationsByMember(memberId, pageable)
+            .map(reservationConverter::convertReadReservationsByMemberResponse);
 
         return CustomPageResponse.of(responsePage);
     }
 
-    public CustomPageResponse<ReadAllAtelierReservationResponse> getAtelierReservation(CustomPageRequest pageRequest, Long atelierId) {
+    public CustomPageResponse<ReadReservationsByAtelierResponse> getReservationsByAtelier(
+        CustomPageRequest pageRequest,
+        Long atelierId
+    ) {
         PageRequest pageable = pageRequest.convertToPageRequest(Reservation.class);
 
-        Page<ReadAllAtelierReservationResponse> responsePage = reservationRepository.findAtelierReservation(atelierId, pageable)
-                .map(reservationConverter::convertReadAllAtelierReviewsResponse);
+        Page<ReadReservationsByAtelierResponse> responsePage = reservationRepository
+            .findReservationsByAtelier(atelierId, pageable)
+            .map(reservationConverter::convertReadAllAtelierReviewsResponse);
 
         return CustomPageResponse.of(responsePage);
     }
@@ -60,7 +74,7 @@ public class ReservationService {
     @Transactional
     public void deleteReservation(Long reservationId) {
         Reservation reservation = reservationRepository.findById(reservationId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.RESERVATION_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.RESERVATION_NOT_FOUND));
         reservation.changeUseFlag(false);
     }
 

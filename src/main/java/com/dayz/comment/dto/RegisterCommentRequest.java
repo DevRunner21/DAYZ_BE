@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class CommentCreateRequest {
+public class RegisterCommentRequest {
 
     @NotNull(message = "postId must not be null.")
     private Long postId;

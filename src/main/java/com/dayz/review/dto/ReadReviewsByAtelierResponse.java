@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadAllAtelierReviewsResponse {
+public class ReadReviewsByAtelierResponse {
 
     private Long id;
 
@@ -28,10 +28,11 @@ public class ReadAllAtelierReviewsResponse {
 
     private List<AtelierReviewImageResult> reviewImages;
 
-    public static ReadAllAtelierReviewsResponse of(Long id, String content, int score,
+    public static ReadReviewsByAtelierResponse of(Long id, String content, int score,
         LocalDateTime createdAt,
-        AtelierMemberResult member, AtelierOneDayClassResult oneDayClass, List<AtelierReviewImageResult> reviewImages) {
-        ReadAllAtelierReviewsResponse reviewResponse = new ReadAllAtelierReviewsResponse();
+        AtelierMemberResult member, AtelierOneDayClassResult oneDayClass,
+        List<AtelierReviewImageResult> reviewImages) {
+        ReadReviewsByAtelierResponse reviewResponse = new ReadReviewsByAtelierResponse();
         reviewResponse.setId(id);
         reviewResponse.setContent(content);
         reviewResponse.setScore(score);

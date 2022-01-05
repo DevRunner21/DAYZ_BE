@@ -5,8 +5,8 @@ import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.comment.converter.CommentConverter;
 import com.dayz.comment.domain.Comment;
 import com.dayz.comment.domain.CommentRepository;
-import com.dayz.comment.dto.CommentCreateRequest;
-import com.dayz.comment.dto.ReadAllCommentsResult;
+import com.dayz.comment.dto.ReadCommentsResult;
+import com.dayz.comment.dto.RegisterCommentRequest;
 import com.dayz.common.dto.CustomPageRequest;
 import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.enums.ErrorInfo;
@@ -36,31 +36,34 @@ public class CommentService {
 
     private final CommentConverter commentConverter;
 
-    @Transactional
-    public Long save(Long memberId, CommentCreateRequest request) {
-
-        Atelier foundAtelier = atelierRepository.findById(request.getAtelierId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
-
-        Post foundPost = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
-
-        Member foundMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
-
-        return commentRepository.save(commentConverter.CommentCreateRequestToDto(request.getContent(), foundPost, foundMember)).getId();
-    }
-
     public CustomPageResponse getAllComments(CustomPageRequest pageRequest, Long postId) {
         PageRequest pageable = pageRequest.convertToPageRequest(Comment.class);
 
         Page<Comment> allByPostId = commentRepository.findAllByPostId(postId, pageable);
 
-        Page<ReadAllCommentsResult> readAllCommentsResponses =
-                commentRepository.findAllByPostId(postId, pageable)
-                        .map(comment -> commentConverter.convertReadAllCommentsResult(comment));
+        Page<ReadCommentsResult> readAllCommentsResponses =
+            commentRepository.findAllByPostId(postId, pageable)
+                .map(commentConverter::convertToReadCommentsResult);
 
         return CustomPageResponse.of(readAllCommentsResponses);
+    }
+
+    @Transactional
+    public Long save(Long memberId, RegisterCommentRequest request) {
+
+        Atelier foundAtelier = atelierRepository.findById(request.getAtelierId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
+
+        Post foundPost = postRepository.findById(request.getPostId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
+
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+
+        return commentRepository.save(
+            commentConverter
+                .convertToComment(request.getContent(), foundPost, foundMember))
+            .getId();
     }
 
 }

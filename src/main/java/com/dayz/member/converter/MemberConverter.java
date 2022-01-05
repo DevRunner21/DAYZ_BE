@@ -20,16 +20,16 @@ public class MemberConverter {
 
         // TODO : 리펙토링 필요
         return ReadMemberInfoResponse.of(
-                member.getId(),
-                token,
-                member.getUsername(),
-                member.getProfileImageUrl(),
-                Objects.nonNull(address) ? address.getCityId() : null,
-                Objects.nonNull(address) ? address.getCityName() : null,
-                Objects.nonNull(address) ? address.getRegionId() : null,
-                Objects.nonNull(address) ? address.getRegionName() : null,
-                member.getPermission().getName(),
-                atelierId
+            member.getId(),
+            token,
+            member.getUsername(),
+            member.getProfileImageUrl(),
+            Objects.nonNull(address) ? address.getCityId() : null,
+            Objects.nonNull(address) ? address.getCityName() : null,
+            Objects.nonNull(address) ? address.getRegionId() : null,
+            Objects.nonNull(address) ? address.getRegionName() : null,
+            member.getPermission().getName(),
+            atelierId
         );
 
     }

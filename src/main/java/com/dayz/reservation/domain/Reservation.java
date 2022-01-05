@@ -5,18 +5,7 @@ import com.dayz.common.enums.ReservationStatus;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -57,14 +46,14 @@ public class Reservation extends BaseEntity {
     @JoinColumn(name = "onedayclass_time_id")
     private OneDayClassTime oneDayClassTime;
 
-    public static Reservation of(Long id,int peopleNumber, int price, LocalDate date,
-            Member member, OneDayClassTime oneDayClassTime) {
-        Assert.notNull(id,"Reservation id null 입니다.");
-        Assert.isTrue(peopleNumber>=0,"Reservation peopleNumber은 0이상이어야 합니다.");
-        Assert.isTrue(price>=0,"Reservation price 0이상이어야 합니다.");
-        Assert.notNull(date,"Reservation date null 입니다.");
-        Assert.notNull(member,"Reservation member null 입니다.");
-        Assert.notNull(oneDayClassTime,"Reservation oneDayClassTime null 입니다.");
+    public static Reservation of(Long id, int peopleNumber, int price, LocalDate date,
+        Member member, OneDayClassTime oneDayClassTime) {
+        Assert.notNull(id, "Reservation id null 입니다.");
+        Assert.isTrue(peopleNumber >= 0, "Reservation peopleNumber은 0이상이어야 합니다.");
+        Assert.isTrue(price >= 0, "Reservation price 0이상이어야 합니다.");
+        Assert.notNull(date, "Reservation date null 입니다.");
+        Assert.notNull(member, "Reservation member null 입니다.");
+        Assert.notNull(oneDayClassTime, "Reservation oneDayClassTime null 입니다.");
 
         Reservation reservation = new Reservation();
         reservation.setId(id);
@@ -79,13 +68,13 @@ public class Reservation extends BaseEntity {
     }
 
     public static Reservation of(int peopleNumber, int price, LocalDate date,
-            Member member, OneDayClassTime oneDayClassTime) {
+        Member member, OneDayClassTime oneDayClassTime) {
 
-        Assert.isTrue(peopleNumber>=0,"Reservation peopleNumber은 0이상이어야 합니다.");
-        Assert.isTrue(price>=0,"Reservation price 0이상이어야 합니다.");
-        Assert.notNull(date,"Reservation date null 입니다.");
-        Assert.notNull(member,"Reservation member null 입니다.");
-        Assert.notNull(oneDayClassTime,"Reservation oneDayClassTime null 입니다.");
+        Assert.isTrue(peopleNumber >= 0, "Reservation peopleNumber은 0이상이어야 합니다.");
+        Assert.isTrue(price >= 0, "Reservation price 0이상이어야 합니다.");
+        Assert.notNull(date, "Reservation date null 입니다.");
+        Assert.notNull(member, "Reservation member null 입니다.");
+        Assert.notNull(oneDayClassTime, "Reservation oneDayClassTime null 입니다.");
 
         Reservation reservation = new Reservation();
         reservation.setPeopleNumber(peopleNumber);

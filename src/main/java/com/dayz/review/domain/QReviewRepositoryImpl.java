@@ -1,11 +1,8 @@
 package com.dayz.review.domain;
 
-import static org.springframework.util.StringUtils.isEmpty;
-
 import com.dayz.member.domain.QMember;
 import com.dayz.onedayclass.domain.QOneDayClass;
 import com.querydsl.core.QueryResults;
-
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -20,7 +17,7 @@ import org.springframework.data.domain.Sort;
 
 
 @RequiredArgsConstructor
-public class ReviewRepositoryImpl implements CustomRepository {
+public class QReviewRepositoryImpl implements QReviewRepository {
 
     private final JPAQueryFactory jpaQueryFactory;
 

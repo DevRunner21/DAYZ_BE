@@ -18,20 +18,22 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class OneDayClassTimeService {
 
-    private final OneDayClassTimeRepository oneDayClassTimeRepository;
+  private final OneDayClassTimeRepository oneDayClassTimeRepository;
 
-    private final OneDayClassRepository oneDayClassRepository;
+  private final OneDayClassRepository oneDayClassRepository;
 
-    private final OneDayClassTimeConverter oneDayClassTimeConverter;
+  private final OneDayClassTimeConverter oneDayClassTimeConverter;
 
-    public ReadOneDayClassTimesByDateResponse getOneDayClassTimesByDate(Long classId, String date) {
-        OneDayClass foundOneDayClass = oneDayClassRepository.findOneDayClassById(classId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
+  public ReadOneDayClassTimesByDateResponse getOneDayClassTimesByDate(Long classId, String date) {
+    OneDayClass foundOneDayClass = oneDayClassRepository.findOneDayClassById(classId)
+        .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
 
-        List<CurrentOneDayClassTime> oneDayClassTimesByDate = oneDayClassTimeRepository.findOneDayClassTimesByDate(foundOneDayClass.getId(), date);
+    List<CurrentOneDayClassTime> oneDayClassTimesByDate = oneDayClassTimeRepository
+        .findOneDayClassTimesByDate(foundOneDayClass.getId(), date);
 //        List<CurrentOneDayClassTimeQuery> oneDayClassTimesByDate = oneDayClassTimeRepository.findOneDayClassTimesByDate(foundOneDayClass.getId());
 
-        return oneDayClassTimeConverter.convertToReadOneDayClassTimesByDateResponse(oneDayClassTimesByDate);
-    }
+    return oneDayClassTimeConverter
+        .convertToReadOneDayClassTimesByDateResponse(oneDayClassTimesByDate);
+  }
 
 }

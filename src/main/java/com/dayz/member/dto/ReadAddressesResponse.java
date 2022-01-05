@@ -10,12 +10,12 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReadAllAddressResponse {
+public class ReadAddressesResponse {
 
     private List<AddressByCityResult> addresses = new ArrayList<>();
 
-    public static ReadAllAddressResponse of() {
-        return new ReadAllAddressResponse();
+    public static ReadAddressesResponse of() {
+        return new ReadAddressesResponse();
     }
 
     public void addAddressByCityResult(AddressByCityResult addressByCityResult) {
@@ -34,7 +34,7 @@ public class ReadAllAddressResponse {
         private List<RegionByCityResult> regions = new ArrayList<>();
 
         public static AddressByCityResult of(Long cityId, String cityName,
-                List<RegionByCityResult> regions) {
+            List<RegionByCityResult> regions) {
             AddressByCityResult addressByCityResult = new AddressByCityResult();
             addressByCityResult.setCityId(cityId);
             addressByCityResult.setCityName(cityName);

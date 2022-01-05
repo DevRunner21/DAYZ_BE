@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ReadAllCommentsResult {
+public class ReadCommentsResult {
 
     @NotBlank(message = "content must not be null.")
     private String content;
@@ -22,13 +22,14 @@ public class ReadAllCommentsResult {
     @NotNull(message = "member must not be null.")
     private MemberResult member;
 
-    public static ReadAllCommentsResult of(String content, LocalDateTime createdAt, MemberResult member) {
-        ReadAllCommentsResult readAllCommentsResult = new ReadAllCommentsResult();
-        readAllCommentsResult.setContent(content);
-        readAllCommentsResult.setCreatedAt(createdAt);
-        readAllCommentsResult.setMember(member);
+    public static ReadCommentsResult of(String content, LocalDateTime createdAt,
+        MemberResult member) {
+        ReadCommentsResult readCommentsResult = new ReadCommentsResult();
+        readCommentsResult.setContent(content);
+        readCommentsResult.setCreatedAt(createdAt);
+        readCommentsResult.setMember(member);
 
-        return readAllCommentsResult;
+        return readCommentsResult;
     }
 
     @Getter

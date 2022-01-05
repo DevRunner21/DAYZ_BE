@@ -11,7 +11,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadAllOneDayClassReviewsResponse {
+public class ReadMyReviewsResponse {
 
     private Long id;
 
@@ -22,21 +22,22 @@ public class ReadAllOneDayClassReviewsResponse {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
     private LocalDateTime createdAt;
 
-    private OneDayClassMemberResult member;
+    private MemberResult member;
 
-    private List<OneDayClassReviewImageResult> reviewImage;
+    private OneDayClassResult oneDayClass;
 
-    public static ReadAllOneDayClassReviewsResponse of(Long id,
-            String content, int score,
-            LocalDateTime createdAt,
-            OneDayClassMemberResult member,
-            List<OneDayClassReviewImageResult> reviewImages) {
-        ReadAllOneDayClassReviewsResponse reviewResponse = new ReadAllOneDayClassReviewsResponse();
+    private List<ReviewImageResult> reviewImage;
+
+    public static ReadMyReviewsResponse of(Long id, String content, int score,
+        LocalDateTime createdAt,
+        MemberResult member, OneDayClassResult oneDayClass, List<ReviewImageResult> reviewImages) {
+        ReadMyReviewsResponse reviewResponse = new ReadMyReviewsResponse();
         reviewResponse.setId(id);
         reviewResponse.setContent(content);
         reviewResponse.setScore(score);
         reviewResponse.setCreatedAt(createdAt);
         reviewResponse.setMember(member);
+        reviewResponse.setOneDayClass(oneDayClass);
         reviewResponse.setReviewImage(reviewImages);
 
         return reviewResponse;
@@ -44,7 +45,7 @@ public class ReadAllOneDayClassReviewsResponse {
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    public static class OneDayClassMemberResult {
+    public static class MemberResult {
 
         private Long id;
 
@@ -52,9 +53,8 @@ public class ReadAllOneDayClassReviewsResponse {
 
         private String profileImageUrl;
 
-        public static OneDayClassMemberResult of(Long id,
-                String username, String profileImageUrl) {
-            OneDayClassMemberResult memberResult = new OneDayClassMemberResult();
+        public static MemberResult of(Long id, String username, String profileImageUrl) {
+            MemberResult memberResult = new MemberResult();
             memberResult.setId(id);
             memberResult.setUsername(username);
             memberResult.setProfileImageUrl(profileImageUrl);
@@ -65,20 +65,39 @@ public class ReadAllOneDayClassReviewsResponse {
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    public static class OneDayClassReviewImageResult {
+    public static class OneDayClassResult {
+
+        private Long id;
+
+        private String name;
+
+        public static OneDayClassResult of(Long id, String name) {
+            OneDayClassResult oneDayClassResult = new OneDayClassResult();
+            oneDayClassResult.setId(id);
+            oneDayClassResult.setName(name);
+
+            return oneDayClassResult;
+        }
+
+    }
+
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    public static class ReviewImageResult {
 
         private String imageUrl;
 
         private int sequence;
 
-        public static OneDayClassReviewImageResult of(
-                String imageUrl, int sequence) {
-            OneDayClassReviewImageResult reviewImageResult = new OneDayClassReviewImageResult();
-            reviewImageResult.setImageUrl(imageUrl);
+        public static ReviewImageResult of(String imageurl, int sequence) {
+            ReviewImageResult reviewImageResult = new ReviewImageResult();
+            reviewImageResult.setImageUrl(imageurl);
             reviewImageResult.setSequence(sequence);
             return reviewImageResult;
         }
+
     }
+
 }
 
 
