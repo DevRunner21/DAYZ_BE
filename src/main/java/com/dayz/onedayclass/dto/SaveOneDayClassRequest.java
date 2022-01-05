@@ -3,11 +3,7 @@ package com.dayz.onedayclass.dto;
 import java.util.ArrayList;
 import java.util.List;
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Positive;
+import javax.validation.constraints.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -41,7 +37,7 @@ public class SaveOneDayClassRequest {
     private String requiredTime;
 
     @Valid
-    private List<CurriculumRequest> curriculums = new ArrayList<>();
+    private List<CurriculumParam> curriculums = new ArrayList<>();
 
     @Valid
     private List<OneDayClassImageRequest> images = new ArrayList<>();
@@ -50,16 +46,16 @@ public class SaveOneDayClassRequest {
     private List<OneDayClassTimeRequest> oneDayClassTimes = new ArrayList<>();
 
     public static SaveOneDayClassRequest of(
-            Long atelierId,
-            String name,
-            String intro,
-            Long categoryId,
-            int maxPeopleNumber,
-            int price,
-            String requiredTime,
-            List<CurriculumRequest> curriculums,
-            List<OneDayClassImageRequest> images,
-            List<OneDayClassTimeRequest> oneDayClassTimes) {
+        Long atelierId,
+        String name,
+        String intro,
+        Long categoryId,
+        int maxPeopleNumber,
+        int price,
+        String requiredTime,
+        List<CurriculumParam> curriculums,
+        List<OneDayClassImageRequest> images,
+        List<OneDayClassTimeRequest> oneDayClassTimes) {
         SaveOneDayClassRequest saveOneDayClassRequest = new SaveOneDayClassRequest();
         saveOneDayClassRequest.setAtelierId(atelierId);
         saveOneDayClassRequest.setName(name);
@@ -78,7 +74,7 @@ public class SaveOneDayClassRequest {
     @Getter
     @Setter(AccessLevel.PRIVATE)
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class CurriculumRequest {
+    public static class CurriculumParam {
 
         @Positive(message = "step must be positive")
         @Min(1)
@@ -86,12 +82,12 @@ public class SaveOneDayClassRequest {
 
         private String content;
 
-        public static CurriculumRequest of(int step, String content) {
-            CurriculumRequest curriculumRequest = new CurriculumRequest();
-            curriculumRequest.setStep(step);
-            curriculumRequest.setContent(content);
+        public static CurriculumParam of(int step, String content) {
+            CurriculumParam curriculumParam = new CurriculumParam();
+            curriculumParam.setStep(step);
+            curriculumParam.setContent(content);
 
-            return curriculumRequest;
+            return curriculumParam;
         }
 
     }

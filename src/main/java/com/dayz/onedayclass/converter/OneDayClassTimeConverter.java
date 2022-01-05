@@ -17,7 +17,8 @@ public class OneDayClassTimeConverter {
     private final TimeUtil timeUtil;
 
     public ReadOneDayClassTimesByDateResponse convertToReadOneDayClassTimesByDateResponse(
-        List<CurrentOneDayClassTime> oneDayClassTimes) {
+        List<CurrentOneDayClassTime> oneDayClassTimes
+    ) {
         return ReadOneDayClassTimesByDateResponse.of(
             oneDayClassTimes.stream()
                 .map(this::convertToReadOneDayClassTimesByDateOneDayClassTimeResult)
@@ -26,7 +27,8 @@ public class OneDayClassTimeConverter {
     }
 
     public ReadOneDayClassTimesByDateResponse.OneDayClassTimeResult convertToReadOneDayClassTimesByDateOneDayClassTimeResult(
-        CurrentOneDayClassTime oneDayClassTime) {
+        CurrentOneDayClassTime oneDayClassTime
+    ) {
         return ReadOneDayClassTimesByDateResponse.OneDayClassTimeResult.of(
             oneDayClassTime.getClassTimeId(),
             oneDayClassTime.getCurrentPeopleNumber(),

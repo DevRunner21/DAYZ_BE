@@ -11,6 +11,7 @@ import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassImage;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.onedayclass.dto.*;
+import com.dayz.onedayclass.dto.SaveOneDayClassRequest.CurriculumParam;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -39,7 +40,9 @@ public class OneDayClassConverter {
     }
 
     public ReadOneDayClassDetailResponse convertToReadOneDayClassDetailResponse(
-        OneDayClass oneDayClass, double avgScore) {
+        OneDayClass oneDayClass,
+        double avgScore
+    ) {
         return ReadOneDayClassDetailResponse.of(
             oneDayClass.getId(),
             oneDayClass.getName(),
@@ -58,7 +61,8 @@ public class OneDayClassConverter {
     }
 
     public ReadOneDayClassDetailResponse.OneDayClassImageResult convertToReadOneDayClassDetailOneDayClassImageResult(
-        OneDayClassImage oneDayClassImage) {
+        OneDayClassImage oneDayClassImage
+    ) {
         return ReadOneDayClassDetailResponse.OneDayClassImageResult.of(
             imageUrlUtil.makeImageUrl(oneDayClassImage.getImageFileName()),
             oneDayClassImage.getSequence()
@@ -66,7 +70,8 @@ public class OneDayClassConverter {
     }
 
     public ReadOneDayClassDetailResponse.CurriculumResult convertToReadOneDayClassDetailCurriculum(
-        Curriculum curriculum) {
+        Curriculum curriculum
+    ) {
         return ReadOneDayClassDetailResponse.CurriculumResult.of(
             curriculum.getId(),
             curriculum.getStep(),
@@ -75,7 +80,8 @@ public class OneDayClassConverter {
     }
 
     public ReadOneDayClassDetailResponse.AtelierResult convertToReadOneDayClassDetailAtelierResult(
-        Atelier atelier) {
+        Atelier atelier
+    ) {
         return ReadOneDayClassDetailResponse.AtelierResult.of(
             atelier.getId(),
             atelier.getName(),
@@ -88,7 +94,8 @@ public class OneDayClassConverter {
     }
 
     public ReadOneDayClassByAtelierResult convertToReadOneDayClassByAtelierResult(
-        OneDayClass oneDayClass) {
+        OneDayClass oneDayClass
+    ) {
         return ReadOneDayClassByAtelierResult.of(
             oneDayClass.getId(),
             oneDayClass.getName(),
@@ -102,7 +109,8 @@ public class OneDayClassConverter {
     }
 
     public ReadPopularOneDayClassesResponse converToReadPopularOneDayClassesResponse(
-        List<OneDayClass> oneDayClasses) {
+        List<OneDayClass> oneDayClasses
+    ) {
         return ReadPopularOneDayClassesResponse.of(
             oneDayClasses.stream()
                 .map(this::converToReadPopularOneDayClassesOneDayClassResult)
@@ -111,34 +119,14 @@ public class OneDayClassConverter {
     }
 
     public ReadPopularOneDayClassesResponse.OneDayClassResult converToReadPopularOneDayClassesOneDayClassResult(
-        OneDayClass oneDayClasses) {
+        OneDayClass oneDayClasses
+    ) {
         return ReadPopularOneDayClassesResponse.OneDayClassResult.of(
             oneDayClasses.getId(),
             oneDayClasses.getName(),
             oneDayClasses.getIntro(),
             getFirstImageUrl(oneDayClasses.getOneDayClassImages())
         );
-    }
-
-    private String getFullAddress(Address address, String detail) {
-        String cityName = address.getCityName();
-        String regionName = address.getRegionName();
-
-        return cityName + " " + regionName + " " + detail;
-    }
-
-    private String getFirstImageUrl(List<OneDayClassImage> oneDayClassImages) {
-        if (Objects.isNull(oneDayClassImages) || (oneDayClassImages.size() <= 0)) {
-            return null;
-        }
-
-        String firstImageFileName = oneDayClassImages.get(0).getImageFileName();
-
-        if (StringUtils.isEmpty(firstImageFileName)) {
-            return null;
-        }
-
-        return imageUrlUtil.makeImageUrl(firstImageFileName);
     }
 
     public OneDayClass convertToOneDayClass(SaveOneDayClassRequest request, Category category,
@@ -169,10 +157,10 @@ public class OneDayClassConverter {
     }
 
     public Curriculum convertToCurriculum(
-        SaveOneDayClassRequest.CurriculumRequest curriculumRequest) {
+        CurriculumParam curriculumParam) {
         return Curriculum.of(
-            curriculumRequest.getStep(),
-            curriculumRequest.getContent()
+            curriculumParam.getStep(),
+            curriculumParam.getContent()
         );
     }
 
@@ -187,5 +175,26 @@ public class OneDayClassConverter {
         );
     }
 
+
+    private String getFullAddress(Address address, String detail) {
+        String cityName = address.getCityName();
+        String regionName = address.getRegionName();
+
+        return cityName + " " + regionName + " " + detail;
+    }
+
+    private String getFirstImageUrl(List<OneDayClassImage> oneDayClassImages) {
+        if (Objects.isNull(oneDayClassImages) || (oneDayClassImages.size() <= 0)) {
+            return null;
+        }
+
+        String firstImageFileName = oneDayClassImages.get(0).getImageFileName();
+
+        if (StringUtils.isEmpty(firstImageFileName)) {
+            return null;
+        }
+
+        return imageUrlUtil.makeImageUrl(firstImageFileName);
+    }
 
 }
