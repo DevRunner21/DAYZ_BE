@@ -30,10 +30,10 @@ public class ReservationConverter {
                 LocalDate.now(), member, oneDayClassTime);
     }
 
-    public ReadReservationsByMemberResponse convertReadReservationsByMemberResponse(
+    public ReadReservationsByMemberResponse.ReservationResult convertReadReservationsByMemberReservationResult(
         ReservationInfoProjection reservationInfoProjection
     ) {
-        return ReadReservationsByMemberResponse.of(
+        return ReadReservationsByMemberResponse.ReservationResult.of(
             reservationInfoProjection.getReservationId(),
             reservationInfoProjection.getClassName(),
             convertToDate(reservationInfoProjection.getReservationDate()),
@@ -43,10 +43,10 @@ public class ReservationConverter {
             reservationInfoProjection.getStatus());
     }
 
-    public ReadReservationsByAtelierResponse convertReadAllAtelierReviewsResponse(
+    public ReadReservationsByAtelierResponse.ReservationResult convertReadReservationsByAtelierReservationResult(
         ReservationInfoProjection reservationInfoProjection
     ) {
-        return ReadReservationsByAtelierResponse.of(
+        return ReadReservationsByAtelierResponse.ReservationResult.of(
             reservationInfoProjection.getReservationId(),
             reservationInfoProjection.getClassName(),
             convertToDate(reservationInfoProjection.getReservationDate()),

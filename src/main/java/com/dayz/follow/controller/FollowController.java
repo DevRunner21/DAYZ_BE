@@ -23,22 +23,24 @@ public class FollowController {
     private final FollowService followService;
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse<ReadFollowsResponse>> readFollows(
+    public ApiResponse<ReadFollowsResponse> readFollows(
         @AuthenticationPrincipal JwtAuthentication authentication,
         @Valid CustomPageRequest pageRequest) {
-        CustomPageResponse<ReadFollowsResponse> response = followService.getAllFollowings(
+        ReadFollowsResponse response = followService.getFollows(
             authentication.getId(),
             pageRequest.convertToPageRequest(Follow.class)
         );
 
-        return ApiResponse.ok(response);
+        return ApiResponse.<ReadFollowsResponse>ok(response);
     }
 
     // TODO : Map으로 처리한 부분 고치기
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse registerFollow(@RequestBody @Valid FollowRequest followRequest) {
-        boolean followFlag = followService
-            .followingUnfollowing(followRequest.getMemberId(), followRequest.getAtelierId());
+        boolean followFlag = followService.followingUnfollowing(
+            followRequest.getMemberId(),
+            followRequest.getAtelierId()
+        );
 
         return ApiResponse.ok(Map.of("followFlag", followFlag));
     }

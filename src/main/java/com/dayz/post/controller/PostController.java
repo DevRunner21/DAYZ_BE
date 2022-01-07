@@ -6,8 +6,8 @@ import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.post.domain.Post;
 import com.dayz.post.dto.ReadPostDetailResponse;
-import com.dayz.post.dto.ReadPostDetailsResult;
-import com.dayz.post.dto.ReadPostsByAtelierResult;
+import com.dayz.post.dto.ReadPostDetailsResponse;
+import com.dayz.post.dto.ReadPostsByAtelierResponse;
 import com.dayz.post.dto.RegisterPostRequest;
 import com.dayz.post.service.PostService;
 import java.util.Map;
@@ -37,26 +37,26 @@ public class PostController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse<ReadPostDetailsResult>> readPostDetails(
+    public ApiResponse<ReadPostDetailsResponse> readPostDetails(
         @AuthenticationPrincipal JwtAuthentication authentication,
         @Valid CustomPageRequest request
     ) {
-        CustomPageResponse<ReadPostDetailsResult> response = postService.getPostDetails(
+        ReadPostDetailsResponse response = postService.getPostDetails(
             authentication.getId(),
             request.convertToPageRequest(Post.class)
         );
 
-        return ApiResponse.<CustomPageResponse<ReadPostDetailsResult>>ok(response);
+        return ApiResponse.<ReadPostDetailsResponse>ok(response);
     }
 
     @GetMapping(value = "/ateliers/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse<ReadPostsByAtelierResult>> readPostsByAtelier(
+    public ApiResponse<ReadPostsByAtelierResponse> readPostsByAtelier(
         @PathVariable("atelierId") Long atelierId,
         @Valid CustomPageRequest request) {
-        CustomPageResponse<ReadPostsByAtelierResult> response = postService
-            .getPostsByAtelier(atelierId, request.convertToPageRequest(Post.class));
+        ReadPostsByAtelierResponse response =
+            postService.getPostsByAtelier(atelierId, request.convertToPageRequest(Post.class));
 
-        return ApiResponse.<CustomPageResponse<ReadPostsByAtelierResult>>ok(response);
+        return ApiResponse.<ReadPostsByAtelierResponse>ok(response);
     }
 
 }

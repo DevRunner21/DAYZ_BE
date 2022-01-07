@@ -3,7 +3,6 @@ package com.dayz.reservation.controller;
 import com.dayz.common.aop.LoginMember;
 import com.dayz.common.dto.ApiResponse;
 import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.reservation.dto.ReadReservationsByAtelierResponse;
 import com.dayz.reservation.dto.ReadReservationsByMemberResponse;
@@ -32,26 +31,30 @@ public class ReservationController {
     }
 
     @GetMapping(value = "/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse> readReservationsByMember(
+    public ApiResponse<ReadReservationsByMemberResponse> readReservationsByMember(
         @LoginMember Member member,
         @Valid CustomPageRequest pageRequest
     ) {
-        CustomPageResponse<ReadReservationsByMemberResponse> myReservation = reservationService
-            .getReservationsByMember(pageRequest, member.getId());
+        ReadReservationsByMemberResponse myReservation = reservationService.getReservationsByMember(
+            pageRequest,
+            member.getId()
+        );
 
-        return ApiResponse.ok(myReservation);
+        return ApiResponse.<ReadReservationsByMemberResponse>ok(myReservation);
     }
 
     // TODO : URL 규칙대로 변경 필요
     @GetMapping(value = "/reservations/ateliers/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse> getAtelierReservations(
+    public ApiResponse<ReadReservationsByAtelierResponse> readReservationsByAtelier(
         @PathVariable("atelierId") Long atelierId,
         @Valid CustomPageRequest pageRequest
     ) {
-        CustomPageResponse<ReadReservationsByAtelierResponse> myReservation = reservationService
-            .getReservationsByAtelier(pageRequest, atelierId);
+        ReadReservationsByAtelierResponse response = reservationService.getReservationsByAtelier(
+            pageRequest,
+            atelierId
+        );
 
-        return ApiResponse.ok(myReservation);
+        return ApiResponse.<ReadReservationsByAtelierResponse>ok(response);
     }
 
     @DeleteMapping(value = "/reservations/{reservationId}", produces = MediaType.APPLICATION_JSON_VALUE)

@@ -1,7 +1,6 @@
 package com.dayz.reservation.service;
 
 import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
@@ -45,30 +44,30 @@ public class ReservationService {
         return reservationRepository.save(reservation).getId();
     }
 
-    public CustomPageResponse<ReadReservationsByMemberResponse> getReservationsByMember(
+    public ReadReservationsByMemberResponse getReservationsByMember(
         CustomPageRequest pageRequest,
         Long memberId
     ) {
         PageRequest pageable = pageRequest.convertToPageRequest(Reservation.class);
 
-        Page<ReadReservationsByMemberResponse> responsePage = reservationRepository
-            .findReservationsByMember(memberId, pageable)
-            .map(reservationConverter::convertReadReservationsByMemberResponse);
+        Page<ReadReservationsByMemberResponse.ReservationResult> responsePage =
+            reservationRepository.findReservationsByMember(memberId, pageable)
+            .map(reservationConverter::convertReadReservationsByMemberReservationResult);
 
-        return CustomPageResponse.of(responsePage);
+        return ReadReservationsByMemberResponse.of(responsePage);
     }
 
-    public CustomPageResponse<ReadReservationsByAtelierResponse> getReservationsByAtelier(
+    public ReadReservationsByAtelierResponse getReservationsByAtelier(
         CustomPageRequest pageRequest,
         Long atelierId
     ) {
         PageRequest pageable = pageRequest.convertToPageRequest(Reservation.class);
 
-        Page<ReadReservationsByAtelierResponse> responsePage = reservationRepository
-            .findReservationsByAtelier(atelierId, pageable)
-            .map(reservationConverter::convertReadAllAtelierReviewsResponse);
+        Page<ReadReservationsByAtelierResponse.ReservationResult> responsePage =
+            reservationRepository.findReservationsByAtelier(atelierId, pageable)
+            .map(reservationConverter::convertReadReservationsByAtelierReservationResult);
 
-        return CustomPageResponse.of(responsePage);
+        return ReadReservationsByAtelierResponse.of(responsePage);
     }
 
     @Transactional

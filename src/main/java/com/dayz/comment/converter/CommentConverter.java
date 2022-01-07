@@ -1,7 +1,7 @@
 package com.dayz.comment.converter;
 
 import com.dayz.comment.domain.Comment;
-import com.dayz.comment.dto.ReadCommentsResult;
+import com.dayz.comment.dto.ReadCommentsResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.post.domain.Post;
 import org.springframework.stereotype.Component;
@@ -13,13 +13,16 @@ public class CommentConverter {
         return Comment.of(content, post, member);
     }
 
-    public ReadCommentsResult convertToReadCommentsResult(Comment comment) {
-        return ReadCommentsResult.of(comment.getContent(), comment.getCreatedAt(),
-            convertToMemberResult(comment.getMember()));
+    public ReadCommentsResponse.CommentResult convertToReadCommentsResult(Comment comment) {
+        return ReadCommentsResponse.CommentResult.of(
+            comment.getContent(),
+            comment.getCreatedAt(),
+            convertToReadCommentsMemberResult(comment.getMember())
+        );
     }
 
-    public ReadCommentsResult.MemberResult convertToMemberResult(Member member) {
-        return ReadCommentsResult.MemberResult.of(
+    public ReadCommentsResponse.MemberResult convertToReadCommentsMemberResult(Member member) {
+        return ReadCommentsResponse.MemberResult.of(
             member.getUsername(),
             member.getProfileImageUrl()
         );

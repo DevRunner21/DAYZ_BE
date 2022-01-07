@@ -29,9 +29,10 @@ public class OneDayClassConverter {
 
     private final TimeUtil timeUtil;
 
-    public ReadOneDayClassesByCategoryResult convertToReadOneDayClassesByCategoryResult(
-        OneDayClass oneDayClass) {
-        return ReadOneDayClassesByCategoryResult.of(
+    public ReadOneDayClassesByCategoryResponse.OneDayClassResult convertToReadOneDayClassesByCategoryResult(
+        OneDayClass oneDayClass
+    ) {
+        return ReadOneDayClassesByCategoryResponse.OneDayClassResult.of(
             oneDayClass.getId(),
             oneDayClass.getName(),
             oneDayClass.getIntro(),
@@ -93,19 +94,23 @@ public class OneDayClassConverter {
         );
     }
 
-    public ReadOneDayClassByAtelierResult convertToReadOneDayClassByAtelierResult(
+    public ReadOneDayClassesByAtelierResponse.OneDayClassResult convertToReadOneDayClassesByAtelierAtelierResult(
         OneDayClass oneDayClass
     ) {
-        return ReadOneDayClassByAtelierResult.of(
+        return ReadOneDayClassesByAtelierResponse.OneDayClassResult.of(
             oneDayClass.getId(),
             oneDayClass.getName(),
             getFirstImageUrl(oneDayClass.getOneDayClassImages())
         );
     }
 
-    public SearchOneDayClassResponse convertSearchOneDayClassResponse(OneDayClass oneDayClass) {
-        return SearchOneDayClassResponse.of(oneDayClass.getId(), oneDayClass.getName(),
-            oneDayClass.getIntro(), getFirstImageUrl(oneDayClass.getOneDayClassImages()));
+    public SearchOneDayClassResponse.OneDayClassResult convertSearchOneDayClassOneDayClassResult(OneDayClass oneDayClass) {
+        return SearchOneDayClassResponse.OneDayClassResult.of(
+            oneDayClass.getId(),
+            oneDayClass.getName(),
+            oneDayClass.getIntro(),
+            getFirstImageUrl(oneDayClass.getOneDayClassImages())
+        );
     }
 
     public ReadPopularOneDayClassesResponse converToReadPopularOneDayClassesResponse(

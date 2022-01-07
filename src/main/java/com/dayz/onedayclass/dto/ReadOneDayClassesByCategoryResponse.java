@@ -9,20 +9,20 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class SearchOneDayClassResponse extends CustomPageResponse<SearchOneDayClassResponse.OneDayClassResult> {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ReadOneDayClassesByCategoryResponse extends CustomPageResponse<ReadOneDayClassesByCategoryResponse.OneDayClassResult> {
 
-    private SearchOneDayClassResponse(Page tPage) {
+    private ReadOneDayClassesByCategoryResponse(Page tPage) {
         super(tPage);
     }
 
-    public static SearchOneDayClassResponse of(Page tPage) {
-        return new SearchOneDayClassResponse(tPage);
+    public static ReadOneDayClassesByCategoryResponse of(Page tPage) {
+        return new ReadOneDayClassesByCategoryResponse(tPage);
     }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class OneDayClassResult {
 
         private Long classId;
@@ -33,12 +33,7 @@ public class SearchOneDayClassResponse extends CustomPageResponse<SearchOneDayCl
 
         private String imageUrl;
 
-        public static OneDayClassResult of(
-            Long classId,
-            String name,
-            String intro,
-            String imageUrl
-        ) {
+        public static OneDayClassResult of(Long classId, String name, String intro, String imageUrl) {
             OneDayClassResult oneDayClassResult = new OneDayClassResult();
             oneDayClassResult.setClassId(classId);
             oneDayClassResult.setName(name);

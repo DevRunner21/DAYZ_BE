@@ -97,28 +97,36 @@ public class AtelierService {
     return atelierConverter.convertToSaveAtelierResponse(savedAtelier.getId(), token);
   }
 
-  public CustomPageResponse<ReadAteliersResult> getAteliers(Long memberId,
+  public ReadAteliersResponse getAteliers(Long memberId,
       PageRequest pageRequest) {
     Member foundMember = memberRepository.findById(memberId)
         .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
     Address foundMemberAddress = foundMember.getAddress();
 
-    Page<ReadAteliersResult> readAteliersResultPage = atelierRepository.findAteliersByAddress(
-        foundMemberAddress.getCityId(),
-        foundMemberAddress.getRegionId(),
-        pageRequest
-    ).map(atelierConverter::convertToReadAteliersResult);
+    Page<ReadAteliersResponse.AtelierResult> atelierResultPage = atelierRepository
+        .findAteliersByAddress(
+            foundMemberAddress.getCityId(),
+            foundMemberAddress.getRegionId(),
+            pageRequest
+        ).map(atelierConverter::convertToReadAteliersAtelierResult);
 
-    return CustomPageResponse.<ReadAteliersResult>of(readAteliersResultPage);
+    return ReadAteliersResponse.of(atelierResultPage);
   }
 
-  public CustomPageResponse searchOneDayClass(Member member, String keyWord,
-      Pageable pageRequest) {
-    Page<SearchAtelierResponse> searchOneDayClassResponsePage = atelierRepository.searchAteliers(
-        member.getAddress().getCityId(), member.getAddress().getRegionId(), keyWord, pageRequest);
+  public SearchAtelierResponse searchAtelier(
+      Member member,
+      String keyword,
+      Pageable pageRequest
+  ) {
+    Page<SearchAtelierResponse.AtelierResult> searchOneDayClassResponsePage = atelierRepository.searchAteliers(
+        member.getAddress().getCityId(),
+        member.getAddress().getRegionId(),
+        keyword,
+        pageRequest
+    );
 
-    return CustomPageResponse.of(searchOneDayClassResponsePage);
+    return SearchAtelierResponse.of(searchOneDayClassResponsePage);
 
   }
 

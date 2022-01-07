@@ -28,17 +28,18 @@ public class OneDayClassController {
     // TODO : oneDayClassService.getOneDayClassesByCategory()dptj member말고 memberId로 파라미터를 넘기도록 변경 필요
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/categories/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse<ReadOneDayClassesByCategoryResult>> readOneDayClassesByCategory(
+    public ApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
         @LoginMember Member member,
         @PathVariable("categoryId") Long categoryId,
-        CustomPageRequest pageRequest) {
-        CustomPageResponse response = oneDayClassService.getOneDayClassesByCategory(
+        CustomPageRequest pageRequest
+    ) {
+        ReadOneDayClassesByCategoryResponse response = oneDayClassService.getOneDayClassesByCategory(
             member,
             categoryId,
             pageRequest.convertToPageRequest(OneDayClass.class)
         );
 
-        return ApiResponse.<CustomPageResponse<ReadOneDayClassesByCategoryResult>>ok(response);
+        return ApiResponse.<ReadOneDayClassesByCategoryResponse>ok(response);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -55,31 +56,31 @@ public class OneDayClassController {
         value = "/ateliers/{atelierId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ApiResponse readOneDayClassesByAtelier(
+    public ApiResponse<ReadOneDayClassesByAtelierResponse> readOneDayClassesByAtelier(
         @PathVariable("atelierId") Long atelierId,
         @Valid SearchPageRequest request
     ) {
-        CustomPageResponse response = oneDayClassService.getOneDayClassesByAtelier(
+        ReadOneDayClassesByAtelierResponse response = oneDayClassService.getOneDayClassesByAtelier(
             atelierId,
             request.convertToPageRequest(OneDayClass.class)
         );
 
-        return ApiResponse.<CustomPageResponse<ReadOneDayClassByAtelierResult>>ok(response);
+        return ApiResponse.<ReadOneDayClassesByAtelierResponse>ok(response);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse searchOneDayClass(
+    public ApiResponse<SearchOneDayClassResponse> searchOneDayClass(
         @LoginMember Member member,
         @Valid SearchPageRequest request
     ) {
-        CustomPageResponse response = oneDayClassService.searchOneDayClass(
+        SearchOneDayClassResponse response = oneDayClassService.searchOneDayClass(
             member,
             request.getKeyWord(),
             request.convertToPageRequest(OneDayClass.class)
         );
 
-        return ApiResponse.ok(response);
+        return ApiResponse.<SearchOneDayClassResponse>ok(response);
     }
 
     @GetMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE)

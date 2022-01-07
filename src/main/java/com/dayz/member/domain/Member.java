@@ -42,8 +42,7 @@ public class Member extends BaseEntity {
     @JoinColumn(name = "permission_id")
     private Permission permission;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE,
-        CascadeType.REFRESH})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
     @JoinColumn(name = "address_id")
     private Address address;
 
@@ -53,7 +52,8 @@ public class Member extends BaseEntity {
     @OneToMany(mappedBy = "member")
     private List<Follow> follows = new ArrayList<>();
 
-    public static Member of(Long id,
+    public static Member of(
+        Long id,
         String username,
         String provider,
         String providerId,
@@ -79,7 +79,8 @@ public class Member extends BaseEntity {
         return member;
     }
 
-    public static Member of(String username,
+    public static Member of(
+        String username,
         String provider,
         String providerId,
         String profileImageUrl,

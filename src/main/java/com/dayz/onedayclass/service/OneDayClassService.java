@@ -45,8 +45,11 @@ public class OneDayClassService {
 
   private final OneDayClassConverter oneDayClassConverter;
 
-  public CustomPageResponse<CustomPageResponse<ReadOneDayClassesByCategoryResult>> getOneDayClassesByCategory(
-      Member member, Long categoryId, Pageable pageRequest) {
+  public ReadOneDayClassesByCategoryResponse getOneDayClassesByCategory(
+      Member member,
+      Long categoryId,
+      Pageable pageRequest
+  ) {
 
     Category foundCategory = categoryRepository.findById(categoryId)
         .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
@@ -54,16 +57,15 @@ public class OneDayClassService {
     Member foundMember = memberRepository.findById(member.getId())
         .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-    Page<ReadOneDayClassesByCategoryResult> readOneDayClassesByCategoryResultPage = oneDayClassRepository
-        .findOneDayClassByCategoryId(
+    Page<ReadOneDayClassesByCategoryResponse.OneDayClassResult> readOneDayClassesByCategoryResultPage =
+        oneDayClassRepository.findOneDayClassByCategoryId(
             foundCategory.getId(),
             foundMember.getAddress().getCityId(),
             foundMember.getAddress().getRegionId(),
             pageRequest
         ).map(oneDayClassConverter::convertToReadOneDayClassesByCategoryResult);
 
-    return CustomPageResponse.<CustomPageResponse<ReadOneDayClassesByCategoryResult>>of(
-        readOneDayClassesByCategoryResultPage);
+    return ReadOneDayClassesByCategoryResponse.of(readOneDayClassesByCategoryResultPage);
   }
 
   public ReadOneDayClassDetailResponse getOneDayClassDetail(Long classId) {
@@ -76,29 +78,27 @@ public class OneDayClassService {
         avgScore);
   }
 
-  public CustomPageResponse<CustomPageResponse<ReadOneDayClassByAtelierResult>> getOneDayClassesByAtelier(
-      Long atelierId, Pageable pageRequest) {
+  public ReadOneDayClassesByAtelierResponse getOneDayClassesByAtelier(Long atelierId, Pageable pageRequest) {
     Atelier foundAtelier = atelierRepository.findById(atelierId)
         .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 
-    Page<ReadOneDayClassByAtelierResult> readOneDayClassByAtelierResultPage = oneDayClassRepository
-        .findOneDayClassByAtelierId(
-            foundAtelier.getId(), pageRequest)
-        .map(oneDayClassConverter::convertToReadOneDayClassByAtelierResult);
+    Page<ReadOneDayClassesByAtelierResponse.OneDayClassResult> readOneDayClassByAtelierResultPage =
+        oneDayClassRepository.findOneDayClassByAtelierId(foundAtelier.getId(), pageRequest)
+        .map(oneDayClassConverter::convertToReadOneDayClassesByAtelierAtelierResult);
 
-    return CustomPageResponse.<CustomPageResponse<ReadOneDayClassByAtelierResult>>of(
-        readOneDayClassByAtelierResultPage);
+    return ReadOneDayClassesByAtelierResponse.of(readOneDayClassByAtelierResultPage);
   }
 
-  public CustomPageResponse searchOneDayClass(Member member, String keyWord,
-      Pageable pageRequest) {
-    Page<SearchOneDayClassResponse> searchOneDayClassResponsePage = oneDayClassRepository
-        .searchOneDayClass(
-            member.getAddress().getCityId(), member.getAddress().getRegionId(), keyWord,
-            pageRequest)
-        .map(oneDayClassConverter::convertSearchOneDayClassResponse);
+  public SearchOneDayClassResponse searchOneDayClass(Member member, String keyword, Pageable pageRequest) {
+    Page<SearchOneDayClassResponse.OneDayClassResult> searchOneDayClassResponsePage =
+        oneDayClassRepository.searchOneDayClass(
+            member.getAddress().getCityId(),
+            member.getAddress().getRegionId(),
+            keyword,
+            pageRequest
+        ).map(oneDayClassConverter::convertSearchOneDayClassOneDayClassResult);
 
-    return CustomPageResponse.of(searchOneDayClassResponsePage);
+    return SearchOneDayClassResponse.of(searchOneDayClassResponsePage);
 
   }
 

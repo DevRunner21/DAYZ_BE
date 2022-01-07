@@ -7,8 +7,8 @@ import org.springframework.stereotype.Component;
 @Component
 public class FollowConverter {
 
-    public ReadFollowsResponse convertToReadFollowsResponse(Follow follow) {
-        return ReadFollowsResponse.of(
+    public ReadFollowsResponse.FollowResult convertToReadFollowsFollowResult(Follow follow) {
+        return ReadFollowsResponse.FollowResult.of(
             follow.getAtelier().getId(),
             follow.getAtelier().getName(),
             follow.getAtelier().getMember().getProfileImageUrl(),

@@ -6,8 +6,8 @@ import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.post.domain.Post;
 import com.dayz.post.domain.PostImage;
 import com.dayz.post.dto.ReadPostDetailResponse;
-import com.dayz.post.dto.ReadPostDetailsResult;
-import com.dayz.post.dto.ReadPostsByAtelierResult;
+import com.dayz.post.dto.ReadPostDetailsResponse;
+import com.dayz.post.dto.ReadPostsByAtelierResponse;
 import com.dayz.post.dto.RegisterPostRequest;
 import com.dayz.post.dto.RegisterPostRequest.PostImagesRequest;
 import java.util.List;
@@ -70,8 +70,8 @@ public class PostConverter {
         );
     }
 
-    public ReadPostDetailsResult convertToReadPostDetailsResult(Post post) {
-        return ReadPostDetailsResult.of(
+    public ReadPostDetailsResponse.PostDetailResult convertToReadPostDetailsResult(Post post) {
+        return ReadPostDetailsResponse.PostDetailResult.of(
             post.getId(),
             post.getContent(),
             post.getPostImages().stream()
@@ -83,25 +83,27 @@ public class PostConverter {
         );
     }
 
-    public ReadPostDetailsResult.PostImageResult convertToReadPostDetailsPostImageResult(
-        PostImage postImage) {
-        return ReadPostDetailsResult.PostImageResult.of(
+    public ReadPostDetailsResponse.PostDetailResult.PostImageResult convertToReadPostDetailsPostImageResult(
+        PostImage postImage
+    ) {
+        return ReadPostDetailsResponse.PostDetailResult.PostImageResult.of(
             imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
             postImage.getSequence()
         );
     }
 
-    public ReadPostDetailsResult.AtelierResult convertToReadPostDetailsAtelierResult(
-        Member member) {
-        return ReadPostDetailsResult.AtelierResult.of(
+    public ReadPostDetailsResponse.PostDetailResult.AtelierResult convertToReadPostDetailsAtelierResult(
+        Member member
+    ) {
+        return ReadPostDetailsResponse.PostDetailResult.AtelierResult.of(
             member.getAtelier().getId(),
             member.getAtelier().getName(),
             member.getProfileImageUrl()
         );
     }
 
-    public ReadPostsByAtelierResult convertToReadPostsByAtelierResult(Post post) {
-        return ReadPostsByAtelierResult.of(
+    public ReadPostsByAtelierResponse.PostResult convertToReadPostsByAtelierAtelierResult(Post post) {
+        return ReadPostsByAtelierResponse.PostResult.of(
             post.getId(),
             getFirstImageUrl(post.getPostImages()),
             post.getCreatedAt()

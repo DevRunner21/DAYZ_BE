@@ -9,40 +9,32 @@ import org.springframework.data.domain.Page;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class SearchOneDayClassResponse extends CustomPageResponse<SearchOneDayClassResponse.OneDayClassResult> {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public class ReadOneDayClassesByAtelierResponse extends CustomPageResponse<ReadOneDayClassesByAtelierResponse.OneDayClassResult> {
 
-    private SearchOneDayClassResponse(Page tPage) {
+    private ReadOneDayClassesByAtelierResponse(Page tPage) {
         super(tPage);
     }
 
-    public static SearchOneDayClassResponse of(Page tPage) {
-        return new SearchOneDayClassResponse(tPage);
+    public static ReadOneDayClassesByAtelierResponse of(Page tPage) {
+        return new ReadOneDayClassesByAtelierResponse(tPage);
     }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    @NoArgsConstructor
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class OneDayClassResult {
 
         private Long classId;
 
         private String name;
 
-        private String intro;
-
         private String imageUrl;
 
-        public static OneDayClassResult of(
-            Long classId,
-            String name,
-            String intro,
-            String imageUrl
-        ) {
+        public static OneDayClassResult of(Long oneDayClassId, String name, String imageUrl) {
             OneDayClassResult oneDayClassResult = new OneDayClassResult();
-            oneDayClassResult.setClassId(classId);
+            oneDayClassResult.setClassId(oneDayClassId);
             oneDayClassResult.setName(name);
-            oneDayClassResult.setIntro(intro);
             oneDayClassResult.setImageUrl(imageUrl);
 
             return oneDayClassResult;

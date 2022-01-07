@@ -1,5 +1,6 @@
 package com.dayz.review.dto;
 
+import com.dayz.common.dto.CustomPageResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -7,95 +8,116 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadReviewsByAtelierResponse {
+public class ReadReviewsByAtelierResponse extends CustomPageResponse<ReadReviewsByAtelierResponse.ReviewResult> {
 
-    private Long id;
+    private ReadReviewsByAtelierResponse(Page tPage) {
+        super(tPage);
+    }
 
-    private String content;
-
-    private int score;
-
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-    private LocalDateTime createdAt;
-
-    private AtelierMemberResult member;
-
-    private AtelierOneDayClassResult oneDayClass;
-
-    private List<AtelierReviewImageResult> reviewImages;
-
-    public static ReadReviewsByAtelierResponse of(Long id, String content, int score,
-        LocalDateTime createdAt,
-        AtelierMemberResult member, AtelierOneDayClassResult oneDayClass,
-        List<AtelierReviewImageResult> reviewImages) {
-        ReadReviewsByAtelierResponse reviewResponse = new ReadReviewsByAtelierResponse();
-        reviewResponse.setId(id);
-        reviewResponse.setContent(content);
-        reviewResponse.setScore(score);
-        reviewResponse.setCreatedAt(createdAt);
-        reviewResponse.setMember(member);
-        reviewResponse.setOneDayClass(oneDayClass);
-        reviewResponse.setReviewImages(reviewImages);
-
-        return reviewResponse;
+    public static ReadReviewsByAtelierResponse of(Page tPage) {
+        return new ReadReviewsByAtelierResponse(tPage);
     }
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    public static class AtelierMemberResult {
+    @NoArgsConstructor
+    public static class ReviewResult {
 
         private Long id;
 
-        private String username;
+        private String content;
 
-        private String profileImageUrl;
+        private int score;
 
-        public static AtelierMemberResult of(Long id, String username, String profileImageUrl) {
-            AtelierMemberResult atelierMemberResult = new AtelierMemberResult();
-            atelierMemberResult.setId(id);
-            atelierMemberResult.setUsername(username);
-            atelierMemberResult.setProfileImageUrl(profileImageUrl);
+        @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+        private LocalDateTime createdAt;
 
-            return atelierMemberResult;
+        private AtelierMemberResult member;
+
+        private AtelierOneDayClassResult oneDayClass;
+
+        private List<AtelierReviewImageResult> reviewImages;
+
+        public static ReviewResult of(
+            Long id,
+            String content,
+            int score,
+            LocalDateTime createdAt,
+            AtelierMemberResult member,
+            AtelierOneDayClassResult oneDayClass,
+            List<AtelierReviewImageResult> reviewImages
+        ) {
+            ReviewResult reviewResponse = new ReviewResult();
+            reviewResponse.setId(id);
+            reviewResponse.setContent(content);
+            reviewResponse.setScore(score);
+            reviewResponse.setCreatedAt(createdAt);
+            reviewResponse.setMember(member);
+            reviewResponse.setOneDayClass(oneDayClass);
+            reviewResponse.setReviewImages(reviewImages);
+
+            return reviewResponse;
         }
 
-    }
+        @Getter
+        @Setter(AccessLevel.PRIVATE)
+        public static class AtelierMemberResult {
 
-    @Getter
-    @Setter(AccessLevel.PRIVATE)
-    public static class AtelierOneDayClassResult {
+            private Long id;
 
-        private Long id;
+            private String username;
 
-        private String name;
+            private String profileImageUrl;
 
-        public static AtelierOneDayClassResult of(Long id, String name) {
-            AtelierOneDayClassResult atelierOneDayClassResult = new AtelierOneDayClassResult();
-            atelierOneDayClassResult.setId(id);
-            atelierOneDayClassResult.setName(name);
+            public static AtelierMemberResult of(Long id, String username, String profileImageUrl) {
+                AtelierMemberResult atelierMemberResult = new AtelierMemberResult();
+                atelierMemberResult.setId(id);
+                atelierMemberResult.setUsername(username);
+                atelierMemberResult.setProfileImageUrl(profileImageUrl);
 
-            return atelierOneDayClassResult;
+                return atelierMemberResult;
+            }
+
         }
 
-    }
+        @Getter
+        @Setter(AccessLevel.PRIVATE)
+        public static class AtelierOneDayClassResult {
 
-    @Getter
-    @Setter(AccessLevel.PRIVATE)
-    public static class AtelierReviewImageResult {
+            private Long id;
 
-        private String imageurl;
+            private String name;
 
-        private int sequence;
+            public static AtelierOneDayClassResult of(Long id, String name) {
+                AtelierOneDayClassResult atelierOneDayClassResult = new AtelierOneDayClassResult();
+                atelierOneDayClassResult.setId(id);
+                atelierOneDayClassResult.setName(name);
 
-        public static AtelierReviewImageResult of(String imageurl, int sequence) {
-            AtelierReviewImageResult atelierReviewImageResult = new AtelierReviewImageResult();
-            atelierReviewImageResult.setImageurl(imageurl);
-            atelierReviewImageResult.setSequence(sequence);
-            return atelierReviewImageResult;
+                return atelierOneDayClassResult;
+            }
+
+        }
+
+        @Getter
+        @Setter(AccessLevel.PRIVATE)
+        public static class AtelierReviewImageResult {
+
+            private String imageurl;
+
+            private int sequence;
+
+            public static AtelierReviewImageResult of(String imageurl, int sequence) {
+                AtelierReviewImageResult atelierReviewImageResult = new AtelierReviewImageResult();
+                atelierReviewImageResult.setImageurl(imageurl);
+                atelierReviewImageResult.setSequence(sequence);
+                return atelierReviewImageResult;
+            }
+
         }
 
     }

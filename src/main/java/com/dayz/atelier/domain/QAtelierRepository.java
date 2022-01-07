@@ -1,5 +1,6 @@
 package com.dayz.atelier.domain;
 
+import com.dayz.atelier.dto.QSearchAtelierResponse_AtelierResult;
 import com.dayz.atelier.dto.SearchAtelierResponse;
 import com.dayz.onedayclass.domain.OneDayClass;
 import org.springframework.data.domain.Page;
@@ -14,6 +15,11 @@ public interface QAtelierRepository {
             Pageable pageRequest
     );
 
-    Page<SearchAtelierResponse> searchAteliers(Long cityId, Long regionId, String keyWord,
-        Pageable pageable);
+    Page<SearchAtelierResponse.AtelierResult> searchAteliers(
+        Long cityId,
+        Long regionId,
+        String keyWord,
+        Pageable pageable
+    );
+
 }

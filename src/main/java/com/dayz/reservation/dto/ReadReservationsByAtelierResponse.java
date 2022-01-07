@@ -1,43 +1,65 @@
 package com.dayz.reservation.dto;
 
+import com.dayz.common.dto.CustomPageResponse;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.data.domain.Page;
 
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadReservationsByAtelierResponse {
+public class ReadReservationsByAtelierResponse extends CustomPageResponse<ReadReservationsByAtelierResponse.ReservationResult> {
 
-    private Long reservationId;
+    private ReadReservationsByAtelierResponse(Page tPage) {
+        super(tPage);
+    }
 
-    private String className;
+    public static ReadReservationsByAtelierResponse of(Page tPage) {
+        return new ReadReservationsByAtelierResponse(tPage);
+    }
 
-    private String reservationDate;
+    @Getter
+    @Setter(AccessLevel.PRIVATE)
+    @NoArgsConstructor
+    public static class ReservationResult {
 
-    private String classDate;
+        private Long reservationId;
 
-    private String startTime;
+        private String className;
 
-    private String endTime;
+        private String reservationDate;
 
-    private String status;
+        private String classDate;
 
-    public static ReadReservationsByAtelierResponse of(Long reservationId, String className,
-        String reservationDate, String classDate, String startTime, String endTime,
-        String status) {
+        private String startTime;
 
-        ReadReservationsByAtelierResponse readAllMyReservationResponse = new ReadReservationsByAtelierResponse();
-        readAllMyReservationResponse.setReservationId(reservationId);
-        readAllMyReservationResponse.setClassName(className);
-        readAllMyReservationResponse.setReservationDate(reservationDate);
-        readAllMyReservationResponse.setClassDate(classDate);
-        readAllMyReservationResponse.setStartTime(startTime);
-        readAllMyReservationResponse.setEndTime(endTime);
-        readAllMyReservationResponse.setStatus(status);
+        private String endTime;
 
-        return readAllMyReservationResponse;
+        private String status;
+
+        public static ReservationResult of(
+            Long reservationId,
+            String className,
+            String reservationDate,
+            String classDate,
+            String startTime,
+            String endTime,
+            String status
+        ) {
+            ReservationResult reservationResult = new ReservationResult();
+            reservationResult.setReservationId(reservationId);
+            reservationResult.setClassName(className);
+            reservationResult.setReservationDate(reservationDate);
+            reservationResult.setClassDate(classDate);
+            reservationResult.setStartTime(startTime);
+            reservationResult.setEndTime(endTime);
+            reservationResult.setStatus(status);
+
+            return reservationResult;
+        }
+
     }
 
 }

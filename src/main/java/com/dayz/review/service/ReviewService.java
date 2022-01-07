@@ -11,8 +11,8 @@ import com.dayz.reservation.domain.ReservationRepository;
 import com.dayz.review.converter.ReviewConverter;
 import com.dayz.review.domain.Review;
 import com.dayz.review.domain.ReviewRepository;
-import com.dayz.review.dto.ReadMyReviewsResponse;
 import com.dayz.review.dto.ReadReviewsByAtelierResponse;
+import com.dayz.review.dto.ReadReviewsByMemberResponse;
 import com.dayz.review.dto.ReadReviewsByOneDayClassResponse;
 import com.dayz.review.dto.RegisterReviewRequest;
 import lombok.RequiredArgsConstructor;
@@ -33,38 +33,41 @@ public class ReviewService {
     private final ReservationRepository reservationRepository;
 
     //사용자 마이페이지에서 후기 전체 조회 하는 로직
-    public CustomPageResponse getAllReviews(CustomPageRequest pageRequest, Long memberId) {
+    public ReadReviewsByMemberResponse getReviewsByMember(
+        CustomPageRequest pageRequest,
+        Long memberId
+    ) {
         PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
-        Page<ReadMyReviewsResponse> reviewsResponses =
+        Page<ReadReviewsByMemberResponse.ReviewResult> reviewsResponses =
             reviewRepository.findAllByMemberId(memberId, pageable)
-                .map(reviewConverter::convertToReadMyReviewsResponse);
+                .map(reviewConverter::convertToReadReviewsByMemberReviewResult);
 
-        return CustomPageResponse.of(reviewsResponses);
+        return ReadReviewsByMemberResponse.of(reviewsResponses);
     }
 
     // 공방별 후기 목록 조회
-    public CustomPageResponse getAllAtelierReviews(CustomPageRequest pageRequest, Long atelierId) {
+    public ReadReviewsByAtelierResponse getReviewsByAtelier(CustomPageRequest pageRequest, Long atelierId) {
         PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
 
-        Page<ReadReviewsByAtelierResponse> reviewsResponses = reviewRepository.findAllByAtelierId(
-            atelierId, pageable)
-            .map(reviewConverter::convertToReadReviewsByAtelierResponse);
+        Page<ReadReviewsByAtelierResponse.ReviewResult> reviewsResponses =
+            reviewRepository.findAllByAtelierId(atelierId, pageable)
+                .map(reviewConverter::convertToReadReviewsByAtelierReviewResult);
 
-        return CustomPageResponse.of(reviewsResponses);
+        return ReadReviewsByAtelierResponse.of(reviewsResponses);
     }
 
     //원데이 클래스별 후기 조회
-    public CustomPageResponse getAllOneDayClassReviews(CustomPageRequest pageRequest,
-        Long oneDayClassId) {
-
+    public ReadReviewsByOneDayClassResponse getReviewsByOneDayClass(
+        CustomPageRequest pageRequest,
+        Long oneDayClassId
+    ) {
         PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
 
-        Page<ReadReviewsByOneDayClassResponse> reviewsResponses = reviewRepository
-            .findAllByOneDayClassId(
-                oneDayClassId, pageable)
-            .map(reviewConverter::convertReadAllOneDayClassReviewsResponse);
+        Page<ReadReviewsByOneDayClassResponse.ReviewResult> reviewsResponses =
+            reviewRepository.findAllByOneDayClassId(oneDayClassId, pageable)
+                .map(reviewConverter::convertReadReviewsByOneDayClassReviewResult);
 
-        return CustomPageResponse.of(reviewsResponses);
+        return ReadReviewsByOneDayClassResponse.of(reviewsResponses);
     }
 
     // 후기 작성

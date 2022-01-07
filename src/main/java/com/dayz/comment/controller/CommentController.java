@@ -31,7 +31,7 @@ public class CommentController {
     public ApiResponse getAllComments(
         @PathVariable("postId") Long postId,
         @Valid CustomPageRequest pageRequest) {
-        return ApiResponse.ok(commentService.getAllComments(pageRequest, postId));
+        return ApiResponse.ok(commentService.getComments(pageRequest, postId));
     }
 
 }

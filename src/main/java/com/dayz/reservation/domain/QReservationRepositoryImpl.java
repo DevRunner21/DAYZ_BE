@@ -29,22 +29,26 @@ public class QReservationRepositoryImpl implements QReservationRepository {
         List<OrderSpecifier> orderlist = new ArrayList<>();
 
         for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(reservation.getType(),
-                reservation.getMetadata());
+            PathBuilder pathBuilder = new PathBuilder(
+                reservation.getType(),
+                reservation.getMetadata()
+            );
             orderlist.add(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                 pathBuilder.get(o.getProperty())));
         }
 
-        QueryResults<ReservationInfoProjection> results = jpaQueryFactory
-            .select(new QReservationInfoProjection(
-                reservation.id,
-                reservation.oneDayClassTime.oneDayClass.name,
-                reservation.reservationDate,
-                reservation.oneDayClassTime.classDate,
-                reservation.oneDayClassTime.startTime,
-                reservation.oneDayClassTime.endTime,
-                reservation.status.stringValue()))
-            .from(reservation)
+        QueryResults<ReservationInfoProjection> results =
+            jpaQueryFactory.select(
+                new QReservationInfoProjection(
+                    reservation.id,
+                    reservation.oneDayClassTime.oneDayClass.name,
+                    reservation.reservationDate,
+                    reservation.oneDayClassTime.classDate,
+                    reservation.oneDayClassTime.startTime,
+                    reservation.oneDayClassTime.endTime,
+                    reservation.status.stringValue()
+                )
+            ).from(reservation)
             .leftJoin(reservation.member).on(reservation.member.id.eq(memberId))
             .where(reservation.useFlag.eq(true).and(reservation.member.id.eq(memberId)))
             .offset(pageable.getOffset())

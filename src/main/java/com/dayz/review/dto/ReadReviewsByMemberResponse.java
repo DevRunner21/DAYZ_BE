@@ -13,15 +13,14 @@ import org.springframework.data.domain.Page;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
-public class ReadReviewsByOneDayClassResponse extends
-    CustomPageResponse<ReadReviewsByOneDayClassResponse.ReviewResult> {
+public class ReadReviewsByMemberResponse extends CustomPageResponse<ReadReviewsByMemberResponse.ReviewResult> {
 
-    private ReadReviewsByOneDayClassResponse(Page tPage) {
+    private ReadReviewsByMemberResponse(Page tPage) {
         super(tPage);
     }
 
-    public static ReadReviewsByOneDayClassResponse of(Page tPage) {
-        return new ReadReviewsByOneDayClassResponse(tPage);
+    public static ReadReviewsByMemberResponse of(Page tPage) {
+        return new ReadReviewsByMemberResponse(tPage);
     }
 
     @Getter
@@ -38,17 +37,20 @@ public class ReadReviewsByOneDayClassResponse extends
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        private OneDayClassMemberResult member;
+        private MemberResult member;
 
-        private List<OneDayClassReviewImageResult> reviewImage;
+        private OneDayClassResult oneDayClass;
+
+        private List<ReviewImageResult> reviewImage;
 
         public static ReviewResult of(
             Long id,
             String content,
             int score,
             LocalDateTime createdAt,
-            OneDayClassMemberResult member,
-            List<OneDayClassReviewImageResult> reviewImages
+            MemberResult member,
+            OneDayClassResult oneDayClass,
+            List<ReviewImageResult> reviewImages
         ) {
             ReviewResult reviewResponse = new ReviewResult();
             reviewResponse.setId(id);
@@ -56,6 +58,7 @@ public class ReadReviewsByOneDayClassResponse extends
             reviewResponse.setScore(score);
             reviewResponse.setCreatedAt(createdAt);
             reviewResponse.setMember(member);
+            reviewResponse.setOneDayClass(oneDayClass);
             reviewResponse.setReviewImage(reviewImages);
 
             return reviewResponse;
@@ -63,7 +66,7 @@ public class ReadReviewsByOneDayClassResponse extends
 
         @Getter
         @Setter(AccessLevel.PRIVATE)
-        public static class OneDayClassMemberResult {
+        public static class MemberResult {
 
             private Long id;
 
@@ -71,35 +74,45 @@ public class ReadReviewsByOneDayClassResponse extends
 
             private String profileImageUrl;
 
-            public static OneDayClassMemberResult of(
-                Long id,
-                String username,
-                String profileImageUrl
-            ) {
-                OneDayClassMemberResult memberResult = new OneDayClassMemberResult();
+            public static MemberResult of(Long id, String username, String profileImageUrl) {
+                MemberResult memberResult = new MemberResult();
                 memberResult.setId(id);
                 memberResult.setUsername(username);
                 memberResult.setProfileImageUrl(profileImageUrl);
 
                 return memberResult;
             }
+        }
+
+        @Getter
+        @Setter(AccessLevel.PRIVATE)
+        public static class OneDayClassResult {
+
+            private Long id;
+
+            private String name;
+
+            public static OneDayClassResult of(Long id, String name) {
+                OneDayClassResult oneDayClassResult = new OneDayClassResult();
+                oneDayClassResult.setId(id);
+                oneDayClassResult.setName(name);
+
+                return oneDayClassResult;
+            }
 
         }
 
         @Getter
         @Setter(AccessLevel.PRIVATE)
-        public static class OneDayClassReviewImageResult {
+        public static class ReviewImageResult {
 
             private String imageUrl;
 
             private int sequence;
 
-            public static OneDayClassReviewImageResult of(
-                String imageUrl,
-                int sequence
-            ) {
-                OneDayClassReviewImageResult reviewImageResult = new OneDayClassReviewImageResult();
-                reviewImageResult.setImageUrl(imageUrl);
+            public static ReviewImageResult of(String imageurl, int sequence) {
+                ReviewImageResult reviewImageResult = new ReviewImageResult();
+                reviewImageResult.setImageUrl(imageurl);
                 reviewImageResult.setSequence(sequence);
                 return reviewImageResult;
             }

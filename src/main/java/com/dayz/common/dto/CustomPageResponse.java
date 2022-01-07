@@ -8,11 +8,10 @@ import lombok.Setter;
 import org.springframework.data.domain.Page;
 
 @Getter
-@Setter(AccessLevel.PRIVATE)
-@NoArgsConstructor
-public class CustomPageResponse<T> {
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+public abstract class CustomPageResponse<T> {
 
-    private long totalCount;
+    private Long totalCount;
 
     private int pageIndex;
 
@@ -22,15 +21,23 @@ public class CustomPageResponse<T> {
 
     private boolean hasNext;
 
-    public static CustomPageResponse of(Page tPage) {
-        CustomPageResponse customPageResponse = new CustomPageResponse();
-        customPageResponse.setTotalCount(tPage.getTotalElements());
-        customPageResponse.setPageIndex(tPage.getNumber());
-        customPageResponse.setPageSize(tPage.getSize());
-        customPageResponse.setList(tPage.getContent());
-        customPageResponse.setHasNext(tPage.hasNext());
-
-        return customPageResponse;
+    protected CustomPageResponse(Page tPage) {
+        this.totalCount = tPage.getTotalElements();
+        this.pageIndex = tPage.getNumber();
+        this.pageSize = tPage.getSize();
+        this.list = tPage.getContent();
+        this.hasNext = tPage.hasNext();
     }
+//
+//    public static CustomPageResponse of(Page tPage) {
+//        CustomPageResponse customPageResponse = new CustomPageResponse();
+//        customPageResponse.setTotalCount(tPage.getTotalElements());
+//        customPageResponse.setPageIndex(tPage.getNumber());
+//        customPageResponse.setPageSize(tPage.getSize());
+//        customPageResponse.setList(tPage.getContent());
+//        customPageResponse.setHasNext(tPage.hasNext());
+//
+//        return customPageResponse;
+//    }
 
 }
