@@ -9,6 +9,7 @@ import com.dayz.reservation.dto.request.ReadReservationsByMemberRequest;
 import com.dayz.reservation.dto.request.RegisterReservationRequest;
 import com.dayz.reservation.dto.response.ReadReservationsByAtelierResponse;
 import com.dayz.reservation.dto.response.ReadReservationsByMemberResponse;
+import com.dayz.reservation.dto.response.RegisterReservationResponse;
 import com.dayz.reservation.service.ReservationService;
 import java.util.Map;
 import javax.validation.Valid;
@@ -24,22 +25,23 @@ public class ReservationController {
     private final ReservationService reservationService;
 
     @PostMapping(value = "/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<Map<String, Long>> registerReservation(
-        @LoginMemberId Member member,
+    public ApiResponse<RegisterReservationResponse> registerReservation(
+        @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterReservationRequest registerReservationRequest
     ) {
-        return ApiResponse.ok(Map.of("reservationId",
-            reservationService.saveReservation(registerReservationRequest, member)));
+        Long registeredReservationId = reservationService.saveReservation(registerReservationRequest, memberId);
+
+        return ApiResponse.ok(RegisterReservationResponse.of(registeredReservationId));
     }
 
     @GetMapping(value = "/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadReservationsByMemberResponse> readReservationsByMember(
-        @LoginMemberId Member member,
+        @LoginMemberId Long memberId,
         @Valid ReadReservationsByMemberRequest request
     ) {
         ReadReservationsByMemberResponse myReservation = reservationService.getReservationsByMember(
             request.convertToPageRequest(Reservation.class),
-            member.getId()
+            memberId
         );
 
         return ApiResponse.<ReadReservationsByMemberResponse>ok(myReservation);

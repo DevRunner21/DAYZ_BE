@@ -1,8 +1,11 @@
 package com.dayz.reservation.service;
 
+import com.dayz.atelier.domain.Atelier;
+import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
+import com.dayz.member.domain.MemberRepository;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.onedayclass.domain.OneDayClassTimeRepository;
 import com.dayz.reservation.converter.ReservationConverter;
@@ -24,6 +27,10 @@ public class ReservationService {
 
     private final ReservationRepository reservationRepository;
 
+    private final MemberRepository memberRepository;
+
+    private final AtelierRepository atelierRepository;
+
     private final ReservationConverter reservationConverter;
 
     private final OneDayClassTimeRepository oneDayClassTimeRepository;
@@ -31,14 +38,17 @@ public class ReservationService {
     @Transactional
     public Long saveReservation(
         RegisterReservationRequest registerReservationRequest,
-        Member member
+        Long memberId
     ) {
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+
         OneDayClassTime oneDayClassTime = oneDayClassTimeRepository.findById(
             registerReservationRequest.getClassTimeId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_TIME_NOT_FOUND));
 
         Reservation reservation = reservationConverter.convertToReservation(
-            registerReservationRequest, member, oneDayClassTime);
+            registerReservationRequest, foundMember, oneDayClassTime);
 
         return reservationRepository.save(reservation).getId();
     }
@@ -47,8 +57,11 @@ public class ReservationService {
         PageRequest pageRequest,
         Long memberId
     ) {
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+
         Page<ReadReservationsByMemberResponse.ReservationResult> responsePage =
-            reservationRepository.findReservationsByMember(memberId, pageRequest)
+            reservationRepository.findReservationsByMember(foundMember.getId(), pageRequest)
                 .map(reservationConverter::convertReadReservationsByMemberReservationResult);
 
         return ReadReservationsByMemberResponse.of(responsePage);
@@ -58,8 +71,11 @@ public class ReservationService {
         PageRequest pageRequest,
         Long atelierId
     ) {
+        Atelier foundAtelier = atelierRepository.findById(atelierId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
+
         Page<ReadReservationsByAtelierResponse.ReservationResult> responsePage =
-            reservationRepository.findReservationsByAtelier(atelierId, pageRequest)
+            reservationRepository.findReservationsByAtelier(foundAtelier.getId(), pageRequest)
                 .map(reservationConverter::convertReadReservationsByAtelierReservationResult);
 
         return ReadReservationsByAtelierResponse.of(responsePage);
@@ -67,9 +83,10 @@ public class ReservationService {
 
     @Transactional
     public void deleteReservation(Long reservationId) {
-        Reservation reservation = reservationRepository.findById(reservationId)
+        Reservation foundReservation = reservationRepository.findById(reservationId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.RESERVATION_NOT_FOUND));
-        reservation.changeUseFlag(false);
+
+        foundReservation.changeUseFlag(false);
     }
 
 }

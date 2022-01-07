@@ -2,17 +2,13 @@ package com.dayz.review.controller;
 
 import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.member.domain.Member;
 import com.dayz.review.domain.Review;
 import com.dayz.review.dto.request.ReadReviewsByAtelierRequest;
 import com.dayz.review.dto.request.ReadReviewsByMemberRequest;
 import com.dayz.review.dto.request.ReadReviewsByOneDayClassRequest;
 import com.dayz.review.dto.request.RegisterReviewRequest;
-import com.dayz.review.dto.response.ReadReviewsByAtelierResponse;
-import com.dayz.review.dto.response.ReadReviewsByMemberResponse;
-import com.dayz.review.dto.response.ReadReviewsByOneDayClassResponse;
+import com.dayz.review.dto.response.*;
 import com.dayz.review.service.ReviewService;
-import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -27,13 +23,12 @@ public class ReviewController {
 
     @GetMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadReviewsByMemberResponse> readReviewsByMember(
-        @LoginMemberId Member member,
+        @LoginMemberId Long memberId,
         ReadReviewsByMemberRequest request
     ) {
-        ReadReviewsByMemberResponse response
-            = reviewService.getReviewsByMember(
+        ReadReviewsByMemberResponse response = reviewService.getReviewsByMember(
             request.convertToPageRequest(Review.class),
-            member.getId()
+            memberId
         );
 
         return ApiResponse.<ReadReviewsByMemberResponse>ok(response);
@@ -68,17 +63,23 @@ public class ReviewController {
     }
 
     @GetMapping(value = "/reviews/score/ateliers/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<Map<String, Double>> getAvgScore(@PathVariable("atelierId") Long atelierId) {
-        return ApiResponse.ok(Map.of("avgScore", reviewService.getAvgScore(atelierId)));
+    public ApiResponse<ReadAvgScoreResponse> readAvgScore(
+        @PathVariable("atelierId") Long atelierId
+    ) {
+        double avgScore = reviewService.getAvgScore(atelierId);
+
+        return ApiResponse.ok(ReadAvgScoreResponse.of(avgScore));
     }
 
     @PostMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<Map<String, Long>> saveReviews(
-        @LoginMemberId Member member,
+    public ApiResponse<RegisterReviewResponse> registerReview(
+        @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterReviewRequest registerReviewRequest
     ) {
+        Long registeredReviewId = reviewService.saveReview(registerReviewRequest, memberId);
+
         return ApiResponse
-            .ok(Map.of("reviewId", reviewService.saveReview(registerReviewRequest, member)));
+            .<RegisterReviewResponse>ok(RegisterReviewResponse.of(registeredReviewId));
     }
 
 }

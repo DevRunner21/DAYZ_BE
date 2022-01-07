@@ -10,8 +10,8 @@ import com.dayz.onedayclass.domain.Curriculum;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassImage;
 import com.dayz.onedayclass.domain.OneDayClassTime;
-import com.dayz.onedayclass.dto.request.SaveOneDayClassRequest;
-import com.dayz.onedayclass.dto.request.SaveOneDayClassRequest.CurriculumParam;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.CurriculumParam;
 import com.dayz.onedayclass.dto.response.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -135,7 +135,7 @@ public class OneDayClassConverter {
         );
     }
 
-    public OneDayClass convertToOneDayClass(SaveOneDayClassRequest request, Category category,
+    public OneDayClass convertToOneDayClass(RegisterOneDayClassRequest request, Category category,
         Atelier atelier) {
         return OneDayClass.of(
             request.getName(),
@@ -155,7 +155,7 @@ public class OneDayClassConverter {
     }
 
     public OneDayClassImage convertToOneDayClassImage(
-        SaveOneDayClassRequest.OneDayClassImageRequest imageRequest) {
+        RegisterOneDayClassRequest.OneDayClassImageRequest imageRequest) {
         return OneDayClassImage.of(
             imageUrlUtil.extractFileName(imageRequest.getImageUrl()),
             imageRequest.getSequence()
@@ -171,7 +171,7 @@ public class OneDayClassConverter {
     }
 
     public OneDayClassTime convertToOneDayClassTime(
-        SaveOneDayClassRequest.OneDayClassTimeRequest oneDayClassTimeRequest) {
+        RegisterOneDayClassRequest.OneDayClassTimeRequest oneDayClassTimeRequest) {
         return OneDayClassTime.of(
             LocalDate
                 .parse(oneDayClassTimeRequest.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")),

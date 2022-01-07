@@ -12,7 +12,7 @@ import lombok.Setter;
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class SaveOneDayClassRequest {
+public class RegisterOneDayClassRequest {
 
     @NotNull(message = "atelierId is not null")
     private Long atelierId;
@@ -45,7 +45,7 @@ public class SaveOneDayClassRequest {
     @Valid
     private List<OneDayClassTimeRequest> oneDayClassTimes = new ArrayList<>();
 
-    public static SaveOneDayClassRequest of(
+    public static RegisterOneDayClassRequest of(
         Long atelierId,
         String name,
         String intro,
@@ -56,19 +56,19 @@ public class SaveOneDayClassRequest {
         List<CurriculumParam> curriculums,
         List<OneDayClassImageRequest> images,
         List<OneDayClassTimeRequest> oneDayClassTimes) {
-        SaveOneDayClassRequest saveOneDayClassRequest = new SaveOneDayClassRequest();
-        saveOneDayClassRequest.setAtelierId(atelierId);
-        saveOneDayClassRequest.setName(name);
-        saveOneDayClassRequest.setIntro(intro);
-        saveOneDayClassRequest.setCategoryId(categoryId);
-        saveOneDayClassRequest.setMaxPeopleNumber(maxPeopleNumber);
-        saveOneDayClassRequest.setPrice(price);
-        saveOneDayClassRequest.setRequiredTime(requiredTime);
-        saveOneDayClassRequest.setCurriculums(curriculums);
-        saveOneDayClassRequest.setImages(images);
-        saveOneDayClassRequest.setOneDayClassTimes(oneDayClassTimes);
+        RegisterOneDayClassRequest registerOneDayClassRequest = new RegisterOneDayClassRequest();
+        registerOneDayClassRequest.setAtelierId(atelierId);
+        registerOneDayClassRequest.setName(name);
+        registerOneDayClassRequest.setIntro(intro);
+        registerOneDayClassRequest.setCategoryId(categoryId);
+        registerOneDayClassRequest.setMaxPeopleNumber(maxPeopleNumber);
+        registerOneDayClassRequest.setPrice(price);
+        registerOneDayClassRequest.setRequiredTime(requiredTime);
+        registerOneDayClassRequest.setCurriculums(curriculums);
+        registerOneDayClassRequest.setImages(images);
+        registerOneDayClassRequest.setOneDayClassTimes(oneDayClassTimes);
 
-        return saveOneDayClassRequest;
+        return registerOneDayClassRequest;
     }
 
     @Getter

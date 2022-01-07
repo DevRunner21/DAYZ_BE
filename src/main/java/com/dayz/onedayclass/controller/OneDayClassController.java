@@ -6,7 +6,7 @@ import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.dto.request.ReadOneDayClassesByAtelierRequest;
 import com.dayz.onedayclass.dto.request.ReadOneDayClassesByCategoryRequest;
-import com.dayz.onedayclass.dto.request.SaveOneDayClassRequest;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
 import com.dayz.onedayclass.dto.request.SearchOneDayClassRequest;
 import com.dayz.onedayclass.dto.response.*;
 import com.dayz.onedayclass.service.OneDayClassService;
@@ -24,7 +24,6 @@ public class OneDayClassController {
 
     private final OneDayClassService oneDayClassService;
 
-    // TODO : oneDayClassService.getOneDayClassesByCategory()dptj member말고 memberId로 파라미터를 넘기도록 변경 필요
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/categories/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
@@ -72,11 +71,11 @@ public class OneDayClassController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<SearchOneDayClassResponse> searchOneDayClass(
-        @LoginMemberId Member member,
+        @LoginMemberId Long memberId,
         @Valid SearchOneDayClassRequest request
     ) {
         SearchOneDayClassResponse response = oneDayClassService.searchOneDayClass(
-            member,
+            memberId,
             request.getKeyword(),
             request.convertToPageRequest(OneDayClass.class)
         );
@@ -98,12 +97,12 @@ public class OneDayClassController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ApiResponse saveOneDayClass(
-        @Valid @RequestBody SaveOneDayClassRequest request
+    public ApiResponse<RegisterOneDayClassResponse> registerOneDayClass(
+        @Valid @RequestBody RegisterOneDayClassRequest request
     ) {
-        Long savedOneDayClassId = oneDayClassService.createOneDayClass(request);
+        Long registeredOneDayClassId = oneDayClassService.createOneDayClass(request);
 
-        return ApiResponse.ok(Map.of("oneDayClassId", savedOneDayClassId));
+        return ApiResponse.ok(RegisterOneDayClassResponse.of(registeredOneDayClassId));
     }
 
 }

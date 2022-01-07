@@ -12,7 +12,7 @@ import com.dayz.member.domain.MemberRepository;
 import com.dayz.onedayclass.converter.OneDayClassConverter;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassRepository;
-import com.dayz.onedayclass.dto.request.SaveOneDayClassRequest;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
 import com.dayz.onedayclass.dto.response.*;
 import com.dayz.review.domain.ReviewRepository;
 import java.time.DayOfWeek;
@@ -50,7 +50,6 @@ public class OneDayClassService {
         Long categoryId,
         Pageable pageRequest
     ) {
-
         Category foundCategory = categoryRepository.findById(categoryId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
 
@@ -78,8 +77,10 @@ public class OneDayClassService {
             avgScore);
     }
 
-    public ReadOneDayClassesByAtelierResponse getOneDayClassesByAtelier(Long atelierId,
-        Pageable pageRequest) {
+    public ReadOneDayClassesByAtelierResponse getOneDayClassesByAtelier(
+        Long atelierId,
+        Pageable pageRequest
+    ) {
         Atelier foundAtelier = atelierRepository.findById(atelierId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 
@@ -90,12 +91,18 @@ public class OneDayClassService {
         return ReadOneDayClassesByAtelierResponse.of(readOneDayClassByAtelierResultPage);
     }
 
-    public SearchOneDayClassResponse searchOneDayClass(Member member, String keyword,
-        Pageable pageRequest) {
+    public SearchOneDayClassResponse searchOneDayClass(
+        Long memberId,
+        String keyword,
+        Pageable pageRequest
+    ) {
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+
         Page<SearchOneDayClassResponse.OneDayClassResult> searchOneDayClassResponsePage =
             oneDayClassRepository.searchOneDayClass(
-                member.getAddress().getCityId(),
-                member.getAddress().getRegionId(),
+                foundMember.getAddress().getCityId(),
+                foundMember.getAddress().getRegionId(),
                 keyword,
                 pageRequest
             ).map(oneDayClassConverter::convertSearchOneDayClassOneDayClassResult);
@@ -130,7 +137,7 @@ public class OneDayClassService {
     }
 
     @Transactional
-    public Long createOneDayClass(SaveOneDayClassRequest request) {
+    public Long createOneDayClass(RegisterOneDayClassRequest request) {
         Atelier foundAtelier = atelierRepository.findById(request.getAtelierId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 

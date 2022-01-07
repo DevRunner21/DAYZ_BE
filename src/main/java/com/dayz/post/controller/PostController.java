@@ -9,6 +9,7 @@ import com.dayz.post.dto.request.RegisterPostRequest;
 import com.dayz.post.dto.response.ReadPostDetailResponse;
 import com.dayz.post.dto.response.ReadPostDetailsResponse;
 import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
+import com.dayz.post.dto.response.RegisterPostResponse;
 import com.dayz.post.service.PostService;
 import java.util.Map;
 import javax.validation.Valid;
@@ -55,8 +56,10 @@ public class PostController {
     }
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse registerPost(@RequestBody @Valid RegisterPostRequest request) {
-        return ApiResponse.ok(Map.of("postId", postService.save(request)));
+    public ApiResponse<RegisterPostResponse> registerPost(@RequestBody @Valid RegisterPostRequest request) {
+        Long registeredPostId = postService.save(request);
+
+        return ApiResponse.ok(RegisterPostResponse.of(registeredPostId));
     }
 
 }

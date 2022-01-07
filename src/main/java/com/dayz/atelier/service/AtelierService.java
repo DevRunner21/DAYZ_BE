@@ -102,8 +102,7 @@ public class AtelierService {
         return atelierConverter.convertToSaveAtelierResponse(savedAtelier.getId(), token);
     }
 
-    public ReadAteliersResponse getAteliers(Long memberId,
-        PageRequest pageRequest) {
+    public ReadAteliersResponse getAteliers(Long memberId, PageRequest pageRequest) {
         Member foundMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
@@ -120,20 +119,22 @@ public class AtelierService {
     }
 
     public SearchAtelierResponse searchAtelier(
-        Member member,
+        Long memberId,
         String keyword,
         Pageable pageRequest
     ) {
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+
         Page<SearchAtelierResponse.AtelierResult> searchOneDayClassResponsePage = atelierRepository
             .searchAteliers(
-                member.getAddress().getCityId(),
-                member.getAddress().getRegionId(),
+                foundMember.getAddress().getCityId(),
+                foundMember.getAddress().getRegionId(),
                 keyword,
                 pageRequest
             );
 
         return SearchAtelierResponse.of(searchOneDayClassResponsePage);
-
     }
 
 }

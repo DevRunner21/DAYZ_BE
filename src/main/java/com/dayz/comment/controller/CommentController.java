@@ -4,6 +4,7 @@ import com.dayz.comment.domain.Comment;
 import com.dayz.comment.dto.request.ReadCommentsRequest;
 import com.dayz.comment.dto.response.ReadCommentsResponse;
 import com.dayz.comment.dto.request.RegisterCommentRequest;
+import com.dayz.comment.dto.response.RegisterCommentResponse;
 import com.dayz.comment.service.CommentService;
 import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
@@ -21,12 +22,13 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse createComment(
+    public ApiResponse<RegisterCommentResponse> registerComment(
         @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterCommentRequest request
     ) {
-        return ApiResponse
-            .ok(Map.of("commentId", commentService.save(memberId, request)));
+        Long registeredCommentId = commentService.save(memberId, request);
+
+        return ApiResponse.<RegisterCommentResponse>ok(RegisterCommentResponse.of(registeredCommentId));
     }
 
     @GetMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)

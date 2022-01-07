@@ -62,11 +62,11 @@ public class AtelierController {
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<SearchAtelierResponse> searchAteliers(
-        @LoginMemberId Member member,
+        @LoginMemberId Long memberId,
         @Valid SearchAtelierRequest request
     ) {
         SearchAtelierResponse response = atelierService.searchAtelier(
-            member,
+            memberId,
             request.getKeyword(),
             request.convertToPageRequest(Atelier.class)
         );

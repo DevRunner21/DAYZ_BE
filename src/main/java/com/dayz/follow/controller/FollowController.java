@@ -6,6 +6,7 @@ import com.dayz.follow.domain.Follow;
 import com.dayz.follow.dto.request.FollowRequest;
 import com.dayz.follow.dto.request.ReadFollowsRequest;
 import com.dayz.follow.dto.response.ReadFollowsResponse;
+import com.dayz.follow.dto.response.RegisterFollowResponse;
 import com.dayz.follow.service.FollowService;
 import java.util.Map;
 import javax.validation.Valid;
@@ -33,15 +34,14 @@ public class FollowController {
         return ApiResponse.<ReadFollowsResponse>ok(response);
     }
 
-    // TODO : Map으로 처리한 부분 고치기
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE, consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse registerFollow(@RequestBody @Valid FollowRequest followRequest) {
+    public ApiResponse<RegisterFollowResponse> registerFollow(@RequestBody @Valid FollowRequest followRequest) {
         boolean followFlag = followService.followingUnfollowing(
             followRequest.getMemberId(),
             followRequest.getAtelierId()
         );
 
-        return ApiResponse.ok(Map.of("followFlag", followFlag));
+        return ApiResponse.<RegisterFollowResponse>ok(RegisterFollowResponse.of(followFlag));
     }
 
 }
