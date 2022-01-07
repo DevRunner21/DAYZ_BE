@@ -21,7 +21,8 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadMemberInfoResponse> readMemberDetail(
-        @AuthenticationPrincipal JwtAuthentication authentication) {
+        @AuthenticationPrincipal JwtAuthentication authentication
+    ) {
         ReadMemberInfoResponse memberInfo = memberService
             .getMemberInfo(authentication.getId(), authentication.getToken());
         return ApiResponse.<ReadMemberInfoResponse>ok(memberInfo);
@@ -31,7 +32,8 @@ public class MemberController {
     @PostMapping(path = "/address", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<EditMemberAddressResponse> editMemberAddress(
         @AuthenticationPrincipal JwtAuthentication authentication,
-        @RequestBody @Valid EditMemberAddressRequest request) {
+        @RequestBody @Valid EditMemberAddressRequest request
+    ) {
         EditMemberAddressResponse editedAddress = memberService.updateMemberAddress(
             request.getCityId(),
             request.getRegionId(),
@@ -45,7 +47,8 @@ public class MemberController {
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<EditMemberProfileResponse> editMemberProfile(
         @AuthenticationPrincipal JwtAuthentication authentication,
-        @RequestBody @Valid EditMemberProfileRequest request) {
+        @RequestBody @Valid EditMemberProfileRequest request
+    ) {
         EditMemberProfileResponse response = memberService.updateMemberProfile(
             authentication.getId(),
             request.getName(),

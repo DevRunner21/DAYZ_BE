@@ -1,11 +1,10 @@
 package com.dayz.follow.controller;
 
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.follow.domain.Follow;
 import com.dayz.follow.dto.FollowRequest;
+import com.dayz.follow.dto.ReadFollowsRequest;
 import com.dayz.follow.dto.ReadFollowsResponse;
 import com.dayz.follow.service.FollowService;
 import java.util.Map;
@@ -25,10 +24,11 @@ public class FollowController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadFollowsResponse> readFollows(
         @AuthenticationPrincipal JwtAuthentication authentication,
-        @Valid CustomPageRequest pageRequest) {
+        @Valid ReadFollowsRequest request
+    ) {
         ReadFollowsResponse response = followService.getFollows(
             authentication.getId(),
-            pageRequest.convertToPageRequest(Follow.class)
+            request.convertToPageRequest(Follow.class)
         );
 
         return ApiResponse.<ReadFollowsResponse>ok(response);

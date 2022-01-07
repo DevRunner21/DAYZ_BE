@@ -3,12 +3,10 @@ package com.dayz.comment.service;
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.comment.converter.CommentConverter;
-import com.dayz.comment.domain.Comment;
 import com.dayz.comment.domain.CommentRepository;
 import com.dayz.comment.dto.ReadCommentsResponse;
 import com.dayz.comment.dto.ReadCommentsResponse.CommentResult;
 import com.dayz.comment.dto.RegisterCommentRequest;
-import com.dayz.common.dto.CustomPageRequest;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
@@ -36,13 +34,9 @@ public class CommentService {
 
     private final CommentConverter commentConverter;
 
-    public ReadCommentsResponse getComments(CustomPageRequest pageRequest, Long postId) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Comment.class);
-
-        Page<Comment> allByPostId = commentRepository.findAllByPostId(postId, pageable);
-
+    public ReadCommentsResponse getComments(PageRequest pageRequest, Long postId) {
         Page<CommentResult> readCommentsResultPage =
-            commentRepository.findAllByPostId(postId, pageable)
+            commentRepository.findAllByPostId(postId, pageRequest)
                 .map(commentConverter::convertToReadCommentsResult);
 
         return ReadCommentsResponse.of(readCommentsResultPage);

@@ -2,11 +2,9 @@ package com.dayz.reservation.controller;
 
 import com.dayz.common.aop.LoginMember;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.dto.CustomPageRequest;
 import com.dayz.member.domain.Member;
-import com.dayz.reservation.dto.ReadReservationsByAtelierResponse;
-import com.dayz.reservation.dto.ReadReservationsByMemberResponse;
-import com.dayz.reservation.dto.RegisterReservationRequest;
+import com.dayz.reservation.domain.Reservation;
+import com.dayz.reservation.dto.*;
 import com.dayz.reservation.service.ReservationService;
 import java.util.Map;
 import javax.validation.Valid;
@@ -33,10 +31,10 @@ public class ReservationController {
     @GetMapping(value = "/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadReservationsByMemberResponse> readReservationsByMember(
         @LoginMember Member member,
-        @Valid CustomPageRequest pageRequest
+        @Valid ReadReservationsByMemberRequest request
     ) {
         ReadReservationsByMemberResponse myReservation = reservationService.getReservationsByMember(
-            pageRequest,
+            request.convertToPageRequest(Reservation.class),
             member.getId()
         );
 
@@ -47,10 +45,10 @@ public class ReservationController {
     @GetMapping(value = "/reservations/ateliers/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadReservationsByAtelierResponse> readReservationsByAtelier(
         @PathVariable("atelierId") Long atelierId,
-        @Valid CustomPageRequest pageRequest
+        @Valid ReadReservationsByAtelierRequest request
     ) {
         ReadReservationsByAtelierResponse response = reservationService.getReservationsByAtelier(
-            pageRequest,
+            request.convertToPageRequest(Reservation.class),
             atelierId
         );
 

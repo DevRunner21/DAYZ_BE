@@ -1,9 +1,11 @@
 package com.dayz.comment.controller;
 
+import com.dayz.comment.domain.Comment;
+import com.dayz.comment.dto.ReadCommentsRequest;
+import com.dayz.comment.dto.ReadCommentsResponse;
 import com.dayz.comment.dto.RegisterCommentRequest;
 import com.dayz.comment.service.CommentService;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.dto.CustomPageRequest;
 import com.dayz.common.jwt.JwtAuthentication;
 import java.util.Map;
 import javax.validation.Valid;
@@ -22,16 +24,24 @@ public class CommentController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse createComment(
         @AuthenticationPrincipal JwtAuthentication authentication,
-        @Valid @RequestBody RegisterCommentRequest request) {
+        @Valid @RequestBody RegisterCommentRequest request
+    ) {
         return ApiResponse
             .ok(Map.of("commentId", commentService.save(authentication.getId(), request)));
     }
 
     @GetMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse getAllComments(
+    public ApiResponse<ReadCommentsResponse> readComments(
         @PathVariable("postId") Long postId,
-        @Valid CustomPageRequest pageRequest) {
-        return ApiResponse.ok(commentService.getComments(pageRequest, postId));
+        @Valid ReadCommentsRequest request
+    ) {
+        ReadCommentsResponse response =
+            commentService.getComments(
+                request.convertToPageRequest(Comment.class),
+                postId
+            );
+
+        return ApiResponse.<ReadCommentsResponse>ok(response);
     }
 
 }

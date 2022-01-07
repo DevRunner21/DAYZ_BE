@@ -20,8 +20,8 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadCategoriesResponse> readAllCategories() {
-        ReadCategoriesResponse response = categoryService.getAllCategoryList();
+    public ApiResponse<ReadCategoriesResponse> readCategories() {
+        ReadCategoriesResponse response = categoryService.getCategories();
 
         return ApiResponse.<ReadCategoriesResponse>ok(response);
     }

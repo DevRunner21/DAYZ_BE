@@ -19,7 +19,7 @@ public class CategoryService {
     private final CategoryConverter categoryConverter;
 
     @Transactional(readOnly = true)
-    public ReadCategoriesResponse getAllCategoryList() {
+    public ReadCategoriesResponse getCategories() {
         List<Category> allCategoryList = categoryRepository.findAll();
 
         return categoryConverter.convertToReadCategoriesResponse(allCategoryList);

@@ -2,9 +2,6 @@ package com.dayz.onedayclass.controller;
 
 import com.dayz.common.aop.LoginMember;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
-import com.dayz.common.dto.SearchPageRequest;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
@@ -31,13 +28,14 @@ public class OneDayClassController {
     public ApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
         @LoginMember Member member,
         @PathVariable("categoryId") Long categoryId,
-        CustomPageRequest pageRequest
+        ReadOneDayClassesByCategoryRequest request
     ) {
-        ReadOneDayClassesByCategoryResponse response = oneDayClassService.getOneDayClassesByCategory(
-            member,
-            categoryId,
-            pageRequest.convertToPageRequest(OneDayClass.class)
-        );
+        ReadOneDayClassesByCategoryResponse response = oneDayClassService
+            .getOneDayClassesByCategory(
+                member,
+                categoryId,
+                request.convertToPageRequest(OneDayClass.class)
+            );
 
         return ApiResponse.<ReadOneDayClassesByCategoryResponse>ok(response);
     }
@@ -45,7 +43,8 @@ public class OneDayClassController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{classId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadOneDayClassDetailResponse> readOneDayClassesDetail(
-        @PathVariable("classId") Long classId) {
+        @PathVariable("classId") Long classId
+    ) {
         ReadOneDayClassDetailResponse response = oneDayClassService.getOneDayClassDetail(classId);
 
         return ApiResponse.<ReadOneDayClassDetailResponse>ok(response);
@@ -58,7 +57,7 @@ public class OneDayClassController {
     )
     public ApiResponse<ReadOneDayClassesByAtelierResponse> readOneDayClassesByAtelier(
         @PathVariable("atelierId") Long atelierId,
-        @Valid SearchPageRequest request
+        @Valid ReadOneDayClassesByAtelierRequest request
     ) {
         ReadOneDayClassesByAtelierResponse response = oneDayClassService.getOneDayClassesByAtelier(
             atelierId,
@@ -72,11 +71,11 @@ public class OneDayClassController {
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<SearchOneDayClassResponse> searchOneDayClass(
         @LoginMember Member member,
-        @Valid SearchPageRequest request
+        @Valid SearchOneDayClassRequest request
     ) {
         SearchOneDayClassResponse response = oneDayClassService.searchOneDayClass(
             member,
-            request.getKeyWord(),
+            request.getKeyword(),
             request.convertToPageRequest(OneDayClass.class)
         );
 

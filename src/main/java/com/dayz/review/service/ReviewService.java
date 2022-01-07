@@ -1,7 +1,5 @@
 package com.dayz.review.service;
 
-import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
@@ -34,23 +32,22 @@ public class ReviewService {
 
     //사용자 마이페이지에서 후기 전체 조회 하는 로직
     public ReadReviewsByMemberResponse getReviewsByMember(
-        CustomPageRequest pageRequest,
+        PageRequest pageRequest,
         Long memberId
     ) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
         Page<ReadReviewsByMemberResponse.ReviewResult> reviewsResponses =
-            reviewRepository.findAllByMemberId(memberId, pageable)
+            reviewRepository.findAllByMemberId(memberId, pageRequest)
                 .map(reviewConverter::convertToReadReviewsByMemberReviewResult);
 
         return ReadReviewsByMemberResponse.of(reviewsResponses);
     }
 
     // 공방별 후기 목록 조회
-    public ReadReviewsByAtelierResponse getReviewsByAtelier(CustomPageRequest pageRequest, Long atelierId) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
+    public ReadReviewsByAtelierResponse getReviewsByAtelier(PageRequest pageRequest,
+        Long atelierId) {
 
         Page<ReadReviewsByAtelierResponse.ReviewResult> reviewsResponses =
-            reviewRepository.findAllByAtelierId(atelierId, pageable)
+            reviewRepository.findAllByAtelierId(atelierId, pageRequest)
                 .map(reviewConverter::convertToReadReviewsByAtelierReviewResult);
 
         return ReadReviewsByAtelierResponse.of(reviewsResponses);
@@ -58,13 +55,11 @@ public class ReviewService {
 
     //원데이 클래스별 후기 조회
     public ReadReviewsByOneDayClassResponse getReviewsByOneDayClass(
-        CustomPageRequest pageRequest,
+        PageRequest pageRequest,
         Long oneDayClassId
     ) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Review.class);
-
         Page<ReadReviewsByOneDayClassResponse.ReviewResult> reviewsResponses =
-            reviewRepository.findAllByOneDayClassId(oneDayClassId, pageable)
+            reviewRepository.findAllByOneDayClassId(oneDayClassId, pageRequest)
                 .map(reviewConverter::convertReadReviewsByOneDayClassReviewResult);
 
         return ReadReviewsByOneDayClassResponse.of(reviewsResponses);

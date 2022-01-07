@@ -6,8 +6,6 @@ import com.dayz.atelier.dto.*;
 import com.dayz.atelier.service.AtelierService;
 import com.dayz.common.aop.LoginMember;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.SearchPageRequest;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.member.domain.Member;
 import javax.validation.Valid;
@@ -27,7 +25,8 @@ public class AtelierController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadAtelierDetailResponse> readAtelierDetail(
-        @PathVariable("atelierId") Long atelierId) {
+        @PathVariable("atelierId") Long atelierId
+    ) {
         ReadAtelierDetailResponse response = atelierService.getAtelierDetail(atelierId);
 
         return ApiResponse.<ReadAtelierDetailResponse>ok(response);
@@ -36,7 +35,8 @@ public class AtelierController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadAteliersResponse> readAteliers(
         @AuthenticationPrincipal JwtAuthentication authentication,
-        @Valid CustomPageRequest pageRequest) {
+        @Valid ReadAteliersRequest pageRequest
+    ) {
 
         ReadAteliersResponse response = atelierService.getAteliers(
             authentication.getId(),
@@ -58,12 +58,13 @@ public class AtelierController {
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<SearchAtelierResponse> searchOneDayClass(
+    public ApiResponse<SearchAtelierResponse> searchAteliers(
         @LoginMember Member member,
-        @Valid SearchPageRequest request) {
+        @Valid SearchAtelierRequest request
+    ) {
         SearchAtelierResponse response = atelierService.searchAtelier(
             member,
-            request.getKeyWord(),
+            request.getKeyword(),
             request.convertToPageRequest(Atelier.class)
         );
 

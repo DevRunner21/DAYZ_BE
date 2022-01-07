@@ -1,6 +1,5 @@
 package com.dayz.reservation.service;
 
-import com.dayz.common.dto.CustomPageRequest;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
@@ -45,27 +44,23 @@ public class ReservationService {
     }
 
     public ReadReservationsByMemberResponse getReservationsByMember(
-        CustomPageRequest pageRequest,
+        PageRequest pageRequest,
         Long memberId
     ) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Reservation.class);
-
         Page<ReadReservationsByMemberResponse.ReservationResult> responsePage =
-            reservationRepository.findReservationsByMember(memberId, pageable)
-            .map(reservationConverter::convertReadReservationsByMemberReservationResult);
+            reservationRepository.findReservationsByMember(memberId, pageRequest)
+                .map(reservationConverter::convertReadReservationsByMemberReservationResult);
 
         return ReadReservationsByMemberResponse.of(responsePage);
     }
 
     public ReadReservationsByAtelierResponse getReservationsByAtelier(
-        CustomPageRequest pageRequest,
+        PageRequest pageRequest,
         Long atelierId
     ) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Reservation.class);
-
         Page<ReadReservationsByAtelierResponse.ReservationResult> responsePage =
-            reservationRepository.findReservationsByAtelier(atelierId, pageable)
-            .map(reservationConverter::convertReadReservationsByAtelierReservationResult);
+            reservationRepository.findReservationsByAtelier(atelierId, pageRequest)
+                .map(reservationConverter::convertReadReservationsByAtelierReservationResult);
 
         return ReadReservationsByAtelierResponse.of(responsePage);
     }
