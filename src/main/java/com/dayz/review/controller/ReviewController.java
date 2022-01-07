@@ -1,6 +1,6 @@
 package com.dayz.review.controller;
 
-import com.dayz.common.aop.LoginMember;
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.review.domain.Review;
@@ -21,7 +21,7 @@ public class ReviewController {
 
     @GetMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadReviewsByMemberResponse> readReviewsByMember(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         ReadReviewsByMemberRequest request
     ) {
         ReadReviewsByMemberResponse response
@@ -68,7 +68,7 @@ public class ReviewController {
 
     @PostMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Map<String, Long>> saveReviews(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         @Valid @RequestBody RegisterReviewRequest registerReviewRequest
     ) {
         return ApiResponse

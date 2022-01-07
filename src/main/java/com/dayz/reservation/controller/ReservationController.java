@@ -1,6 +1,6 @@
 package com.dayz.reservation.controller;
 
-import com.dayz.common.aop.LoginMember;
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.reservation.domain.Reservation;
@@ -21,7 +21,7 @@ public class ReservationController {
 
     @PostMapping(value = "/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<Map<String, Long>> registerReservation(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         @Valid @RequestBody RegisterReservationRequest registerReservationRequest
     ) {
         return ApiResponse.ok(Map.of("reservationId",
@@ -30,7 +30,7 @@ public class ReservationController {
 
     @GetMapping(value = "/reservations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadReservationsByMemberResponse> readReservationsByMember(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         @Valid ReadReservationsByMemberRequest request
     ) {
         ReadReservationsByMemberResponse myReservation = reservationService.getReservationsByMember(

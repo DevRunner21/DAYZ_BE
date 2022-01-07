@@ -4,15 +4,13 @@ package com.dayz.atelier.controller;
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.dto.*;
 import com.dayz.atelier.service.AtelierService;
-import com.dayz.common.aop.LoginMember;
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.member.domain.Member;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -34,12 +32,11 @@ public class AtelierController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadAteliersResponse> readAteliers(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @Valid ReadAteliersRequest pageRequest
     ) {
-
         ReadAteliersResponse response = atelierService.getAteliers(
-            authentication.getId(),
+            memberId,
             pageRequest.convertToPageRequest(Atelier.class)
         );
 
@@ -49,17 +46,17 @@ public class AtelierController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<SaveAtelierResponse> registerAtelier(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterAtelierRequest request) {
         SaveAtelierResponse response = atelierService
-            .saveAtelierInfo(authentication.getId(), request);
+            .saveAtelierInfo(memberId, request);
 
         return ApiResponse.<SaveAtelierResponse>ok(response);
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<SearchAtelierResponse> searchAteliers(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         @Valid SearchAtelierRequest request
     ) {
         SearchAtelierResponse response = atelierService.searchAtelier(

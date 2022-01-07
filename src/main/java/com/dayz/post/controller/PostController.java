@@ -1,7 +1,7 @@
 package com.dayz.post.controller;
 
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.post.domain.Post;
 import com.dayz.post.dto.*;
 import com.dayz.post.service.PostService;
@@ -9,7 +9,6 @@ import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -28,11 +27,11 @@ public class PostController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadPostDetailsResponse> readPostDetails(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @Valid ReadPostDetailsRequest request
     ) {
         ReadPostDetailsResponse response = postService.getPostDetails(
-            authentication.getId(),
+            memberId,
             request.convertToPageRequest(Post.class)
         );
 

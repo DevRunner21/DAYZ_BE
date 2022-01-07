@@ -5,13 +5,12 @@ import com.dayz.comment.dto.ReadCommentsRequest;
 import com.dayz.comment.dto.ReadCommentsResponse;
 import com.dayz.comment.dto.RegisterCommentRequest;
 import com.dayz.comment.service.CommentService;
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.jwt.JwtAuthentication;
 import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,11 +22,11 @@ public class CommentController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse createComment(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterCommentRequest request
     ) {
         return ApiResponse
-            .ok(Map.of("commentId", commentService.save(authentication.getId(), request)));
+            .ok(Map.of("commentId", commentService.save(memberId, request)));
     }
 
     @GetMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)

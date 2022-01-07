@@ -1,8 +1,7 @@
 package com.dayz.onedayclass.controller;
 
-import com.dayz.common.aop.LoginMember;
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.dto.*;
@@ -12,7 +11,6 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,7 +24,7 @@ public class OneDayClassController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/categories/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         @PathVariable("categoryId") Long categoryId,
         ReadOneDayClassesByCategoryRequest request
     ) {
@@ -70,7 +68,7 @@ public class OneDayClassController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<SearchOneDayClassResponse> searchOneDayClass(
-        @LoginMember Member member,
+        @LoginMemberId Member member,
         @Valid SearchOneDayClassRequest request
     ) {
         SearchOneDayClassResponse response = oneDayClassService.searchOneDayClass(
@@ -84,10 +82,10 @@ public class OneDayClassController {
 
     @GetMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadPopularOneDayClassesResponse> readPopularOneDayClasses(
-        @AuthenticationPrincipal JwtAuthentication authentication
+        @LoginMemberId Long memberId
     ) {
         ReadPopularOneDayClassesResponse response = oneDayClassService
-            .getPopularOneDayClasses(authentication.getId());
+            .getPopularOneDayClasses(memberId);
 
         return ApiResponse.<ReadPopularOneDayClassesResponse>ok(response);
     }

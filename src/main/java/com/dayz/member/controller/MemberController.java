@@ -1,5 +1,6 @@
 package com.dayz.member.controller;
 
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.member.dto.*;
@@ -31,13 +32,13 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/address", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<EditMemberAddressResponse> editMemberAddress(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @RequestBody @Valid EditMemberAddressRequest request
     ) {
         EditMemberAddressResponse editedAddress = memberService.updateMemberAddress(
             request.getCityId(),
             request.getRegionId(),
-            authentication.getId()
+            memberId
         );
 
         return ApiResponse.<EditMemberAddressResponse>ok(editedAddress);
@@ -46,11 +47,11 @@ public class MemberController {
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<EditMemberProfileResponse> editMemberProfile(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @RequestBody @Valid EditMemberProfileRequest request
     ) {
         EditMemberProfileResponse response = memberService.updateMemberProfile(
-            authentication.getId(),
+            memberId,
             request.getName(),
             request.getImageUrl()
         );

@@ -1,7 +1,7 @@
 package com.dayz.follow.controller;
 
+import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.follow.domain.Follow;
 import com.dayz.follow.dto.FollowRequest;
 import com.dayz.follow.dto.ReadFollowsRequest;
@@ -11,7 +11,6 @@ import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -23,11 +22,11 @@ public class FollowController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadFollowsResponse> readFollows(
-        @AuthenticationPrincipal JwtAuthentication authentication,
+        @LoginMemberId Long memberId,
         @Valid ReadFollowsRequest request
     ) {
         ReadFollowsResponse response = followService.getFollows(
-            authentication.getId(),
+            memberId,
             request.convertToPageRequest(Follow.class)
         );
 
