@@ -46,7 +46,7 @@ public class OneDayClassService {
     private final OneDayClassConverter oneDayClassConverter;
 
     public ReadOneDayClassesByCategoryResponse getOneDayClassesByCategory(
-        Member member,
+        Long memberId,
         Long categoryId,
         Pageable pageRequest
     ) {
@@ -54,7 +54,7 @@ public class OneDayClassService {
         Category foundCategory = categoryRepository.findById(categoryId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
 
-        Member foundMember = memberRepository.findById(member.getId())
+        Member foundMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
         Page<ReadOneDayClassesByCategoryResponse.OneDayClassResult> readOneDayClassesByCategoryResultPage =

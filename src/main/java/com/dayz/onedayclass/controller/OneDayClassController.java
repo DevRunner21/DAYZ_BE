@@ -28,13 +28,13 @@ public class OneDayClassController {
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/categories/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
-        @LoginMemberId Member member,
+        @LoginMemberId Long memberId,
         @PathVariable("categoryId") Long categoryId,
         ReadOneDayClassesByCategoryRequest request
     ) {
-        ReadOneDayClassesByCategoryResponse response = oneDayClassService
-            .getOneDayClassesByCategory(
-                member,
+        ReadOneDayClassesByCategoryResponse response =
+            oneDayClassService.getOneDayClassesByCategory(
+                memberId,
                 categoryId,
                 request.convertToPageRequest(OneDayClass.class)
             );
