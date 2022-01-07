@@ -5,7 +5,7 @@ import static com.dayz.member.domain.QAddress.address;
 import static com.dayz.member.domain.QMember.member;
 
 import com.dayz.atelier.dto.QSearchAtelierResponse_AtelierResult;
-import com.dayz.atelier.dto.SearchAtelierResponse;
+import com.dayz.atelier.dto.response.SearchAtelierResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;

@@ -1,7 +1,7 @@
 package com.dayz.follow.converter;
 
 import com.dayz.follow.domain.Follow;
-import com.dayz.follow.dto.ReadFollowsResponse;
+import com.dayz.follow.dto.response.ReadFollowsResponse;
 import org.springframework.stereotype.Component;
 
 @Component

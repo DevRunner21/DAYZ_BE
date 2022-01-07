@@ -6,7 +6,7 @@ import com.dayz.onedayclass.converter.OneDayClassTimeConverter;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassRepository;
 import com.dayz.onedayclass.domain.OneDayClassTimeRepository;
-import com.dayz.onedayclass.dto.ReadOneDayClassTimesByDateResponse;
+import com.dayz.onedayclass.dto.response.ReadOneDayClassTimesByDateResponse;
 import com.dayz.onedayclass.dto.query.CurrentOneDayClassTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

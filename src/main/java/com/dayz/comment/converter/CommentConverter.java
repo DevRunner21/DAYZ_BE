@@ -1,7 +1,7 @@
 package com.dayz.comment.converter;
 
 import com.dayz.comment.domain.Comment;
-import com.dayz.comment.dto.ReadCommentsResponse;
+import com.dayz.comment.dto.response.ReadCommentsResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.post.domain.Post;
 import org.springframework.stereotype.Component;

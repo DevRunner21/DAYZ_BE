@@ -3,7 +3,7 @@ package com.dayz.category.service;
 import com.dayz.category.converter.CategoryConverter;
 import com.dayz.category.domain.Category;
 import com.dayz.category.domain.CategoryRepository;
-import com.dayz.category.dto.ReadCategoriesResponse;
+import com.dayz.category.dto.response.ReadCategoriesResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

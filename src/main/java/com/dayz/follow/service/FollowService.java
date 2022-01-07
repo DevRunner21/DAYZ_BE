@@ -7,7 +7,7 @@ import com.dayz.common.exception.BusinessException;
 import com.dayz.follow.converter.FollowConverter;
 import com.dayz.follow.domain.Follow;
 import com.dayz.follow.domain.FollowRepository;
-import com.dayz.follow.dto.ReadFollowsResponse;
+import com.dayz.follow.dto.response.ReadFollowsResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.member.domain.MemberRepository;
 import lombok.RequiredArgsConstructor;

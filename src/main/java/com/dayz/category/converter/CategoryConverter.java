@@ -1,7 +1,7 @@
 package com.dayz.category.converter;
 
 import com.dayz.category.domain.Category;
-import com.dayz.category.dto.ReadCategoriesResponse;
+import com.dayz.category.dto.response.ReadCategoriesResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.springframework.stereotype.Component;

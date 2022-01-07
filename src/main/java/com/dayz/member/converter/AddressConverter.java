@@ -1,9 +1,9 @@
 package com.dayz.member.converter;
 
 import com.dayz.member.domain.Address;
-import com.dayz.member.dto.EditMemberAddressResponse;
-import com.dayz.member.dto.ReadAddressesResponse;
-import com.dayz.member.dto.ReadAddressesResponse.AddressByCityResult;
+import com.dayz.member.dto.response.EditMemberAddressResponse;
+import com.dayz.member.dto.response.ReadAddressesResponse;
+import com.dayz.member.dto.response.ReadAddressesResponse.AddressByCityResult;
 import java.util.List;
 import java.util.concurrent.ConcurrentMap;
 import java.util.stream.Collectors;

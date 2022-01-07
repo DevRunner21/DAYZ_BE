@@ -1,7 +1,7 @@
 package com.dayz.member.controller;
 
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.member.dto.ReadAddressesResponse;
+import com.dayz.member.dto.response.ReadAddressesResponse;
 import com.dayz.member.service.AddressService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

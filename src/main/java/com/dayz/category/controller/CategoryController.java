@@ -1,6 +1,6 @@
 package com.dayz.category.controller;
 
-import com.dayz.category.dto.ReadCategoriesResponse;
+import com.dayz.category.dto.response.ReadCategoriesResponse;
 import com.dayz.category.service.CategoryService;
 import com.dayz.common.dto.ApiResponse;
 import lombok.RequiredArgsConstructor;

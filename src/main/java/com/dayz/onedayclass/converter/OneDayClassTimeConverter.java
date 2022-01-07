@@ -2,7 +2,7 @@ package com.dayz.onedayclass.converter;
 
 import com.dayz.common.enums.TimeStatus;
 import com.dayz.common.util.TimeUtil;
-import com.dayz.onedayclass.dto.ReadOneDayClassTimesByDateResponse;
+import com.dayz.onedayclass.dto.response.ReadOneDayClassTimesByDateResponse;
 import com.dayz.onedayclass.dto.query.CurrentOneDayClassTime;
 import java.time.LocalDateTime;
 import java.util.List;

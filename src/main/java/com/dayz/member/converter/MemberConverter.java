@@ -2,8 +2,8 @@ package com.dayz.member.converter;
 
 import com.dayz.member.domain.Address;
 import com.dayz.member.domain.Member;
-import com.dayz.member.dto.EditMemberProfileResponse;
-import com.dayz.member.dto.ReadMemberInfoResponse;
+import com.dayz.member.dto.response.EditMemberProfileResponse;
+import com.dayz.member.dto.response.ReadMemberInfoResponse;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;

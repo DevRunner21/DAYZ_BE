@@ -1,7 +1,7 @@
 package com.dayz.onedayclass.controller;
 
 import com.dayz.common.dto.ApiResponse;
-import com.dayz.onedayclass.dto.ReadOneDayClassTimesByDateResponse;
+import com.dayz.onedayclass.dto.response.ReadOneDayClassTimesByDateResponse;
 import com.dayz.onedayclass.service.OneDayClassTimeService;
 import javax.validation.constraints.Pattern;
 import lombok.RequiredArgsConstructor;

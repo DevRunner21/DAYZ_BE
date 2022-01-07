@@ -1,9 +1,9 @@
 package com.dayz.atelier.converter;
 
 import com.dayz.atelier.domain.Atelier;
-import com.dayz.atelier.dto.ReadAtelierDetailResponse;
-import com.dayz.atelier.dto.ReadAteliersResponse;
-import com.dayz.atelier.dto.SaveAtelierResponse;
+import com.dayz.atelier.dto.response.ReadAtelierDetailResponse;
+import com.dayz.atelier.dto.response.ReadAteliersResponse;
+import com.dayz.atelier.dto.response.SaveAtelierResponse;
 import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.Address;
 import lombok.RequiredArgsConstructor;

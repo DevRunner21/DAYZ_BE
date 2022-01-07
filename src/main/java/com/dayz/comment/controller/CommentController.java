@@ -1,9 +1,9 @@
 package com.dayz.comment.controller;
 
 import com.dayz.comment.domain.Comment;
-import com.dayz.comment.dto.ReadCommentsRequest;
-import com.dayz.comment.dto.ReadCommentsResponse;
-import com.dayz.comment.dto.RegisterCommentRequest;
+import com.dayz.comment.dto.request.ReadCommentsRequest;
+import com.dayz.comment.dto.response.ReadCommentsResponse;
+import com.dayz.comment.dto.request.RegisterCommentRequest;
 import com.dayz.comment.service.CommentService;
 import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.ApiResponse;
