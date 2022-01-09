@@ -1,6 +1,5 @@
 package com.dayz.onedayclass.controller;
 
-import com.dayz.atelier.dto.response.ReadAtelierDetailResponse;
 import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.onedayclass.domain.OneDayClass;
