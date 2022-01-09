@@ -9,7 +9,7 @@ import com.dayz.post.dto.response.ReadPostDetailResponse;
 import com.dayz.post.dto.response.ReadPostDetailsResponse;
 import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
 import com.dayz.post.dto.request.RegisterPostRequest;
-import com.dayz.post.dto.request.RegisterPostRequest.PostImagesRequest;
+import com.dayz.post.dto.request.RegisterPostRequest.PostImageParam;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -35,9 +35,9 @@ public class PostConverter {
         return post;
     }
 
-    public PostImage convertToPostImage(PostImagesRequest postImagesRequest) {
-        return PostImage.of(imageUrlUtil.extractFileName(postImagesRequest.getImageUrl()),
-            postImagesRequest.getSequence());
+    public PostImage convertToPostImage(PostImageParam postImageParam) {
+        return PostImage.of(imageUrlUtil.extractFileName(postImageParam.getImageUrl()),
+            postImageParam.getSequence());
     }
 
     public ReadPostDetailResponse convertToReadPostDetailResponse(Post post) {
