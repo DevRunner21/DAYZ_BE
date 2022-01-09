@@ -12,6 +12,8 @@ import com.dayz.onedayclass.domain.OneDayClassImage;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.CurriculumParam;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.OneDayClassImageParam;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.OneDayClassTimeParam;
 import com.dayz.onedayclass.dto.response.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -155,7 +157,7 @@ public class OneDayClassConverter {
     }
 
     public OneDayClassImage convertToOneDayClassImage(
-        RegisterOneDayClassRequest.OneDayClassImageRequest imageRequest) {
+        OneDayClassImageParam imageRequest) {
         return OneDayClassImage.of(
             imageUrlUtil.extractFileName(imageRequest.getImageUrl()),
             imageRequest.getSequence()
@@ -171,12 +173,12 @@ public class OneDayClassConverter {
     }
 
     public OneDayClassTime convertToOneDayClassTime(
-        RegisterOneDayClassRequest.OneDayClassTimeRequest oneDayClassTimeRequest) {
+        OneDayClassTimeParam oneDayClassTimeParam) {
         return OneDayClassTime.of(
             LocalDate
-                .parse(oneDayClassTimeRequest.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-            timeUtil.timeStringToSecond(oneDayClassTimeRequest.getStartTime()),
-            timeUtil.timeStringToSecond(oneDayClassTimeRequest.getEndTime()),
+                .parse(oneDayClassTimeParam.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+            timeUtil.timeStringToSecond(oneDayClassTimeParam.getStartTime()),
+            timeUtil.timeStringToSecond(oneDayClassTimeParam.getEndTime()),
             TimeStatus.PROCESS
         );
     }
