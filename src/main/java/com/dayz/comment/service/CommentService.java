@@ -45,9 +45,6 @@ public class CommentService {
     @Transactional
     public Long save(Long memberId, RegisterCommentRequest request) {
 
-        Atelier foundAtelier = atelierRepository.findById(request.getAtelierId())
-            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
-
         Post foundPost = postRepository.findById(request.getPostId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
 
