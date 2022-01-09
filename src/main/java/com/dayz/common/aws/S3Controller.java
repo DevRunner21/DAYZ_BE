@@ -1,6 +1,6 @@
 package com.dayz.common.aws;
 
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import java.io.IOException;
 import java.util.Map;
 import lombok.RequiredArgsConstructor;
@@ -20,10 +20,10 @@ public class S3Controller {
     private final AwsS3Service awsS3Service;
 
     @PostMapping("/api/v1/images")
-    public ApiResponse createBoards(@RequestParam(value = "files", required = false) MultipartFile multipartFile) throws IOException {
+    public CommonApiResponse createBoards(@RequestParam(value = "files", required = false) MultipartFile multipartFile) throws IOException {
         String uploadedUrl = awsS3Service.upload(multipartFile);
 
-        return ApiResponse.ok(Map.of("imageUrl",uploadedUrl));
+        return CommonApiResponse.ok(Map.of("imageUrl",uploadedUrl));
     }
 
 }

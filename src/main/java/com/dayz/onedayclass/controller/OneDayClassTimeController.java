@@ -1,6 +1,6 @@
 package com.dayz.onedayclass.controller;
 
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.onedayclass.dto.response.ReadOneDayClassTimesByDateResponse;
 import com.dayz.onedayclass.service.OneDayClassTimeService;
 import javax.validation.constraints.Pattern;
@@ -17,7 +17,7 @@ public class OneDayClassTimeController {
     private final OneDayClassTimeService oneDayClassTimeService;
 
     @GetMapping("/classes/{classId}")
-    public ApiResponse<ReadOneDayClassTimesByDateResponse> readOneDayClassTimesByDate(
+    public CommonApiResponse<ReadOneDayClassTimesByDateResponse> readOneDayClassTimesByDate(
         @RequestParam("date")
         @Pattern(
             regexp = "^(19[0-9]{2}|2[0-9]{3})-(0[1-9]|1[012])-([123]0|[012][1-9]|31)$",
@@ -28,7 +28,7 @@ public class OneDayClassTimeController {
         ReadOneDayClassTimesByDateResponse oneDayClassTimesByDateResponse
             = oneDayClassTimeService.getOneDayClassTimesByDate(classId, date);
 
-        return ApiResponse.ok(oneDayClassTimesByDateResponse);
+        return CommonApiResponse.ok(oneDayClassTimesByDateResponse);
     }
 
 }

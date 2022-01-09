@@ -1,6 +1,6 @@
 package com.dayz.member.controller;
 
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.member.dto.response.ReadAddressesResponse;
 import com.dayz.member.service.AddressService;
 import lombok.RequiredArgsConstructor;
@@ -20,8 +20,8 @@ public class AddressController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAddressesResponse> readAddresses() {
-        return ApiResponse.<ReadAddressesResponse>ok(addressService.getAllAddresses());
+    public CommonApiResponse<ReadAddressesResponse> readAddresses() {
+        return CommonApiResponse.<ReadAddressesResponse>ok(addressService.getAllAddresses());
     }
 
 }

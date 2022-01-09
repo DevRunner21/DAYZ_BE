@@ -1,7 +1,7 @@
 package com.dayz.review.controller;
 
 import com.dayz.common.aop.LoginMemberId;
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.review.domain.Review;
 import com.dayz.review.dto.request.ReadReviewsByAtelierRequest;
 import com.dayz.review.dto.request.ReadReviewsByMemberRequest;
@@ -22,7 +22,7 @@ public class ReviewController {
     private final ReviewService reviewService;
 
     @GetMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadReviewsByMemberResponse> readReviewsByMember(
+    public CommonApiResponse<ReadReviewsByMemberResponse> readReviewsByMember(
         @LoginMemberId Long memberId,
         ReadReviewsByMemberRequest request
     ) {
@@ -31,11 +31,11 @@ public class ReviewController {
             memberId
         );
 
-        return ApiResponse.<ReadReviewsByMemberResponse>ok(response);
+        return CommonApiResponse.<ReadReviewsByMemberResponse>ok(response);
     }
 
     @GetMapping(value = "/reviews/ateliers/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadReviewsByAtelierResponse> readReviewsByAtelier(
+    public CommonApiResponse<ReadReviewsByAtelierResponse> readReviewsByAtelier(
         @PathVariable("atelierId") Long atelierId,
         ReadReviewsByAtelierRequest request
     ) {
@@ -45,11 +45,11 @@ public class ReviewController {
                 atelierId
             );
 
-        return ApiResponse.<ReadReviewsByAtelierResponse>ok(response);
+        return CommonApiResponse.<ReadReviewsByAtelierResponse>ok(response);
     }
 
     @GetMapping(value = "/reviews/classes/{classId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadReviewsByOneDayClassResponse> readReviewsByOneDayClass(
+    public CommonApiResponse<ReadReviewsByOneDayClassResponse> readReviewsByOneDayClass(
         @PathVariable("classId") Long classId,
         @Valid ReadReviewsByOneDayClassRequest request
     ) {
@@ -59,26 +59,26 @@ public class ReviewController {
                 classId
             );
 
-        return ApiResponse.<ReadReviewsByOneDayClassResponse>ok(response);
+        return CommonApiResponse.<ReadReviewsByOneDayClassResponse>ok(response);
     }
 
     @GetMapping(value = "/reviews/score/ateliers/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAvgScoreResponse> readAvgScore(
+    public CommonApiResponse<ReadAvgScoreResponse> readAvgScore(
         @PathVariable("atelierId") Long atelierId
     ) {
         double avgScore = reviewService.getAvgScore(atelierId);
 
-        return ApiResponse.ok(ReadAvgScoreResponse.of(avgScore));
+        return CommonApiResponse.ok(ReadAvgScoreResponse.of(avgScore));
     }
 
     @PostMapping(value = "/reviews", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<RegisterReviewResponse> registerReview(
+    public CommonApiResponse<RegisterReviewResponse> registerReview(
         @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterReviewRequest registerReviewRequest
     ) {
         Long registeredReviewId = reviewService.saveReview(registerReviewRequest, memberId);
 
-        return ApiResponse
+        return CommonApiResponse
             .<RegisterReviewResponse>ok(RegisterReviewResponse.of(registeredReviewId));
     }
 

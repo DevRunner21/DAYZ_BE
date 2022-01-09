@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class ApiResponse<T> {
+public class CommonApiResponse<T> {
 
     @ApiModelProperty(value = "통신성공여부", dataType = "boolean", example = "true")
     private boolean success;
@@ -19,26 +19,26 @@ public class ApiResponse<T> {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
     private LocalDateTime serverDatetime;
 
-    protected ApiResponse(boolean success, T data) {
+    protected CommonApiResponse(boolean success, T data) {
         this.success = success;
         this.data = data;
         this.serverDatetime = LocalDateTime.now();
     }
 
-    public static <T> ApiResponse<T> ok(T response) {
-        return new ApiResponse<>(true, response);
+    public static <T> CommonApiResponse<T> ok(T response) {
+        return new CommonApiResponse<>(true, response);
     }
 
-    public static ApiResponse error(ErrorInfo errorInfo) {
-        return new ApiResponse<>(false, ApiError.of(errorInfo));
+    public static CommonApiResponse error(ErrorInfo errorInfo) {
+        return new CommonApiResponse<>(false, ApiError.of(errorInfo));
     }
 
-    public static ApiResponse error(String code, Object messages) {
-        return new ApiResponse<>(false, ApiError.of(code, messages));
+    public static CommonApiResponse error(String code, Object messages) {
+        return new CommonApiResponse<>(false, ApiError.of(code, messages));
     }
 
-    public static ApiResponse noContent(){
-        return new ApiResponse<>(true,null);
+    public static CommonApiResponse noContent(){
+        return new CommonApiResponse<>(true,null);
     }
 
 }

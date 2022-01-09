@@ -11,8 +11,7 @@ import com.dayz.atelier.dto.response.SaveAtelierResponse;
 import com.dayz.atelier.dto.response.SearchAtelierResponse;
 import com.dayz.atelier.service.AtelierService;
 import com.dayz.common.aop.LoginMemberId;
-import com.dayz.common.dto.ApiResponse;
-import com.dayz.member.domain.Member;
+import com.dayz.common.dto.CommonApiResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -28,16 +27,16 @@ public class AtelierController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAtelierDetailResponse> readAtelierDetail(
+    public CommonApiResponse<ReadAtelierDetailResponse> readAtelierDetail(
         @PathVariable("atelierId") Long atelierId
     ) {
         ReadAtelierDetailResponse response = atelierService.getAtelierDetail(atelierId);
 
-        return ApiResponse.<ReadAtelierDetailResponse>ok(response);
+        return CommonApiResponse.<ReadAtelierDetailResponse>ok(response);
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAteliersResponse> readAteliers(
+    public CommonApiResponse<ReadAteliersResponse> readAteliers(
         @LoginMemberId Long memberId,
         @Valid ReadAteliersRequest pageRequest
     ) {
@@ -46,22 +45,22 @@ public class AtelierController {
             pageRequest.convertToPageRequest(Atelier.class)
         );
 
-        return ApiResponse.<ReadAteliersResponse>ok(response);
+        return CommonApiResponse.<ReadAteliersResponse>ok(response);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<SaveAtelierResponse> registerAtelier(
+    public CommonApiResponse<SaveAtelierResponse> registerAtelier(
         @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterAtelierRequest request) {
         SaveAtelierResponse response = atelierService
             .saveAtelierInfo(memberId, request);
 
-        return ApiResponse.<SaveAtelierResponse>ok(response);
+        return CommonApiResponse.<SaveAtelierResponse>ok(response);
     }
 
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<SearchAtelierResponse> searchAteliers(
+    public CommonApiResponse<SearchAtelierResponse> searchAteliers(
         @LoginMemberId Long memberId,
         @Valid SearchAtelierRequest request
     ) {
@@ -71,7 +70,7 @@ public class AtelierController {
             request.convertToPageRequest(Atelier.class)
         );
 
-        return ApiResponse.<SearchAtelierResponse>ok(response);
+        return CommonApiResponse.<SearchAtelierResponse>ok(response);
     }
 
 }

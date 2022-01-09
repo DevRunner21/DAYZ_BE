@@ -7,8 +7,7 @@ import com.dayz.comment.dto.request.RegisterCommentRequest;
 import com.dayz.comment.dto.response.RegisterCommentResponse;
 import com.dayz.comment.service.CommentService;
 import com.dayz.common.aop.LoginMemberId;
-import com.dayz.common.dto.ApiResponse;
-import java.util.Map;
+import com.dayz.common.dto.CommonApiResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
@@ -22,17 +21,17 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<RegisterCommentResponse> registerComment(
+    public CommonApiResponse<RegisterCommentResponse> registerComment(
         @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterCommentRequest request
     ) {
         Long registeredCommentId = commentService.save(memberId, request);
 
-        return ApiResponse.<RegisterCommentResponse>ok(RegisterCommentResponse.of(registeredCommentId));
+        return CommonApiResponse.<RegisterCommentResponse>ok(RegisterCommentResponse.of(registeredCommentId));
     }
 
     @GetMapping(value = "/posts/{postId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadCommentsResponse> readComments(
+    public CommonApiResponse<ReadCommentsResponse> readComments(
         @PathVariable("postId") Long postId,
         @Valid ReadCommentsRequest request
     ) {
@@ -42,7 +41,7 @@ public class CommentController {
                 postId
             );
 
-        return ApiResponse.<ReadCommentsResponse>ok(response);
+        return CommonApiResponse.<ReadCommentsResponse>ok(response);
     }
 
 }

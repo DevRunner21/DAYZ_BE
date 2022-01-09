@@ -1,8 +1,7 @@
 package com.dayz.onedayclass.controller;
 
 import com.dayz.common.aop.LoginMemberId;
-import com.dayz.common.dto.ApiResponse;
-import com.dayz.member.domain.Member;
+import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.dto.request.ReadOneDayClassesByAtelierRequest;
 import com.dayz.onedayclass.dto.request.ReadOneDayClassesByCategoryRequest;
@@ -10,7 +9,6 @@ import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
 import com.dayz.onedayclass.dto.request.SearchOneDayClassRequest;
 import com.dayz.onedayclass.dto.response.*;
 import com.dayz.onedayclass.service.OneDayClassService;
-import java.util.Map;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -26,7 +24,7 @@ public class OneDayClassController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/categories/{categoryId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
+    public CommonApiResponse<ReadOneDayClassesByCategoryResponse> readOneDayClassesByCategory(
         @LoginMemberId Long memberId,
         @PathVariable("categoryId") Long categoryId,
         ReadOneDayClassesByCategoryRequest request
@@ -38,17 +36,17 @@ public class OneDayClassController {
                 request.convertToPageRequest(OneDayClass.class)
             );
 
-        return ApiResponse.<ReadOneDayClassesByCategoryResponse>ok(response);
+        return CommonApiResponse.<ReadOneDayClassesByCategoryResponse>ok(response);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{classId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadOneDayClassDetailResponse> readOneDayClassesDetail(
+    public CommonApiResponse<ReadOneDayClassDetailResponse> readOneDayClassesDetail(
         @PathVariable("classId") Long classId
     ) {
         ReadOneDayClassDetailResponse response = oneDayClassService.getOneDayClassDetail(classId);
 
-        return ApiResponse.<ReadOneDayClassDetailResponse>ok(response);
+        return CommonApiResponse.<ReadOneDayClassDetailResponse>ok(response);
     }
 
     @ResponseStatus(HttpStatus.OK)
@@ -56,7 +54,7 @@ public class OneDayClassController {
         value = "/ateliers/{atelierId}",
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ApiResponse<ReadOneDayClassesByAtelierResponse> readOneDayClassesByAtelier(
+    public CommonApiResponse<ReadOneDayClassesByAtelierResponse> readOneDayClassesByAtelier(
         @PathVariable("atelierId") Long atelierId,
         @Valid ReadOneDayClassesByAtelierRequest request
     ) {
@@ -65,12 +63,12 @@ public class OneDayClassController {
             request.convertToPageRequest(OneDayClass.class)
         );
 
-        return ApiResponse.<ReadOneDayClassesByAtelierResponse>ok(response);
+        return CommonApiResponse.<ReadOneDayClassesByAtelierResponse>ok(response);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<SearchOneDayClassResponse> searchOneDayClass(
+    public CommonApiResponse<SearchOneDayClassResponse> searchOneDayClass(
         @LoginMemberId Long memberId,
         @Valid SearchOneDayClassRequest request
     ) {
@@ -80,29 +78,29 @@ public class OneDayClassController {
             request.convertToPageRequest(OneDayClass.class)
         );
 
-        return ApiResponse.<SearchOneDayClassResponse>ok(response);
+        return CommonApiResponse.<SearchOneDayClassResponse>ok(response);
     }
 
     @GetMapping(value = "/popular", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadPopularOneDayClassesResponse> readPopularOneDayClasses(
+    public CommonApiResponse<ReadPopularOneDayClassesResponse> readPopularOneDayClasses(
         @LoginMemberId Long memberId
     ) {
         ReadPopularOneDayClassesResponse response = oneDayClassService
             .getPopularOneDayClasses(memberId);
 
-        return ApiResponse.<ReadPopularOneDayClassesResponse>ok(response);
+        return CommonApiResponse.<ReadPopularOneDayClassesResponse>ok(response);
     }
 
     @PostMapping(
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public ApiResponse<RegisterOneDayClassResponse> registerOneDayClass(
+    public CommonApiResponse<RegisterOneDayClassResponse> registerOneDayClass(
         @Valid @RequestBody RegisterOneDayClassRequest request
     ) {
         Long registeredOneDayClassId = oneDayClassService.createOneDayClass(request);
 
-        return ApiResponse.ok(RegisterOneDayClassResponse.of(registeredOneDayClassId));
+        return CommonApiResponse.ok(RegisterOneDayClassResponse.of(registeredOneDayClassId));
     }
 
 }

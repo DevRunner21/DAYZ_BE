@@ -1,7 +1,7 @@
 package com.dayz.member.controller;
 
 import com.dayz.common.aop.LoginMemberId;
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.member.dto.request.EditMemberAddressRequest;
 import com.dayz.member.dto.request.EditMemberProfileRequest;
@@ -25,17 +25,17 @@ public class MemberController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(path = "/info", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadMemberInfoResponse> readMemberDetail(
+    public CommonApiResponse<ReadMemberInfoResponse> readMemberDetail(
         @AuthenticationPrincipal JwtAuthentication authentication
     ) {
         ReadMemberInfoResponse memberInfo = memberService
             .getMemberInfo(authentication.getId(), authentication.getToken());
-        return ApiResponse.<ReadMemberInfoResponse>ok(memberInfo);
+        return CommonApiResponse.<ReadMemberInfoResponse>ok(memberInfo);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PostMapping(path = "/address", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<EditMemberAddressResponse> editMemberAddress(
+    public CommonApiResponse<EditMemberAddressResponse> editMemberAddress(
         @LoginMemberId Long memberId,
         @RequestBody @Valid EditMemberAddressRequest request
     ) {
@@ -45,12 +45,12 @@ public class MemberController {
             memberId
         );
 
-        return ApiResponse.<EditMemberAddressResponse>ok(editedAddress);
+        return CommonApiResponse.<EditMemberAddressResponse>ok(editedAddress);
     }
 
     @ResponseStatus(HttpStatus.OK)
     @PatchMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<EditMemberProfileResponse> editMemberProfile(
+    public CommonApiResponse<EditMemberProfileResponse> editMemberProfile(
         @LoginMemberId Long memberId,
         @RequestBody @Valid EditMemberProfileRequest request
     ) {
@@ -60,7 +60,7 @@ public class MemberController {
             request.getImageUrl()
         );
 
-        return ApiResponse.<EditMemberProfileResponse>ok(response);
+        return CommonApiResponse.<EditMemberProfileResponse>ok(response);
     }
 
 }

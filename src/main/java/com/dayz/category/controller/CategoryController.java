@@ -2,7 +2,7 @@ package com.dayz.category.controller;
 
 import com.dayz.category.dto.response.ReadCategoriesResponse;
 import com.dayz.category.service.CategoryService;
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -20,10 +20,10 @@ public class CategoryController {
 
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadCategoriesResponse> readCategories() {
+    public CommonApiResponse<ReadCategoriesResponse> readCategories() {
         ReadCategoriesResponse response = categoryService.getCategories();
 
-        return ApiResponse.<ReadCategoriesResponse>ok(response);
+        return CommonApiResponse.<ReadCategoriesResponse>ok(response);
     }
 
 }
