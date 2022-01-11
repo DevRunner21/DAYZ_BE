@@ -15,8 +15,10 @@ public enum ErrorInfo {
     POST_NOT_FOUND("ERR005", "존재하지 않는 게시글입니다."),
     CATEGORY_NOT_FOUND("ERR006", "존재하지 않는 카테고리입니다."),
     DUPLICATED_ATELIER_ID("ERR007", "이미 공방이 존재합니다."),
-    RESERVATION_NOT_FOUND ("ERR101", "존재하지 않는 예약입니다."),
-    ONE_DAY_CLASS_TIME_NOT_FOUND ("ERR102", "존재하지 원데이 클래스 시간입니다.");
+    RESERVATION_NOT_FOUND ("ERR008", "존재하지 않는 예약입니다."),
+    ONE_DAY_CLASS_TIME_NOT_FOUND ("ERR009", "존재하지 원데이 클래스 시간입니다."),
+    TIMEOVER_RESERVATION_DATETIME("ERR010", "예약 가능한 시간이 지났습니다."),
+    OVER_POSSIBLE_RESERVATION_PEOPLE_NUMBER("ERR011", "예약 가능 인원을 초과했습니다.");
 
     ErrorInfo(String code, String message) {
         this.code = code;

@@ -3,6 +3,7 @@ package com.dayz.reservation.service;
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.common.enums.ErrorInfo;
+import com.dayz.common.enums.TimeStatus;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
 import com.dayz.member.domain.MemberRepository;
@@ -11,9 +12,9 @@ import com.dayz.onedayclass.domain.OneDayClassTimeRepository;
 import com.dayz.reservation.converter.ReservationConverter;
 import com.dayz.reservation.domain.Reservation;
 import com.dayz.reservation.domain.ReservationRepository;
+import com.dayz.reservation.dto.request.RegisterReservationRequest;
 import com.dayz.reservation.dto.response.ReadReservationsByAtelierResponse;
 import com.dayz.reservation.dto.response.ReadReservationsByMemberResponse;
-import com.dayz.reservation.dto.request.RegisterReservationRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -43,9 +44,19 @@ public class ReservationService {
         Member foundMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        OneDayClassTime oneDayClassTime = oneDayClassTimeRepository.findById(
-            registerReservationRequest.getClassTimeId())
-            .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_TIME_NOT_FOUND));
+        OneDayClassTime oneDayClassTime = oneDayClassTimeRepository
+            .findOneDayClassTimeByIdAndStatus(
+                registerReservationRequest.getClassTimeId(),
+                TimeStatus.PROCESS
+            ).orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_TIME_NOT_FOUND));
+
+        // 이미 예약 기간이 지났다면? -> 실패
+        if (!oneDayClassTime.validateReservationPossibleDateTime()) {
+            throw new BusinessException(ErrorInfo.OVER_POSSIBLE_RESERVATION_PEOPLE_NUMBER);
+        }
+
+        // 최대 예약인원이 다 찼다면? -> 실패
+        checkReservationPossiblePeopleNumber(registerReservationRequest.getPeopleNumber(), oneDayClassTime);
 
         Reservation reservation = reservationConverter.convertToReservation(
             registerReservationRequest, foundMember, oneDayClassTime);
@@ -87,6 +98,16 @@ public class ReservationService {
             .orElseThrow(() -> new BusinessException(ErrorInfo.RESERVATION_NOT_FOUND));
 
         foundReservation.changeUseFlag(false);
+    }
+
+    private void checkReservationPossiblePeopleNumber(int requestPeopleNumber, OneDayClassTime oneDayClassTime) {
+        int currentReservationPeopleNumber =
+            reservationRepository.findSumReservationPeopleNumberByOneDayClassTime(oneDayClassTime.getId());
+
+        // 예약 가능한 인원을 초과한 경우
+        if (!oneDayClassTime.validateReservationPossiblePeopleNumber(requestPeopleNumber, currentReservationPeopleNumber)) {
+            throw new BusinessException(ErrorInfo.OVER_POSSIBLE_RESERVATION_PEOPLE_NUMBER);
+        }
     }
 
 }

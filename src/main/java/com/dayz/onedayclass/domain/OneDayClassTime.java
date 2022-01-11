@@ -1,8 +1,13 @@
 package com.dayz.onedayclass.domain;
 
 import com.dayz.common.entity.BaseEntity;
+import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.enums.TimeStatus;
+import com.dayz.common.exception.BusinessException;
+import java.time.Duration;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -89,6 +94,31 @@ public class OneDayClassTime extends BaseEntity {
 
     public void changeOneDayClass(OneDayClass oneDayClass) {
         this.setOneDayClass(oneDayClass);
+    }
+
+    public boolean validateReservationPossibleDateTime() {
+        long secondOfOverDateTime = Duration.between(
+            LocalDateTime.of(classDate, LocalTime.ofSecondOfDay(startTime)),
+            LocalDateTime.now()
+        ).toSeconds();
+
+        // 예약 가능 날짜, 시간이 지난경우
+        if (secondOfOverDateTime > 0) {
+            return false;
+        }
+        return true;
+    }
+
+    public boolean validateReservationPossiblePeopleNumber(int requestPeopleNumber, int currentReservationPeopleNumber) {
+        int possibleReservationPeopleNumber =
+            oneDayClass.getMaxPeopleNumber() - currentReservationPeopleNumber;
+
+        // 예약 가능한 인원을 초과한 경우
+        if (requestPeopleNumber > possibleReservationPeopleNumber) {
+            return false;
+        }
+
+        return true;
     }
 
 }

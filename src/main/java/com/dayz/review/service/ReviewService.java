@@ -88,7 +88,7 @@ public class ReviewService {
         Member foundMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        Reservation foundReservation = reservationRepository.findByreservationId(registerReviewRequest.getReservationId())
+        Reservation foundReservation = reservationRepository.findByReservationId(registerReviewRequest.getReservationId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.RESERVATION_NOT_FOUND));
 
         OneDayClass oneDayClass = foundReservation.getOneDayClassTime().getOneDayClass();
