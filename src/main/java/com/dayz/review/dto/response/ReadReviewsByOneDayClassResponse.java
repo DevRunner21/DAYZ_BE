@@ -2,6 +2,8 @@ package com.dayz.review.dto.response;
 
 import com.dayz.common.dto.CustomPageResponse;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.AccessLevel;
@@ -24,31 +26,39 @@ public class ReadReviewsByOneDayClassResponse extends
         return new ReadReviewsByOneDayClassResponse(tPage);
     }
 
+    @ApiModel(value = "ReadReviewsByOneDayClassResponse.ReviewResult")
     @Getter
     @Setter(AccessLevel.PRIVATE)
     @NoArgsConstructor
     public static class ReviewResult {
 
+        @ApiModelProperty(value = "리뷰 ID", dataType = "number", example = "1")
         private Long id;
 
+        @ApiModelProperty(value = "리뷰 내용", dataType = "string", example = "너무 즐거운 시간이었습니다. 다음에 또 오고싶어요!!")
         private String content;
 
+        @ApiModelProperty(value = "평점", dataType = "number", example = "4")
         private int score;
 
+        @ApiModelProperty(value = "작성일자", dataType = "string", example = "2022-01-09")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
         private LocalDateTime createdAt;
 
-        private OneDayClassMemberResult member;
+        @ApiModelProperty(value = "리뷰 작성자 정보", dataType = "object")
+        private ReadReviewsByOneDayClassResponse.ReviewResult.MemberResult member;
 
-        private List<OneDayClassReviewImageResult> reviewImage;
+        @ApiModelProperty(value = "리뷰 이미지 목록", dataType = "array")
+        private List<ReadReviewsByOneDayClassResponse.ReviewResult.ReviewImageResult> reviewImages;
+
 
         public static ReviewResult of(
             Long id,
             String content,
             int score,
             LocalDateTime createdAt,
-            OneDayClassMemberResult member,
-            List<OneDayClassReviewImageResult> reviewImages
+            MemberResult member,
+            List<ReviewImageResult> reviewImages
         ) {
             ReviewResult reviewResponse = new ReviewResult();
             reviewResponse.setId(id);
@@ -56,27 +66,31 @@ public class ReadReviewsByOneDayClassResponse extends
             reviewResponse.setScore(score);
             reviewResponse.setCreatedAt(createdAt);
             reviewResponse.setMember(member);
-            reviewResponse.setReviewImage(reviewImages);
+            reviewResponse.setReviewImages(reviewImages);
 
             return reviewResponse;
         }
 
+        @ApiModel(value = "ReadReviewsByOneDayClassResponse.ReviewResult.MemberResult")
         @Getter
         @Setter(AccessLevel.PRIVATE)
-        public static class OneDayClassMemberResult {
+        public static class MemberResult {
 
+            @ApiModelProperty(value = "작성자 ID", dataType = "number", example = "1")
             private Long id;
 
+            @ApiModelProperty(value = "작성자 이름", dataType = "string", example = "김지훈")
             private String username;
 
+            @ApiModelProperty(value = "작성자 썸네일 이미지 URL", dataType = "string", example = "https://dayz-s3.s3.ap-northeast-2.amazonaws.com/dochi.jpg")
             private String profileImageUrl;
 
-            public static OneDayClassMemberResult of(
+            public static MemberResult of(
                 Long id,
                 String username,
                 String profileImageUrl
             ) {
-                OneDayClassMemberResult memberResult = new OneDayClassMemberResult();
+                MemberResult memberResult = new MemberResult();
                 memberResult.setId(id);
                 memberResult.setUsername(username);
                 memberResult.setProfileImageUrl(profileImageUrl);
@@ -86,19 +100,22 @@ public class ReadReviewsByOneDayClassResponse extends
 
         }
 
+        @ApiModel(value = "ReadReviewsByOneDayClassResponse.ReviewResult.ReviewImageResult")
         @Getter
         @Setter(AccessLevel.PRIVATE)
-        public static class OneDayClassReviewImageResult {
+        public static class ReviewImageResult {
 
+            @ApiModelProperty(value = "리뷰 이미지 URL", dataType = "string", example = "https://dayz-s3.s3.ap-northeast-2.amazonaws.com/dojaki_1_1.jpeg")
             private String imageUrl;
 
+            @ApiModelProperty(value = "리뷰 이미지 순번", dataType = "integer", example = "1")
             private int sequence;
 
-            public static OneDayClassReviewImageResult of(
+            public static ReviewImageResult of(
                 String imageUrl,
                 int sequence
             ) {
-                OneDayClassReviewImageResult reviewImageResult = new OneDayClassReviewImageResult();
+                ReviewImageResult reviewImageResult = new ReviewImageResult();
                 reviewImageResult.setImageUrl(imageUrl);
                 reviewImageResult.setSequence(sequence);
                 return reviewImageResult;

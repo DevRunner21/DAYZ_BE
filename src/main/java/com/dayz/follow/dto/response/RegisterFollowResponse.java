@@ -1,5 +1,6 @@
 package com.dayz.follow.dto.response;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,6 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegisterFollowResponse {
 
+    @ApiModelProperty(value = "팔로우 결과", dataType = "boolean", example = "true")
     private boolean followFlag;
 
     public static RegisterFollowResponse of (boolean followFlag) {

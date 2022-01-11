@@ -1,6 +1,6 @@
 package com.dayz.common.oauth2;
 
-import com.dayz.common.dto.ApiResponse;
+import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.common.jwt.Jwt;
 import com.dayz.member.domain.Member;
 import com.dayz.member.service.MemberService;
@@ -117,7 +117,7 @@ public class OAuth2AuthenticationSuccessHandler extends SavedRequestAwareAuthent
     private String generateLoginSuccessJson(Member member) throws JsonProcessingException {
         String token = generateToken(member);
         ObjectMapper mapper = new ObjectMapper();
-        ApiResponse<Map<String, String>> response = ApiResponse.ok(Map.of("token", token));
+        CommonApiResponse<Map<String, String>> response = CommonApiResponse.ok(Map.of("token", token));
         String responseString = mapper.writeValueAsString(response);
         log.debug("Jwt({}) created for oauth2 login user {}", token, member.getUsername());
         return responseString;

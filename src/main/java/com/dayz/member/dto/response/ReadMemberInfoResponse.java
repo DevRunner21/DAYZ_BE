@@ -1,5 +1,6 @@
 package com.dayz.member.dto.response;
 
+import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,24 +12,34 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ReadMemberInfoResponse {
 
+    @ApiModelProperty(value = "사용자 ID", dataType = "number", example = "1")
     private Long id;
 
+    @ApiModelProperty(value = "사용자 토큰", dataType = "string", example = "asdasjdhsadlaskdlasmdian")
     private String token;
 
+    @ApiModelProperty(value = "사용자 이름", dataType = "string", example = "김지훈")
     private String name;
 
+    @ApiModelProperty(value = "사용자 썸네일 이미지 URL", dataType = "string", example = "https://dayz-s3.s3.ap-northeast-2.amazonaws.com/dochi.jpg")
     private String profileImageUrl;
 
+    @ApiModelProperty(value = "시/군/구 ID", dataType = "number", example = "1")
     private Long cityId;
 
+    @ApiModelProperty(value = "시/군/구 이름", dataType = "string", example = "강남구")
     private String cityName;
 
+    @ApiModelProperty(value = "동 ID", dataType = "number", example = "1")
     private Long regionId;
 
+    @ApiModelProperty(value = "동 이름", dataType = "string", example = "자곡동")
     private String regionName;
 
+    @ApiModelProperty(value = "권한", dataType = "string", example = "ROLE_USER")
     private String auth;
 
+    @ApiModelProperty(value = "소유 공방 ID", dataType = "number", example = "1")
     private Long atelierId;
 
     public static ReadMemberInfoResponse of(Long id, String token, String name, String profileImageUrl, Long cityId, String cityName, Long regionId,

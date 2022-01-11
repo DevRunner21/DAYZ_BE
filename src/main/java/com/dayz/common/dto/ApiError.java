@@ -1,13 +1,16 @@
 package com.dayz.common.dto;
 
 import com.dayz.common.enums.ErrorInfo;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
 @Getter
 public class ApiError {
 
+    @ApiModelProperty(value = "에러코드", dataType = "string", example = "ERR001")
     private String code;
 
+    @ApiModelProperty(value = "에러메시지", dataType = "string", example = "에러메시지")
     private Object message;
 
     private ApiError(String code, Object message) {
