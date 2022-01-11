@@ -2,11 +2,14 @@ package com.dayz.reservation.dto.request;
 
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Getter
-@NoArgsConstructor
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegisterReservationRequest {
 
     @NotNull(message = "classTimeId null이 될 수 없습니다.")

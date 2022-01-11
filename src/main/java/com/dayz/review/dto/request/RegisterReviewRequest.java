@@ -14,8 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
-@Setter(AccessLevel.PRIVATE)
-@NoArgsConstructor
+@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegisterReviewRequest {
 
     @NotNull(message = "리뷰 아이디 값이 null일 수 없습니다.")
@@ -43,7 +43,8 @@ public class RegisterReviewRequest {
     }
 
     @Getter
-    @Setter(AccessLevel.PRIVATE)
+    @Setter
+    @NoArgsConstructor(access = AccessLevel.PROTECTED)
     public static class SaveReviewImageRequest {
 
         @NotBlank(message = "파일 이름이 null이 될 수 없습니다.")

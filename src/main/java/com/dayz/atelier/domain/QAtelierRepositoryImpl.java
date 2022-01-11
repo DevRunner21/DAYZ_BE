@@ -4,7 +4,7 @@ import static com.dayz.atelier.domain.QAtelier.atelier;
 import static com.dayz.member.domain.QAddress.address;
 import static com.dayz.member.domain.QMember.member;
 
-import com.dayz.atelier.dto.QSearchAtelierResponse_AtelierResult;
+import com.dayz.atelier.dto.response.QSearchAtelierResponse_AtelierResult;
 import com.dayz.atelier.dto.response.SearchAtelierResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;

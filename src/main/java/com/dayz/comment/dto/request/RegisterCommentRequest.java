@@ -1,11 +1,14 @@
 package com.dayz.comment.dto.request;
 
 import javax.validation.constraints.NotNull;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class RegisterCommentRequest {
 
     @NotNull(message = "postId must not be null.")
