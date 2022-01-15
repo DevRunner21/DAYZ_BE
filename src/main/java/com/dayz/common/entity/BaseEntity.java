@@ -21,7 +21,7 @@ public class BaseEntity {
     @LastModifiedDate
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
-
+    @Column(name = "use_flag", nullable = false)
     private boolean useFlag = true;
 
     public void changeUseFlag(boolean useFlag) {

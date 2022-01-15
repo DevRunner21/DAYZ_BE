@@ -1,33 +1,25 @@
 package com.dayz.atelier.controller;
 
-
-import com.dayz.atelier.dto.ReadAtelierDetailResponse;
 import com.dayz.atelier.domain.Atelier;
-import com.dayz.atelier.dto.ReadAteliersResult;
-import com.dayz.atelier.dto.SaveAtelierRequest;
-import com.dayz.atelier.dto.SaveAtelierResponse;
+import com.dayz.atelier.dto.request.ReadAteliersRequest;
+import com.dayz.atelier.dto.request.RegisterAtelierRequest;
+import com.dayz.atelier.dto.request.SearchAtelierRequest;
+import com.dayz.atelier.dto.response.ReadAtelierDetailResponse;
+import com.dayz.atelier.dto.response.ReadAteliersResponse;
+import com.dayz.atelier.dto.response.SaveAtelierResponse;
+import com.dayz.atelier.dto.response.SearchAtelierResponse;
 import com.dayz.atelier.service.AtelierService;
-import com.dayz.common.aop.LoginMember;
-import com.dayz.common.dto.ApiResponse;
-import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
-import com.dayz.common.dto.SearchPageRequest;
-import com.dayz.common.jwt.JwtAuthentication;
-import com.dayz.member.domain.Member;
+import com.dayz.common.aop.LoginMemberId;
+import com.dayz.common.dto.CommonApiResponse;
+import io.swagger.annotations.*;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
+@Api(tags = "AtelierController V1", value = "공방 CRUD API를 제공하는 Controller입니다.")
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/ateliers")
@@ -35,46 +27,84 @@ public class AtelierController {
 
     private final AtelierService atelierService;
 
+    @ApiOperation(
+        value = "공방 상세정보 조회",
+        notes = "atelierId에 해당하는 공방 상세정보를 조회합니다.",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "atelierId", value = "공방 ID", required = true, dataType = "Long", paramType = "path", defaultValue = ""),
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, response = ReadAtelierDetailResponse.class, message = "성공")
+    })
     @ResponseStatus(HttpStatus.OK)
     @GetMapping(value = "/{atelierId}", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<ReadAtelierDetailResponse> getAtelierDetail(@PathVariable("atelierId") Long atelierId) {
-
+    public CommonApiResponse<ReadAtelierDetailResponse> readAtelierDetail(
+        @PathVariable("atelierId") Long atelierId
+    ) {
         ReadAtelierDetailResponse response = atelierService.getAtelierDetail(atelierId);
 
-        return ApiResponse.<ReadAtelierDetailResponse>ok(response);
+        return CommonApiResponse.<ReadAtelierDetailResponse>ok(response);
     }
 
+    @ApiOperation(
+        value = "공방 목록 조회",
+        notes = "공방 목록을 조회합니다.",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses({
+        @ApiResponse(code = 200, response = ReadAteliersResponse.class, message = "성공")
+    })
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<CustomPageResponse<ReadAteliersResult>> getAteliers(
-            @AuthenticationPrincipal JwtAuthentication authentication,
-            CustomPageRequest pageRequest) {
-        CustomPageResponse<ReadAteliersResult> response = atelierService.getAteliers(authentication.getId(), pageRequest.convertToPageRequest(Atelier.class));
-
-        return ApiResponse.<CustomPageResponse<ReadAteliersResult>>ok(response);
-    }
-
-    @ResponseStatus(HttpStatus.OK)
-    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse<SaveAtelierResponse> saveAtelier(
-            @AuthenticationPrincipal JwtAuthentication authentication,
-            @Valid @RequestBody SaveAtelierRequest request) {
-
-        SaveAtelierResponse response = atelierService.savaAtelierInfo(authentication.getId(), request);
-
-        return ApiResponse.<SaveAtelierResponse>ok(response);
-    }
-
-    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ApiResponse searchOneDayClass(
-            @LoginMember Member member,
-        @Valid SearchPageRequest request) {
-        CustomPageResponse response = atelierService.searchOneDayClass(
-                member,
-                request.getKeyWord(),
-                request.convertToPageRequest(Atelier.class)
+    public CommonApiResponse<ReadAteliersResponse> readAteliers(
+        @ApiIgnore @LoginMemberId Long memberId,
+        @Valid ReadAteliersRequest pageRequest
+    ) {
+        ReadAteliersResponse response = atelierService.getAteliers(
+            memberId,
+            pageRequest.convertToPageRequest(Atelier.class)
         );
 
-        return ApiResponse.ok(response);
+        return CommonApiResponse.<ReadAteliersResponse>ok(response);
+    }
+
+    @ApiOperation(
+        value = "공방 등록",
+        notes = "새 공방을 등록합니다.",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses({
+        @ApiResponse(code = 200, response = SaveAtelierResponse.class, message = "성공")
+    })
+    @ResponseStatus(HttpStatus.OK)
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public CommonApiResponse<SaveAtelierResponse> registerAtelier(
+        @ApiIgnore @LoginMemberId Long memberId,
+        @Valid @RequestBody RegisterAtelierRequest request) {
+        SaveAtelierResponse response = atelierService
+            .saveAtelierInfo(memberId, request);
+
+        return CommonApiResponse.<SaveAtelierResponse>ok(response);
+    }
+
+    @ApiOperation(
+        value = "공방 검색",
+        notes = "공방을 검색합니다.",
+        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping(value = "/search", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ApiResponses({
+        @ApiResponse(code = 200, response = SearchAtelierResponse.class, message = "성공")
+    })
+    public CommonApiResponse<SearchAtelierResponse> searchAteliers(
+        @ApiIgnore @LoginMemberId Long memberId,
+        @Valid SearchAtelierRequest request
+    ) {
+        SearchAtelierResponse response = atelierService.searchAtelier(
+            memberId,
+            request.getKeyword(),
+            request.convertToPageRequest(Atelier.class)
+        );
+
+        return CommonApiResponse.<SearchAtelierResponse>ok(response);
     }
 
 }

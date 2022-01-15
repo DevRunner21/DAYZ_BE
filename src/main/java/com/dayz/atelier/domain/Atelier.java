@@ -3,28 +3,24 @@ package com.dayz.atelier.domain;
 import com.dayz.common.entity.BaseEntity;
 import com.dayz.member.domain.Address;
 import com.dayz.member.domain.Member;
-import javax.persistence.Column;
-import javax.persistence.Embedded;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.util.Assert;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "atelier")
+@Where(clause = "use_flag = true")
+@Table(
+    name = "atelier",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_business_number", columnNames = "business_number")
+    }
+)
 public class Atelier extends BaseEntity {
 
     @Id
@@ -36,7 +32,7 @@ public class Atelier extends BaseEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "fk_atelier_to_address"))
     private Address address;
 
     @Column(name = "address_detail", nullable = false)
@@ -55,11 +51,12 @@ public class Atelier extends BaseEntity {
     private String businessNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_atelier_to_member"))
     private Member member;
 
-    public static Atelier of(Long id, String name, Address address, String detail, String intro, WorkTime workTime, String businessNumber,
-            Member member) {
+    public static Atelier of(Long id, String name, Address address, String detail, String intro,
+        WorkTime workTime, String businessNumber,
+        Member member) {
         Atelier atelier = new Atelier();
         atelier.setId(id);
         atelier.setName(name);
@@ -74,7 +71,8 @@ public class Atelier extends BaseEntity {
         return atelier;
     }
 
-    public static Atelier of(String name, Address address, String detail, String intro, WorkTime workTime, String businessNumber, Member member) {
+    public static Atelier of(String name, Address address, String detail, String intro,
+        WorkTime workTime, String businessNumber, Member member) {
         Atelier atelier = new Atelier();
         atelier.setName(name);
         atelier.changeAddress(address);
@@ -90,7 +88,8 @@ public class Atelier extends BaseEntity {
 
     // TODO : CallNumber가 새로 추가됨에 따라 생성자를 하나로 통일 할 필요가 있을 듯
     // TODO : 정적 생성자는 이렇게 Entity가 비뀜에따라 추가로 생성자를 만들어야함. 이런점에서는 Builder가 확실히 편한듯
-    public static Atelier of(String name, Address address, String detail, String intro, String callNumber, WorkTime workTime, String businessNumber, Member member) {
+    public static Atelier of(String name, Address address, String detail, String intro,
+        String callNumber, WorkTime workTime, String businessNumber, Member member) {
         Atelier atelier = new Atelier();
         atelier.setName(name);
         atelier.changeAddress(address);

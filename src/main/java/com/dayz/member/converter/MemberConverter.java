@@ -2,8 +2,8 @@ package com.dayz.member.converter;
 
 import com.dayz.member.domain.Address;
 import com.dayz.member.domain.Member;
-import com.dayz.member.dto.EditMemberProfileResponse;
-import com.dayz.member.dto.ReadMemberInfoResponse;
+import com.dayz.member.dto.response.EditMemberProfileResponse;
+import com.dayz.member.dto.response.ReadMemberInfoResponse;
 import java.util.Objects;
 import org.springframework.stereotype.Component;
 import org.springframework.util.Assert;
@@ -20,16 +20,16 @@ public class MemberConverter {
 
         // TODO : 리펙토링 필요
         return ReadMemberInfoResponse.of(
-                member.getId(),
-                token,
-                member.getUsername(),
-                member.getProfileImageUrl(),
-                Objects.nonNull(address) ? address.getCityId() : null,
-                Objects.nonNull(address) ? address.getCityName() : null,
-                Objects.nonNull(address) ? address.getRegionId() : null,
-                Objects.nonNull(address) ? address.getRegionName() : null,
-                member.getPermission().getName(),
-                atelierId
+            member.getId(),
+            token,
+            member.getUsername(),
+            member.getProfileImageUrl(),
+            Objects.nonNull(address) ? address.getCityId() : null,
+            Objects.nonNull(address) ? address.getCityName() : null,
+            Objects.nonNull(address) ? address.getRegionId() : null,
+            Objects.nonNull(address) ? address.getRegionName() : null,
+            member.getPermission().getName(),
+            atelierId
         );
 
     }

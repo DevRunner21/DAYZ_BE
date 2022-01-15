@@ -1,14 +1,16 @@
 package com.dayz.onedayclass.domain;
 
+import com.dayz.common.enums.TimeStatus;
 import com.dayz.onedayclass.dto.query.CurrentOneDayClassTime;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface OneDayClassTimeRepository extends JpaRepository<OneDayClassTime, Long> {
 
-    final String SQL_findOneDayClassTimesByDate =
+    String SQL_findOneDayClassTimesByDate =
             "SELECT ot.onedayclass_time_id AS 'classTimeId' , o.max_people_number AS 'maxPeopleNumber', IFNULL(tmp.current_people_number,0) AS 'currentPeopleNumber', ot.start_time AS 'startTime', ot.end_time AS 'endTime', ot.status AS 'status'"
             + "FROM onedayclass_time ot "
             + " INNER JOIN onedayclass o "
@@ -30,4 +32,6 @@ public interface OneDayClassTimeRepository extends JpaRepository<OneDayClassTime
             nativeQuery = true)
     List<CurrentOneDayClassTime> findOneDayClassTimesByDate(@Param("classId") Long classId ,@Param("date") String date);
 
+    @Query("select ot from OneDayClassTime ot where ot.id = :classTimeId and ot.status = :status")
+    Optional<OneDayClassTime> findOneDayClassTimeByIdAndStatus(@Param("classTimeId") Long classId, @Param("status") TimeStatus status);
 }

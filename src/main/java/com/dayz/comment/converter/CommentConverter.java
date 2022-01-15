@@ -1,8 +1,7 @@
 package com.dayz.comment.converter;
 
 import com.dayz.comment.domain.Comment;
-import com.dayz.comment.dto.ReadAllCommentsResult;
-import com.dayz.comment.dto.ReadAllCommentsResult.MemberResult;
+import com.dayz.comment.dto.response.ReadCommentsResponse;
 import com.dayz.member.domain.Member;
 import com.dayz.post.domain.Post;
 import org.springframework.stereotype.Component;
@@ -10,16 +9,23 @@ import org.springframework.stereotype.Component;
 @Component
 public class CommentConverter {
 
-    public Comment CommentCreateRequestToDto(String content, Post post, Member member) {
+    public Comment convertToComment(String content, Post post, Member member) {
         return Comment.of(content, post, member);
     }
 
-    public ReadAllCommentsResult convertReadAllCommentsResult(Comment comment) {
-        return ReadAllCommentsResult.of(comment.getContent(), comment.getCreatedAt(), convertReadAllCommentsMemberResult(comment.getMember()));
+    public ReadCommentsResponse.CommentResult convertToReadCommentsResult(Comment comment) {
+        return ReadCommentsResponse.CommentResult.of(
+            comment.getContent(),
+            comment.getCreatedAt(),
+            convertToReadCommentsMemberResult(comment.getMember())
+        );
     }
 
-    public ReadAllCommentsResult.MemberResult convertReadAllCommentsMemberResult(Member member) {
-        return ReadAllCommentsResult.MemberResult.of(member.getUsername(), member.getProfileImageUrl());
+    public ReadCommentsResponse.MemberResult convertToReadCommentsMemberResult(Member member) {
+        return ReadCommentsResponse.MemberResult.of(
+            member.getUsername(),
+            member.getProfileImageUrl()
+        );
     }
 
 }

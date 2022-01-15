@@ -3,7 +3,7 @@ package com.dayz.category.service;
 import com.dayz.category.converter.CategoryConverter;
 import com.dayz.category.domain.Category;
 import com.dayz.category.domain.CategoryRepository;
-import com.dayz.category.dto.ReadAllCategoriesResponse;
+import com.dayz.category.dto.response.ReadCategoriesResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -19,10 +19,10 @@ public class CategoryService {
     private final CategoryConverter categoryConverter;
 
     @Transactional(readOnly = true)
-    public ReadAllCategoriesResponse getAllCategoryList() {
+    public ReadCategoriesResponse getCategories() {
         List<Category> allCategoryList = categoryRepository.findAll();
 
-        return categoryConverter.convertToReadAllCategoryResponse(allCategoryList);
+        return categoryConverter.convertToReadCategoriesResponse(allCategoryList);
     }
 
 }

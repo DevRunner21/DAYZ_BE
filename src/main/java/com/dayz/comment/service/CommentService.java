@@ -3,12 +3,10 @@ package com.dayz.comment.service;
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.comment.converter.CommentConverter;
-import com.dayz.comment.domain.Comment;
 import com.dayz.comment.domain.CommentRepository;
-import com.dayz.comment.dto.CommentCreateRequest;
-import com.dayz.comment.dto.ReadAllCommentsResult;
-import com.dayz.common.dto.CustomPageRequest;
-import com.dayz.common.dto.CustomPageResponse;
+import com.dayz.comment.dto.response.ReadCommentsResponse;
+import com.dayz.comment.dto.response.ReadCommentsResponse.CommentResult;
+import com.dayz.comment.dto.request.RegisterCommentRequest;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
@@ -36,31 +34,27 @@ public class CommentService {
 
     private final CommentConverter commentConverter;
 
-    @Transactional
-    public Long save(Long memberId, CommentCreateRequest request) {
+    public ReadCommentsResponse getComments(PageRequest pageRequest, Long postId) {
+        Page<CommentResult> readCommentsResultPage =
+            commentRepository.findAllByPostId(postId, pageRequest)
+                .map(commentConverter::convertToReadCommentsResult);
 
-        Atelier foundAtelier = atelierRepository.findById(request.getAtelierId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
-
-        Post foundPost = postRepository.findById(request.getPostId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
-
-        Member foundMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
-
-        return commentRepository.save(commentConverter.CommentCreateRequestToDto(request.getContent(), foundPost, foundMember)).getId();
+        return ReadCommentsResponse.of(readCommentsResultPage);
     }
 
-    public CustomPageResponse getAllComments(CustomPageRequest pageRequest, Long postId) {
-        PageRequest pageable = pageRequest.convertToPageRequest(Comment.class);
+    @Transactional
+    public Long save(Long memberId, RegisterCommentRequest request) {
 
-        Page<Comment> allByPostId = commentRepository.findAllByPostId(postId, pageable);
+        Post foundPost = postRepository.findById(request.getPostId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
 
-        Page<ReadAllCommentsResult> readAllCommentsResponses =
-                commentRepository.findAllByPostId(postId, pageable)
-                        .map(comment -> commentConverter.convertReadAllCommentsResult(comment));
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        return CustomPageResponse.of(readAllCommentsResponses);
+        return commentRepository.save(
+            commentConverter
+                .convertToComment(request.getContent(), foundPost, foundMember))
+            .getId();
     }
 
 }

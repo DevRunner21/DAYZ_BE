@@ -3,26 +3,19 @@ package com.dayz.comment.domain;
 import com.dayz.common.entity.BaseEntity;
 import com.dayz.member.domain.Member;
 import com.dayz.post.domain.Post;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "comment")
 public class Comment extends BaseEntity {
 
@@ -35,11 +28,11 @@ public class Comment extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_comment_to_post"))
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY,  cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_comment_to_member"))
     private Member member;
 
     public static Comment of(Long id, String content, Post post, Member member) {

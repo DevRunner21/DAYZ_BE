@@ -66,6 +66,12 @@ dependencies {
     // test시에도 query dsl 모델을 사용하기 위해서는 해당 옵션을 추가 해줘야 한다.
     testCompileOnly("org.projectlombok:lombok")
     testAnnotationProcessor("org.projectlombok:lombok")
+
+    // https://mvnrepository.com/artifact/io.springfox/springfox-boot-starter
+//    implementation group: 'io.springfox', name: 'springfox-boot-starter', version: '3.0.0'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
+
 }
 
 def querydslDir = "$buildDir/generated/querydsl"

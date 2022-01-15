@@ -2,24 +2,18 @@ package com.dayz.onedayclass.domain;
 
 import com.dayz.common.entity.BaseEntity;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "onedayclass_iamge")
 public class OneDayClassImage extends BaseEntity {
 
@@ -35,13 +29,13 @@ public class OneDayClassImage extends BaseEntity {
     private int sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_image_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     public static OneDayClassImage of(Long id,
-            String imageFileName,
-            int sequence,
-            OneDayClass oneDayClass
+        String imageFileName,
+        int sequence,
+        OneDayClass oneDayClass
     ) {
         OneDayClassImage oneDayClassImage = new OneDayClassImage();
         oneDayClassImage.setId(id);
@@ -53,9 +47,9 @@ public class OneDayClassImage extends BaseEntity {
     }
 
     public static OneDayClassImage of(
-            String imageFileName,
-            int sequence,
-            OneDayClass oneDayClass
+        String imageFileName,
+        int sequence,
+        OneDayClass oneDayClass
     ) {
         OneDayClassImage oneDayClassImage = new OneDayClassImage();
         oneDayClassImage.setImageFileName(imageFileName);
@@ -66,8 +60,8 @@ public class OneDayClassImage extends BaseEntity {
     }
 
     public static OneDayClassImage of(
-            String imageFileName,
-            int sequence
+        String imageFileName,
+        int sequence
     ) {
         OneDayClassImage oneDayClassImage = new OneDayClassImage();
         oneDayClassImage.setImageFileName(imageFileName);

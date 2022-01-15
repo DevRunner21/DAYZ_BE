@@ -5,18 +5,13 @@ import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.review.domain.Review;
 import com.dayz.review.domain.ReviewImage;
-import com.dayz.review.dto.ReadAllAtelierReviewsResponse;
-import com.dayz.review.dto.ReadAllAtelierReviewsResponse.AtelierMemberResult;
-import com.dayz.review.dto.ReadAllAtelierReviewsResponse.AtelierOneDayClassResult;
-import com.dayz.review.dto.ReadAllAtelierReviewsResponse.AtelierReviewImageResult;
-import com.dayz.review.dto.ReadAllMyReviewsResponse;
-import com.dayz.review.dto.ReadAllMyReviewsResponse.MemberResult;
-import com.dayz.review.dto.ReadAllMyReviewsResponse.OneDayClassResult;
-import com.dayz.review.dto.ReadAllMyReviewsResponse.ReviewImageResult;
-import com.dayz.review.dto.ReadAllOneDayClassReviewsResponse;
-import com.dayz.review.dto.ReadAllOneDayClassReviewsResponse.OneDayClassMemberResult;
-import com.dayz.review.dto.ReadAllOneDayClassReviewsResponse.OneDayClassReviewImageResult;
-import com.dayz.review.dto.SaveReviewRequest;
+import com.dayz.review.dto.response.ReadReviewsByAtelierResponse;
+import com.dayz.review.dto.response.ReadReviewsByAtelierResponse.ReviewResult.OneDayClassResult;
+import com.dayz.review.dto.response.ReadReviewsByMemberResponse;
+import com.dayz.review.dto.response.ReadReviewsByOneDayClassResponse;
+import com.dayz.review.dto.request.RegisterReviewRequest;
+import com.dayz.review.dto.response.ReadReviewsByOneDayClassResponse.ReviewResult.MemberResult;
+import com.dayz.review.dto.response.ReadReviewsByOneDayClassResponse.ReviewResult.ReviewImageResult;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -28,59 +23,115 @@ public class ReviewConverter {
 
     private final ImageUrlUtil imageUrlUtil;
 
-    public ReadAllMyReviewsResponse convertReviewResponse(Review review) {
+    public ReadReviewsByMemberResponse.ReviewResult convertToReadReviewsByMemberReviewResult(Review review) {
 
-        MemberResult memberResult = MemberResult.of(review.getMember().getId(),
-            review.getMember().getUsername(), review.getMember().getProfileImageUrl());
+        ReadReviewsByMemberResponse.ReviewResult.MemberResult memberResult =
+            ReadReviewsByMemberResponse.ReviewResult.MemberResult.of(
+                review.getMember().getId(),
+                review.getMember().getUsername(),
+                review.getMember().getProfileImageUrl()
+            );
 
-        OneDayClassResult oneDayClassResult = OneDayClassResult.of(review.getOneDayClass().getId(),
-            review.getOneDayClass().getName());
+        ReadReviewsByMemberResponse.ReviewResult.OneDayClassResult oneDayClassResult =
+            ReadReviewsByMemberResponse.ReviewResult.OneDayClassResult.of(
+                review.getOneDayClass().getId(),
+                review.getOneDayClass().getName()
+            );
 
-        List<ReviewImageResult> reviewImageResult = review.getReviewImages().stream()
-            .map(reviewImage -> ReviewImageResult.of(imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
-                reviewImage.getSequence())).collect(Collectors.toList());
+        List<ReadReviewsByMemberResponse.ReviewResult.ReviewImageResult> reviewImageResult =
+            review.getReviewImages().stream()
+                .map(reviewImage -> ReadReviewsByMemberResponse.ReviewResult.ReviewImageResult.of(
+                    imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
+                    reviewImage.getSequence())
+                ).collect(Collectors.toList());
 
-        return ReadAllMyReviewsResponse.of(review.getId(), review.getContent(),
-            review.getScore(), review.getCreatedAt(), memberResult, oneDayClassResult,
-            reviewImageResult);
+        return ReadReviewsByMemberResponse.ReviewResult.of(
+            review.getId(),
+            review.getContent(),
+            review.getScore(),
+            review.getCreatedAt(),
+            memberResult,
+            oneDayClassResult,
+            reviewImageResult
+        );
     }
 
-    public ReadAllAtelierReviewsResponse convertReadAllAtelierReviewsResponse(Review review) {
+    public ReadReviewsByOneDayClassResponse.ReviewResult convertReadReviewsByOneDayClassReviewResult(
+        Review review
+    ) {
+        MemberResult memberResult =
+            MemberResult.of(
+                review.getMember().getId(),
+                review.getMember().getUsername(),
+                review.getMember().getProfileImageUrl()
+            );
 
-        AtelierMemberResult atelierMemberResult = AtelierMemberResult.of(review.getMember().getId(),
-            review.getMember().getUsername(), review.getMember().getProfileImageUrl());
+        List<ReviewImageResult> reviewImageResults =
+            review.getReviewImages().stream()
+                .map(reviewImage -> ReviewImageResult.of(
+                        imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
+                        reviewImage.getSequence()
+                    )
+                ).collect(Collectors.toList());
 
-        AtelierOneDayClassResult atelierOneDayClassResult = AtelierOneDayClassResult.of(review.getOneDayClass().getId(),
-            review.getOneDayClass().getName());
-
-        List<AtelierReviewImageResult> atelierReviewImageResult = review.getReviewImages().stream()
-            .map(reviewImage -> AtelierReviewImageResult.of(imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
-                reviewImage.getSequence())).collect(Collectors.toList());
-
-        return ReadAllAtelierReviewsResponse.of(review.getId(), review.getContent(),
-            review.getScore(), review.getCreatedAt(), atelierMemberResult, atelierOneDayClassResult,
-            atelierReviewImageResult);
+        return ReadReviewsByOneDayClassResponse.ReviewResult.of(
+            review.getId(),
+            review.getContent(),
+            review.getScore(),
+            review.getCreatedAt(),
+            memberResult,
+            reviewImageResults
+        );
     }
 
-    public ReadAllOneDayClassReviewsResponse convertReadAllOneDayClassReviewsResponse(Review review) {
+    public ReadReviewsByAtelierResponse.ReviewResult convertToReadReviewsByAtelierReviewResult(Review review) {
+        ReadReviewsByAtelierResponse.ReviewResult.MemberResult memberResult =
+            ReadReviewsByAtelierResponse.ReviewResult.MemberResult.of(
+                review.getMember().getId(),
+                review.getMember().getUsername(),
+                review.getMember().getProfileImageUrl()
+            );
 
-        OneDayClassMemberResult memberResult = OneDayClassMemberResult.of(review.getMember().getId(),
-            review.getMember().getUsername(), review.getMember().getProfileImageUrl());
+        OneDayClassResult oneDayClassResult =
+            OneDayClassResult.of(
+                review.getOneDayClass().getId(),
+                review.getOneDayClass().getName()
+            );
 
-        List<OneDayClassReviewImageResult> reviewImageResults = review.getReviewImages().stream()
-            .map(reviewImage -> OneDayClassReviewImageResult.of(imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
-                reviewImage.getSequence())).collect(Collectors.toList());
+        List<ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult> reviewImageResult =
+            review.getReviewImages().stream()
+                .map(reviewImage -> ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult.of(
+                        imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()), reviewImage.getSequence()
+                    )
+                ).collect(Collectors.toList());
 
-        return ReadAllOneDayClassReviewsResponse.of(review.getId(), review.getContent(),
-            review.getScore(), review.getCreatedAt(),memberResult,reviewImageResults);
+        return ReadReviewsByAtelierResponse.ReviewResult.of(
+            review.getId(),
+            review.getContent(),
+            review.getScore(),
+            review.getCreatedAt(),
+            memberResult,
+            oneDayClassResult,
+            reviewImageResult
+        );
     }
 
-    public Review convertReview(SaveReviewRequest saveReviewRequest, Member member,OneDayClass oneDayClass){
-        List<ReviewImage> reviewImages = saveReviewRequest.getImages().stream().map(
+    public Review convertToReview(
+        RegisterReviewRequest registerReviewRequest,
+        Member member,
+        OneDayClass oneDayClass
+    ) {
+        List<ReviewImage> reviewImages = registerReviewRequest.getImages().stream().map(
             imageRequest -> ReviewImage.of(imageUrlUtil.extractFileName(imageRequest.getImageUrl()),
                 imageRequest.getSequence())).collect(Collectors.toList());
 
-        return Review.of(saveReviewRequest.getContent(), saveReviewRequest.getScore(),member,oneDayClass,reviewImages);
+        return Review.of(
+            registerReviewRequest.getContent(),
+            registerReviewRequest.getScore(),
+            member,
+            oneDayClass,
+            reviewImages
+        );
     }
 
 }

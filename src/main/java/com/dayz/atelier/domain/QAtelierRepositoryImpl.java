@@ -3,11 +3,9 @@ package com.dayz.atelier.domain;
 import static com.dayz.atelier.domain.QAtelier.atelier;
 import static com.dayz.member.domain.QAddress.address;
 import static com.dayz.member.domain.QMember.member;
-import static com.dayz.onedayclass.domain.QOneDayClass.oneDayClass;
 
-import com.dayz.atelier.dto.QSearchAtelierResponse;
-import com.dayz.atelier.dto.SearchAtelierResponse;
-import com.dayz.onedayclass.domain.OneDayClass;
+import com.dayz.atelier.dto.response.QSearchAtelierResponse_AtelierResult;
+import com.dayz.atelier.dto.response.SearchAtelierResponse;
 import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.PathBuilder;
@@ -60,10 +58,14 @@ public class QAtelierRepositoryImpl implements QAtelierRepository {
     }
 
     @Override
-    public Page<SearchAtelierResponse> searchAteliers(Long cityId, Long regionId, String keyWord,
-        Pageable pageRequest) {
-        JPAQuery<SearchAtelierResponse> query = jpaQueryFactory
-            .select(new QSearchAtelierResponse(
+    public Page<SearchAtelierResponse.AtelierResult> searchAteliers(
+        Long cityId,
+        Long regionId,
+        String keyWord,
+        Pageable pageRequest
+    ) {
+        JPAQuery<SearchAtelierResponse.AtelierResult> query = jpaQueryFactory.select(
+            new QSearchAtelierResponse_AtelierResult(
                 atelier.id,
                 atelier.name,
                 atelier.intro,

@@ -3,7 +3,7 @@ package com.dayz.member.service;
 import com.dayz.member.converter.AddressConverter;
 import com.dayz.member.domain.Address;
 import com.dayz.member.domain.AddressRepository;
-import com.dayz.member.dto.ReadAllAddressResponse;
+import com.dayz.member.dto.response.ReadAddressesResponse;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,9 +16,9 @@ public class AddressService {
 
     private final AddressConverter addressConverter;
 
-    public ReadAllAddressResponse getAllAddresses() {
+    public ReadAddressesResponse getAllAddresses() {
         List<Address> foundAllAddresses = addressRepository.findAll();
-        return addressConverter.convertToReadAllAddressResponse(foundAllAddresses);
+        return addressConverter.convertToReadAddressesResponse(foundAllAddresses);
     }
 
 }

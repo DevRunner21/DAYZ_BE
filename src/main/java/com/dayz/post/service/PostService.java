@@ -2,10 +2,8 @@ package com.dayz.post.service;
 
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.domain.AtelierRepository;
-import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
-import com.dayz.follow.domain.Follow;
 import com.dayz.follow.domain.FollowRepository;
 import com.dayz.member.domain.Member;
 import com.dayz.member.domain.MemberRepository;
@@ -14,10 +12,10 @@ import com.dayz.onedayclass.domain.OneDayClassRepository;
 import com.dayz.post.converter.PostConverter;
 import com.dayz.post.domain.Post;
 import com.dayz.post.domain.PostRepository;
-import com.dayz.post.dto.PostCreateRequest;
-import com.dayz.post.dto.ReadPostDetailResponse;
-import com.dayz.post.dto.ReadPostDetailsResult;
-import com.dayz.post.dto.ReadPostsByAtelierResult;
+import com.dayz.post.dto.response.ReadPostDetailResponse;
+import com.dayz.post.dto.response.ReadPostDetailsResponse;
+import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
+import com.dayz.post.dto.request.RegisterPostRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -44,45 +42,52 @@ public class PostService {
     private final PostConverter postConverter;
 
     @Transactional
-    public Long save(PostCreateRequest request) {
+    public Long save(RegisterPostRequest request) {
         Atelier atelier = atelierRepository.findById(request.getAtelierId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
         OneDayClass oneDayClass = oneDayClassRepository.findById(request.getOneDayClassId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
 
-        return postRepository.save(postConverter.convertToPost(request, atelier.getMember(), oneDayClass)).getId();
+        return postRepository
+            .save(postConverter.convertToPost(request, atelier.getMember(), oneDayClass)).getId();
     }
 
     public ReadPostDetailResponse getPostDetail(Long postId) {
         Post foundPost = postRepository.findDetailPostById(postId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
 
         return postConverter.convertToReadPostDetailResponse(foundPost);
     }
 
-    public CustomPageResponse<ReadPostDetailsResult> getPostDetails(Long memberId, Pageable pageRequest) {
+    public ReadPostDetailsResponse getPostDetails(Long memberId, Pageable pageRequest) {
         Member foundMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        List<Long> ids = followRepository.findFollowsByMemberIdAndUseFlagIsTrue(foundMember.getId()).stream()
-                .map(follow -> follow.getAtelier().getMember().getId())
-                .collect(Collectors.toList());
+        // TODO : 애초에 DTO를 쓰던지, 아니면 다른 방법으로 ID 값들만 가져오는게 좋아보임
+        List<Long> ids = followRepository.findFollowsByMemberIdAndUseFlagIsTrue(foundMember.getId())
+            .stream()
+            .map(follow -> follow.getAtelier().getMember().getId())
+            .collect(Collectors.toList());
 
-        Page<ReadPostDetailsResult> readPostDetailsResultPage = postRepository.findPostsByFollows(ids, pageRequest)
-                .map(postConverter::convertToReadPostDetailsResult);
+        Page<ReadPostDetailsResponse.PostDetailResult> readPostDetailsResultPage = postRepository
+            .findPostsByFollows(ids, pageRequest)
+            .map(postConverter::convertToReadPostDetailsResult);
 
-        return CustomPageResponse.<ReadPostDetailsResult>of(readPostDetailsResultPage);
+        return ReadPostDetailsResponse.of(readPostDetailsResultPage);
     }
 
-    public CustomPageResponse<ReadPostsByAtelierResult> getPostsByAtelier(Long atelierId, Pageable pageRequest) {
+    public ReadPostsByAtelierResponse getPostsByAtelier(
+        Long atelierId,
+        Pageable pageRequest
+    ) {
         Atelier foundAtelier = atelierRepository.findById(atelierId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 
-        Page<ReadPostsByAtelierResult> readPostsByAtelierResultPage =
-                postRepository.findPostsByAtelier(atelierId, pageRequest)
-                .map(postConverter::convertToReadPostsByAtelierResult);
+        Page<ReadPostsByAtelierResponse.PostResult> readPostsByAtelierResultPage =
+            postRepository.findPostsByAtelier(atelierId, pageRequest)
+                .map(postConverter::convertToReadPostsByAtelierAtelierResult);
 
-        return CustomPageResponse.<ReadPostsByAtelierResult>of(readPostsByAtelierResultPage);
+        return ReadPostsByAtelierResponse.of(readPostsByAtelierResultPage);
     }
 
 }

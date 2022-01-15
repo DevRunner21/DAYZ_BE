@@ -1,22 +1,15 @@
 package com.dayz.post.converter;
 
-import com.dayz.atelier.domain.Atelier;
-import com.dayz.atelier.domain.AtelierRepository;
-import com.dayz.common.enums.ErrorInfo;
-import com.dayz.common.exception.BusinessException;
 import com.dayz.common.util.ImageUrlUtil;
 import com.dayz.member.domain.Member;
-import com.dayz.member.domain.MemberRepository;
 import com.dayz.onedayclass.domain.OneDayClass;
-import com.dayz.onedayclass.domain.OneDayClassImage;
-import com.dayz.onedayclass.domain.OneDayClassRepository;
 import com.dayz.post.domain.Post;
 import com.dayz.post.domain.PostImage;
-import com.dayz.post.dto.PostCreateRequest;
-import com.dayz.post.dto.PostCreateRequest.PostImagesRequest;
-import com.dayz.post.dto.ReadPostDetailResponse;
-import com.dayz.post.dto.ReadPostDetailsResult;
-import com.dayz.post.dto.ReadPostsByAtelierResult;
+import com.dayz.post.dto.response.ReadPostDetailResponse;
+import com.dayz.post.dto.response.ReadPostDetailsResponse;
+import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
+import com.dayz.post.dto.request.RegisterPostRequest;
+import com.dayz.post.dto.request.RegisterPostRequest.PostImageParam;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -30,83 +23,90 @@ public class PostConverter {
 
     private final ImageUrlUtil imageUrlUtil;
 
-    public Post convertToPost(PostCreateRequest request, Member member, OneDayClass oneDayClass) {
+    public Post convertToPost(RegisterPostRequest request, Member member, OneDayClass oneDayClass) {
         Post post = Post.of(
-                request.getContent(),
-                member,
-                oneDayClass,
-                request.getImages().stream()
-                        .map(this::convertToCreatePostPostImagesRequest)
-                        .collect(Collectors.toList()));
+            request.getContent(),
+            member,
+            oneDayClass,
+            request.getImages().stream()
+                .map(this::convertToPostImage)
+                .collect(Collectors.toList()));
 
         return post;
     }
 
-    public PostImage convertToCreatePostPostImagesRequest(PostImagesRequest postImagesRequest) {
-        return PostImage.of(imageUrlUtil.extractFileName(postImagesRequest.getImageUrl()), postImagesRequest.getSequence());
+    public PostImage convertToPostImage(PostImageParam postImageParam) {
+        return PostImage.of(imageUrlUtil.extractFileName(postImageParam.getImageUrl()),
+            postImageParam.getSequence());
     }
 
     public ReadPostDetailResponse convertToReadPostDetailResponse(Post post) {
         return ReadPostDetailResponse.of(
-                post.getId(),
-                post.getContent(),
-                post.getPostImages().stream()
-                        .map(this::convertToReadPostDetailPostImageResult)
-                        .collect(Collectors.toList()),
-                convertToReadPostDetailAtelierResult(post.getMember()),
-                post.getOneDayClass().getId(),
-                post.getCreatedAt()
+            post.getId(),
+            post.getContent(),
+            post.getPostImages().stream()
+                .map(this::convertToReadPostDetailPostImageResult)
+                .collect(Collectors.toList()),
+            convertToReadPostDetailAtelierResult(post.getMember()),
+            post.getOneDayClass().getId(),
+            post.getCreatedAt()
         );
     }
 
-    public ReadPostDetailResponse.PostImageResult convertToReadPostDetailPostImageResult(PostImage postImage) {
+    public ReadPostDetailResponse.PostImageResult convertToReadPostDetailPostImageResult(
+        PostImage postImage) {
         return ReadPostDetailResponse.PostImageResult.of(
-                imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
-                postImage.getSequence()
+            imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
+            postImage.getSequence()
         );
     }
 
-    public ReadPostDetailResponse.AtelierResult convertToReadPostDetailAtelierResult(Member member) {
+    public ReadPostDetailResponse.AtelierResult convertToReadPostDetailAtelierResult(
+        Member member) {
         return ReadPostDetailResponse.AtelierResult.of(
-                member.getAtelier().getId(),
-                member.getAtelier().getName(),
-                member.getProfileImageUrl()
+            member.getAtelier().getId(),
+            member.getAtelier().getName(),
+            member.getProfileImageUrl()
         );
     }
 
-    public ReadPostDetailsResult convertToReadPostDetailsResult(Post post) {
-        return ReadPostDetailsResult.of(
-                post.getId(),
-                post.getContent(),
-                post.getPostImages().stream()
-                        .map(this::convertToReadPostDetailsPostImageResult)
-                        .collect(Collectors.toList()),
-                convertToReadPostDetailsAtelierResult(post.getMember()),
-                post.getOneDayClass().getId(),
-                post.getCreatedAt()
+    public ReadPostDetailsResponse.PostDetailResult convertToReadPostDetailsResult(Post post) {
+        return ReadPostDetailsResponse.PostDetailResult.of(
+            post.getId(),
+            post.getContent(),
+            post.getPostImages().stream()
+                .map(this::convertToReadPostDetailsPostImageResult)
+                .collect(Collectors.toList()),
+            convertToReadPostDetailsAtelierResult(post.getMember()),
+            post.getOneDayClass().getId(),
+            post.getCreatedAt()
         );
     }
 
-    public ReadPostDetailsResult.PostImageResult convertToReadPostDetailsPostImageResult(PostImage postImage) {
-        return ReadPostDetailsResult.PostImageResult.of(
-                imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
-                postImage.getSequence()
+    public ReadPostDetailsResponse.PostDetailResult.PostImageResult convertToReadPostDetailsPostImageResult(
+        PostImage postImage
+    ) {
+        return ReadPostDetailsResponse.PostDetailResult.PostImageResult.of(
+            imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
+            postImage.getSequence()
         );
     }
 
-    public ReadPostDetailsResult.AtelierResult convertToReadPostDetailsAtelierResult(Member member) {
-        return ReadPostDetailsResult.AtelierResult.of(
-                member.getAtelier().getId(),
-                member.getAtelier().getName(),
-                member.getProfileImageUrl()
+    public ReadPostDetailsResponse.PostDetailResult.AtelierResult convertToReadPostDetailsAtelierResult(
+        Member member
+    ) {
+        return ReadPostDetailsResponse.PostDetailResult.AtelierResult.of(
+            member.getAtelier().getId(),
+            member.getAtelier().getName(),
+            member.getProfileImageUrl()
         );
     }
 
-    public ReadPostsByAtelierResult convertToReadPostsByAtelierResult(Post post) {
-        return ReadPostsByAtelierResult.of(
-                post.getId(),
-                getFirstImageUrl(post.getPostImages()),
-                post.getCreatedAt()
+    public ReadPostsByAtelierResponse.PostResult convertToReadPostsByAtelierAtelierResult(Post post) {
+        return ReadPostsByAtelierResponse.PostResult.of(
+            post.getId(),
+            getFirstImageUrl(post.getPostImages()),
+            post.getCreatedAt()
         );
     }
 

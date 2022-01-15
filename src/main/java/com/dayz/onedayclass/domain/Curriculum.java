@@ -2,24 +2,18 @@ package com.dayz.onedayclass.domain;
 
 import com.dayz.common.entity.BaseEntity;
 import java.util.Objects;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.Where;
 
 @Entity
 @Getter
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Where(clause = "use_flag = true")
 @Table(name = "curriculum")
 public class Curriculum extends BaseEntity {
 
@@ -35,13 +29,13 @@ public class Curriculum extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_curriculum_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     public static Curriculum of(Long id,
-            int step,
-            String content,
-            OneDayClass oneDayClass
+        int step,
+        String content,
+        OneDayClass oneDayClass
     ) {
         Curriculum curriculum = new Curriculum();
         curriculum.setId(id);
@@ -53,8 +47,8 @@ public class Curriculum extends BaseEntity {
     }
 
     public static Curriculum of(int step,
-            String content,
-            OneDayClass oneDayClass
+        String content,
+        OneDayClass oneDayClass
     ) {
         Curriculum curriculum = new Curriculum();
         curriculum.setStep(step);
@@ -65,7 +59,7 @@ public class Curriculum extends BaseEntity {
     }
 
     public static Curriculum of(int step,
-            String content
+        String content
     ) {
         Curriculum curriculum = new Curriculum();
         curriculum.setStep(step);

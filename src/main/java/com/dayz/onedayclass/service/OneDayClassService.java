@@ -4,7 +4,6 @@ import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.category.domain.Category;
 import com.dayz.category.domain.CategoryRepository;
-import com.dayz.common.dto.CustomPageResponse;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Address;
@@ -13,12 +12,8 @@ import com.dayz.member.domain.MemberRepository;
 import com.dayz.onedayclass.converter.OneDayClassConverter;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassRepository;
-import com.dayz.onedayclass.dto.ReadOneDayClassByAtelierResult;
-import com.dayz.onedayclass.dto.ReadOneDayClassDetailResponse;
-import com.dayz.onedayclass.dto.ReadOneDayClassesByCategoryResult;
-import com.dayz.onedayclass.dto.SearchOneDayClassResponse;
-import com.dayz.onedayclass.dto.ReadPopularOneDayClassesResponse;
-import com.dayz.onedayclass.dto.SaveOneDayClassRequest;
+import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
+import com.dayz.onedayclass.dto.response.*;
 import com.dayz.review.domain.ReviewRepository;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
@@ -50,23 +45,26 @@ public class OneDayClassService {
 
     private final OneDayClassConverter oneDayClassConverter;
 
-    public CustomPageResponse<CustomPageResponse<ReadOneDayClassesByCategoryResult>> getOneDayClassesByCategory(Member member, Long categoryId, Pageable pageRequest) {
-
+    public ReadOneDayClassesByCategoryResponse getOneDayClassesByCategory(
+        Long memberId,
+        Long categoryId,
+        Pageable pageRequest
+    ) {
         Category foundCategory = categoryRepository.findById(categoryId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
 
-        Member foundMember = memberRepository.findById(member.getId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        Page<ReadOneDayClassesByCategoryResult> readOneDayClassesByCategoryResultPage = oneDayClassRepository.findOneDayClassByCategoryId(
+        Page<ReadOneDayClassesByCategoryResponse.OneDayClassResult> readOneDayClassesByCategoryResultPage =
+            oneDayClassRepository.findOneDayClassByCategoryId(
                 foundCategory.getId(),
                 foundMember.getAddress().getCityId(),
                 foundMember.getAddress().getRegionId(),
                 pageRequest
-        ).map(oneDayClassConverter::convertToReadOneDayClassesByCategoryResult);
+            ).map(oneDayClassConverter::convertToReadOneDayClassesByCategoryResult);
 
-        return CustomPageResponse.<CustomPageResponse<ReadOneDayClassesByCategoryResult>>of(
-            readOneDayClassesByCategoryResultPage);
+        return ReadOneDayClassesByCategoryResponse.of(readOneDayClassesByCategoryResultPage);
     }
 
     public ReadOneDayClassDetailResponse getOneDayClassDetail(Long classId) {
@@ -79,32 +77,43 @@ public class OneDayClassService {
             avgScore);
     }
 
-    public CustomPageResponse<CustomPageResponse<ReadOneDayClassByAtelierResult>> getOneDayClassesByAtelier(
-        Long atelierId, Pageable pageRequest) {
+    public ReadOneDayClassesByAtelierResponse getOneDayClassesByAtelier(
+        Long atelierId,
+        Pageable pageRequest
+    ) {
         Atelier foundAtelier = atelierRepository.findById(atelierId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 
-        Page<ReadOneDayClassByAtelierResult> readOneDayClassByAtelierResultPage = oneDayClassRepository.findOneDayClassByAtelierId(
-                foundAtelier.getId(), pageRequest)
-            .map(oneDayClassConverter::convertToReadOneDayClassByAtelierResult);
+        Page<ReadOneDayClassesByAtelierResponse.OneDayClassResult> readOneDayClassByAtelierResultPage =
+            oneDayClassRepository.findOneDayClassByAtelierId(foundAtelier.getId(), pageRequest)
+                .map(oneDayClassConverter::convertToReadOneDayClassesByAtelierAtelierResult);
 
-        return CustomPageResponse.<CustomPageResponse<ReadOneDayClassByAtelierResult>>of(
-            readOneDayClassByAtelierResultPage);
+        return ReadOneDayClassesByAtelierResponse.of(readOneDayClassByAtelierResultPage);
     }
 
-    public CustomPageResponse searchOneDayClass(Member member, String keyWord,
-        Pageable pageRequest) {
-        Page<SearchOneDayClassResponse> searchOneDayClassResponsePage = oneDayClassRepository.searchOneDayClass(
-                member.getAddress().getCityId(),member.getAddress().getRegionId(),keyWord, pageRequest)
-            .map(oneDayClassConverter::convertSearchOneDayClassResponse);
+    public SearchOneDayClassResponse searchOneDayClass(
+        Long memberId,
+        String keyword,
+        Pageable pageRequest
+    ) {
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        return CustomPageResponse.of(searchOneDayClassResponsePage);
+        Page<SearchOneDayClassResponse.OneDayClassResult> searchOneDayClassResponsePage =
+            oneDayClassRepository.searchOneDayClass(
+                foundMember.getAddress().getCityId(),
+                foundMember.getAddress().getRegionId(),
+                keyword,
+                pageRequest
+            ).map(oneDayClassConverter::convertSearchOneDayClassOneDayClassResult);
+
+        return SearchOneDayClassResponse.of(searchOneDayClassResponsePage);
 
     }
 
     public ReadPopularOneDayClassesResponse getPopularOneDayClasses(Long memberId) {
         Member foundMember = memberRepository.findById(memberId)
-                .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
         // 이번주 시작, 끝 날짜 구하기
         LocalDate today = LocalDate.now();
@@ -113,29 +122,30 @@ public class OneDayClassService {
         Address address = foundMember.getAddress();
 
         List<Long> ids = oneDayClassRepository.findPopularOneDayClassIds(
-                address.getCityId(),
-                address.getRegionId(),
-                startDate,
-                endDate,
-                POPULAR_ONEDAYCLASS_LIMIT);
+            address.getCityId(),
+            address.getRegionId(),
+            startDate,
+            endDate,
+            POPULAR_ONEDAYCLASS_LIMIT);
 
         List<OneDayClass> oneDayClassesByIds = new ArrayList<OneDayClass>();
-        if( (Objects.nonNull(ids)) && (ids.size() > 0) ){
+        if ((Objects.nonNull(ids)) && (ids.size() > 0)) {
             oneDayClassesByIds = oneDayClassRepository.findOneDayClassesByIds(ids);
         }
 
         return oneDayClassConverter.converToReadPopularOneDayClassesResponse(oneDayClassesByIds);
     }
-  
+
     @Transactional
-    public Long createOneDayClass(SaveOneDayClassRequest request) {
+    public Long createOneDayClass(RegisterOneDayClassRequest request) {
         Atelier foundAtelier = atelierRepository.findById(request.getAtelierId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 
         Category foundCategory = categoryRepository.findById(request.getCategoryId())
-                .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
+            .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
 
-        OneDayClass newOneDayClass = oneDayClassConverter.convertToOneDayClass(request, foundCategory, foundAtelier);
+        OneDayClass newOneDayClass = oneDayClassConverter
+            .convertToOneDayClass(request, foundCategory, foundAtelier);
 
         OneDayClass savedOneDayClass = oneDayClassRepository.save(newOneDayClass);
 
