@@ -42,11 +42,11 @@ public class OneDayClass extends BaseEntity {
     private int maxPeopleNumber;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_onedayclass_to_category"))
     private Category category;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "atelier_id")
+    @JoinColumn(name = "atelier_id", foreignKey = @ForeignKey(name = "fk_onedayclass_to_atelier"))
     private Atelier atelier;
 
     @OrderBy("sequence ASC")

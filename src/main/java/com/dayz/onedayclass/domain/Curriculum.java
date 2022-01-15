@@ -29,7 +29,7 @@ public class Curriculum extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_curriculum_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     public static Curriculum of(Long id,

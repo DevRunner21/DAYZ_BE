@@ -39,11 +39,11 @@ public class Member extends BaseEntity {
     private String profileImageUrl;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name = "permission_id")
+    @JoinColumn(name = "permission_id", foreignKey = @ForeignKey(name = "fk_member_to_permission"))
     private Permission permission;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.MERGE, CascadeType.REFRESH})
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "fk_member_to_address"))
     private Address address;
 
     @OneToOne(optional = false, mappedBy = "member")

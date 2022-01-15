@@ -15,7 +15,12 @@ import org.hibernate.annotations.Where;
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
-@Table(name = "atelier")
+@Table(
+    name = "atelier",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_business_number", columnNames = "business_number")
+    }
+)
 public class Atelier extends BaseEntity {
 
     @Id
@@ -27,7 +32,7 @@ public class Atelier extends BaseEntity {
     private String name;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "address_id")
+    @JoinColumn(name = "address_id", foreignKey = @ForeignKey(name = "fk_atelier_to_address"))
     private Address address;
 
     @Column(name = "address_detail", nullable = false)
@@ -46,7 +51,7 @@ public class Atelier extends BaseEntity {
     private String businessNumber;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_atelier_to_member"))
     private Member member;
 
     public static Atelier of(Long id, String name, Address address, String detail, String intro,

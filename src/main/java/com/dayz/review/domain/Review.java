@@ -34,11 +34,11 @@ public class Review extends BaseEntity {
     private int score;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_review_to_member"))
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_review_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     @OrderBy("sequence ASC")

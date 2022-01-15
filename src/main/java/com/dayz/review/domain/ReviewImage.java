@@ -31,7 +31,7 @@ public class ReviewImage extends BaseEntity {
     private int sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "review_id")
+    @JoinColumn(name = "review_id", foreignKey = @ForeignKey(name = "fk_review_image_to_review"))
     private Review review;
 
     public static ReviewImage of(Long id,

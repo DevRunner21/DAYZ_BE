@@ -29,7 +29,7 @@ public class OneDayClassImage extends BaseEntity {
     private int sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_image_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     public static OneDayClassImage of(Long id,

@@ -41,11 +41,11 @@ public class Reservation extends BaseEntity {
     private LocalDate reservationDate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_reservation_to_member"))
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_time_id")
+    @JoinColumn(name = "onedayclass_time_id", foreignKey = @ForeignKey(name = "fk_reservation_to_onedayclass_time"))
     private OneDayClassTime oneDayClassTime;
 
     public static Reservation of(Long id, int peopleNumber, int price, LocalDate date,

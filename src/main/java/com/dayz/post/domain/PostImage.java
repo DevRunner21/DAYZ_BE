@@ -30,7 +30,7 @@ public class PostImage extends BaseEntity {
     private int sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "post_id")
+    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_image_to_post"))
     private Post post;
 
     public static PostImage of(Long id, String imageFileName, int sequence) {

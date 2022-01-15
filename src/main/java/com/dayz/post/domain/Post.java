@@ -30,11 +30,11 @@ public class Post extends BaseEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_post_to_member"))
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_post_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     @OrderBy("sequence ASC")

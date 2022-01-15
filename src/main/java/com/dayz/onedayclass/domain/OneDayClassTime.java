@@ -41,7 +41,7 @@ public class OneDayClassTime extends BaseEntity {
     private TimeStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id")
+    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_time_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     public static OneDayClassTime of(Long id,

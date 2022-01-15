@@ -27,11 +27,11 @@ public class Follow extends BaseEntity {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_follow_to_member"))
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "atelier_id")
+    @JoinColumn(name = "atelier_id", foreignKey = @ForeignKey(name = "fk_follow_to_atelier"))
     private Atelier atelier;
 
     public static Follow of(Long id, Member member, Atelier atelier) {

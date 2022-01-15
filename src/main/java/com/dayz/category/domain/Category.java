@@ -13,7 +13,12 @@ import org.hibernate.annotations.Where;
 @Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
-@Table(name = "category")
+@Table(
+    name = "category",
+    uniqueConstraints = {
+        @UniqueConstraint(name = "UK_category_name", columnNames = "name")
+    }
+)
 public class Category extends BaseEntity {
 
     @Id
