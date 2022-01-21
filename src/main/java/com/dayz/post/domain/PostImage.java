@@ -4,15 +4,14 @@ import com.dayz.common.entity.BaseEntity;
 import java.util.Objects;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "post_image")
@@ -33,35 +32,22 @@ public class PostImage extends BaseEntity {
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_image_to_post"))
     private Post post;
 
-    public static PostImage of(Long id, String imageFileName, int sequence) {
+    @Builder
+    private PostImage(Long id, String imageFileName, int sequence, Post post) {
         Assert.notNull(imageFileName, "imageFileName must not be null.");
-        Assert.notNull(sequence, "sequence must not be null.");
+        Assert.isTrue(sequence > 0, "sequence must not positive.");
 
-        PostImage postImage = new PostImage();
-        postImage.setId(id);
-        postImage.setImageFileName(imageFileName);
-        postImage.setSequence(sequence);
-
-        return postImage;
-    }
-
-    public static PostImage of(String imageFileName, int sequence) {
-        Assert.notNull(imageFileName, "imageFileName must not be null.");
-        Assert.notNull(sequence, "sequence must not be null.");
-
-        PostImage postImage = new PostImage();
-        postImage.setImageFileName(imageFileName);
-        postImage.setSequence(sequence);
-
-        return postImage;
+        this.id = id;
+        this.imageFileName = imageFileName;
+        this.sequence = sequence;
+        changePost(post);
     }
 
     public void changePost(Post post) {
         if (Objects.nonNull(post)) {
             post.getPostImages().remove(this);
         }
-
-        this.setPost(post);
+        this.post = post;
         post.getPostImages().add(this);
     }
 

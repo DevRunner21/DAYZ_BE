@@ -27,7 +27,7 @@ public class RegisterAtelierRequest {
     @ApiModelProperty(value = "공방 주소", dataType = "object")
     @Valid
     @NotNull(message = "address is not null")
-    private AddressResult address;
+    private RegisterAtelierRequest.AddressParam address;
 
     @ApiModelProperty(value = "공방 소개", dataType = "string", example = "안녕하세요~! 지훈공방입니다.")
     private String intro;
@@ -47,7 +47,7 @@ public class RegisterAtelierRequest {
     private String workEndTime;
 
     public static RegisterAtelierRequest of(String name, String businessNumber,
-        AddressResult address,
+        AddressParam address,
         String callNumber, String workStartTime, String workEndTime) {
         RegisterAtelierRequest registerAtelierRequest = new RegisterAtelierRequest();
         registerAtelierRequest.setName(name);
@@ -60,11 +60,11 @@ public class RegisterAtelierRequest {
         return registerAtelierRequest;
     }
 
-    @ApiModel(value = "RegisterAtelierRequest.AddressResult")
+    @ApiModel(value = "RegisterAtelierRequest.AddressParam")
     @Getter
     @Setter
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
-    public static class AddressResult {
+    public static class AddressParam {
 
         @ApiModelProperty(value = "시/군/구 ID", dataType = "number", example = "1")
         @NotNull(message = "cityId is not null")
@@ -78,14 +78,15 @@ public class RegisterAtelierRequest {
         @NotBlank(message = "detail is not blank")
         private String detail;
 
-        public static AddressResult of(Long cityId, Long regionId, String detail) {
-            AddressResult addressResult = new AddressResult();
-            addressResult.setCityId(cityId);
-            addressResult.setRegionId(regionId);
-            addressResult.setDetail(detail);
+        public static AddressParam of(Long cityId, Long regionId, String detail) {
+            AddressParam addressParam = new AddressParam();
+            addressParam.setCityId(cityId);
+            addressParam.setRegionId(regionId);
+            addressParam.setDetail(detail);
 
-            return addressResult;
+            return addressParam;
         }
+
     }
 
 }

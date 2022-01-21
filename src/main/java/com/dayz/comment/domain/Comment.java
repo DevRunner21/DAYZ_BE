@@ -4,11 +4,9 @@ import com.dayz.common.entity.BaseEntity;
 import com.dayz.member.domain.Member;
 import com.dayz.post.domain.Post;
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 
 @Entity
@@ -35,31 +33,16 @@ public class Comment extends BaseEntity {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_comment_to_member"))
     private Member member;
 
-    public static Comment of(Long id, String content, Post post, Member member) {
-        Comment comment = new Comment();
-        comment.setId(id);
-        comment.setContent(content);
-        comment.changePost(post);
-        comment.changeMember(member);
+    @Builder
+    private Comment(Long id, String content, Post post, Member member) {
+        Assert.notNull(content, "content must be not null");
+        Assert.notNull(post, "post must be not null");
+        Assert.notNull(member, "member must be not null");
 
-        return comment;
-    }
-
-    public static Comment of(String content, Post post, Member member) {
-        Comment comment = new Comment();
-        comment.setContent(content);
-        comment.changePost(post);
-        comment.changeMember(member);
-
-        return comment;
-    }
-
-    public void changePost(Post post) {
-        this.setPost(post);
-    }
-
-    public void changeMember(Member member) {
-        this.setMember(member);
+        this.id = id;
+        this.content = content;
+        this.post = post;
+        this.member = member;
     }
 
 }

@@ -3,14 +3,14 @@ package com.dayz.member.domain;
 import com.dayz.common.entity.BaseEntity;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "address")
@@ -33,26 +33,18 @@ public class Address extends BaseEntity {
     @Column(name = "region_name")
     private String regionName;
 
-    public static Address of(Long id, Long cityId, Long regionId, String cityName,
-        String regionName) {
-        Address address = new Address();
-        address.setId(id);
-        address.setCityId(cityId);
-        address.setRegionId(regionId);
-        address.setCityName(cityName);
-        address.setRegionName(regionName);
+    @Builder
+    private Address(Long id, Long cityId, Long regionId, String cityName, String regionName) {
+        Assert.notNull(cityId, "cityId must be not null");
+        Assert.notNull(regionId, "regionId must be not null");
+        Assert.notNull(cityName, "cityName must be not null");
+        Assert.notNull(regionName, "regionName must be not null");
 
-        return address;
-    }
-
-    public static Address of(Long cityId, Long regionId, String cityName, String regionName) {
-        Address address = new Address();
-        address.setCityId(cityId);
-        address.setRegionId(regionId);
-        address.setCityName(cityName);
-        address.setRegionName(regionName);
-
-        return address;
+        this.id = id;
+        this.cityId = cityId;
+        this.regionId = regionId;
+        this.cityName = cityName;
+        this.regionName = regionName;
     }
 
 }

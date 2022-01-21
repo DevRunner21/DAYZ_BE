@@ -4,14 +4,14 @@ import com.dayz.common.entity.BaseEntity;
 import java.util.Objects;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "onedayclass_iamge")
@@ -32,49 +32,23 @@ public class OneDayClassImage extends BaseEntity {
     @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_image_to_onedayclass"))
     private OneDayClass oneDayClass;
 
-    public static OneDayClassImage of(Long id,
-        String imageFileName,
-        int sequence,
-        OneDayClass oneDayClass
-    ) {
-        OneDayClassImage oneDayClassImage = new OneDayClassImage();
-        oneDayClassImage.setId(id);
-        oneDayClassImage.setImageFileName(imageFileName);
-        oneDayClassImage.setSequence(sequence);
-        oneDayClassImage.changeOneDayClass(oneDayClass);
+    @Builder
+    private OneDayClassImage(Long id, String imageFileName, int sequence, OneDayClass oneDayClass) {
+        Assert.notNull(imageFileName, "imageFileName must be not null");
+        Assert.isTrue(sequence > 0, "sequence must be positive");
+        Assert.notNull(oneDayClass, "oneDayClass must be not null");
 
-        return oneDayClassImage;
-    }
-
-    public static OneDayClassImage of(
-        String imageFileName,
-        int sequence,
-        OneDayClass oneDayClass
-    ) {
-        OneDayClassImage oneDayClassImage = new OneDayClassImage();
-        oneDayClassImage.setImageFileName(imageFileName);
-        oneDayClassImage.setSequence(sequence);
-        oneDayClassImage.changeOneDayClass(oneDayClass);
-
-        return oneDayClassImage;
-    }
-
-    public static OneDayClassImage of(
-        String imageFileName,
-        int sequence
-    ) {
-        OneDayClassImage oneDayClassImage = new OneDayClassImage();
-        oneDayClassImage.setImageFileName(imageFileName);
-        oneDayClassImage.setSequence(sequence);
-
-        return oneDayClassImage;
+        this.id = id;
+        this.imageFileName = imageFileName;
+        this.sequence = sequence;
+        changeOneDayClass(oneDayClass);
     }
 
     public void changeOneDayClass(OneDayClass oneDayClass) {
         if (Objects.nonNull(oneDayClass)) {
             oneDayClass.getOneDayClassImages().remove(this);
         }
-        this.setOneDayClass(oneDayClass);
+        this.oneDayClass = oneDayClass;
         oneDayClass.getOneDayClassImages().add(this);
     }
 

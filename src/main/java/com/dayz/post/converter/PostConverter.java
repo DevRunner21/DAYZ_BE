@@ -5,11 +5,11 @@ import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.post.domain.Post;
 import com.dayz.post.domain.PostImage;
+import com.dayz.post.dto.request.RegisterPostRequest;
+import com.dayz.post.dto.request.RegisterPostRequest.PostImageParam;
 import com.dayz.post.dto.response.ReadPostDetailResponse;
 import com.dayz.post.dto.response.ReadPostDetailsResponse;
 import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
-import com.dayz.post.dto.request.RegisterPostRequest;
-import com.dayz.post.dto.request.RegisterPostRequest.PostImageParam;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,20 +24,23 @@ public class PostConverter {
     private final ImageUrlUtil imageUrlUtil;
 
     public Post convertToPost(RegisterPostRequest request, Member member, OneDayClass oneDayClass) {
-        Post post = Post.of(
-            request.getContent(),
-            member,
-            oneDayClass,
-            request.getImages().stream()
-                .map(this::convertToPostImage)
-                .collect(Collectors.toList()));
-
-        return post;
+        return Post.builder()
+            .content(request.getContent())
+            .member(member)
+            .oneDayClass(oneDayClass)
+            .postImages(
+                request.getImages().stream()
+                    .map(this::convertToPostImage)
+                    .collect(Collectors.toList())
+            )
+            .build();
     }
 
     public PostImage convertToPostImage(PostImageParam postImageParam) {
-        return PostImage.of(imageUrlUtil.extractFileName(postImageParam.getImageUrl()),
-            postImageParam.getSequence());
+        return PostImage.builder()
+            .sequence(postImageParam.getSequence())
+            .imageFileName(imageUrlUtil.extractFileName(postImageParam.getImageUrl()))
+            .build();
     }
 
     public ReadPostDetailResponse convertToReadPostDetailResponse(Post post) {

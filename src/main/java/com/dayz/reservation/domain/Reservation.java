@@ -6,16 +6,12 @@ import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import java.time.LocalDate;
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "reservation")
@@ -48,57 +44,30 @@ public class Reservation extends BaseEntity {
     @JoinColumn(name = "onedayclass_time_id", foreignKey = @ForeignKey(name = "fk_reservation_to_onedayclass_time"))
     private OneDayClassTime oneDayClassTime;
 
-    public static Reservation of(Long id, int peopleNumber, int price, LocalDate date,
-        Member member, OneDayClassTime oneDayClassTime) {
-        Assert.notNull(id, "Reservation id null 입니다.");
-        Assert.isTrue(peopleNumber >= 0, "Reservation peopleNumber은 0이상이어야 합니다.");
-        Assert.isTrue(price >= 0, "Reservation price 0이상이어야 합니다.");
-        Assert.notNull(date, "Reservation date null 입니다.");
-        Assert.notNull(member, "Reservation member null 입니다.");
-        Assert.notNull(oneDayClassTime, "Reservation oneDayClassTime null 입니다.");
+    @Builder
+    private Reservation(
+        Long id,
+        int peopleNumber,
+        int price,
+        ReservationStatus status,
+        LocalDate reservationDate,
+        Member member,
+        OneDayClassTime oneDayClassTime
+    ) {
+        Assert.isTrue(peopleNumber > 0, "peopleNumber must be not positive.");
+        Assert.isTrue(price > 0, "price must be not positive.");
+        Assert.notNull(status, "status must be not null.");
+        Assert.notNull(reservationDate, "reservationDate must be not null.");
+        Assert.notNull(member, "member must be not null.");
+        Assert.notNull(oneDayClassTime, "oneDayClassTime must be not null.");
 
-        Reservation reservation = new Reservation();
-        reservation.setId(id);
-        reservation.setPeopleNumber(peopleNumber);
-        reservation.setPrice(price);
-        reservation.setStatus(ReservationStatus.ACCEPTED);
-        reservation.setReservationDate(date);
-        reservation.changeMember(member);
-        reservation.changeOneDayClassTime(oneDayClassTime);
-
-        return reservation;
+        this.id = id;
+        this.peopleNumber = peopleNumber;
+        this.price = price;
+        this.status = status;
+        this.reservationDate = reservationDate;
+        this.member = member;
+        this.oneDayClassTime = oneDayClassTime;
     }
 
-    public static Reservation of(int peopleNumber, int price, LocalDate date,
-        Member member, OneDayClassTime oneDayClassTime) {
-
-        Assert.isTrue(peopleNumber >= 0, "Reservation peopleNumber은 0이상이어야 합니다.");
-        Assert.isTrue(price >= 0, "Reservation price 0이상이어야 합니다.");
-        Assert.notNull(date, "Reservation date null 입니다.");
-        Assert.notNull(member, "Reservation member null 입니다.");
-        Assert.notNull(oneDayClassTime, "Reservation oneDayClassTime null 입니다.");
-
-        Reservation reservation = new Reservation();
-        reservation.setPeopleNumber(peopleNumber);
-        reservation.setPrice(price);
-        reservation.setStatus(ReservationStatus.ACCEPTED);
-        reservation.setReservationDate(date);
-        reservation.changeMember(member);
-        reservation.changeOneDayClassTime(oneDayClassTime);
-
-        return reservation;
-    }
-
-    public void changeMember(Member member) {
-        this.setMember(member);
-    }
-
-    public void changeOneDayClassTime(OneDayClassTime oneDayClassTime) {
-        this.setOneDayClassTime(oneDayClassTime);
-    }
-
-    @Override
-    public void changeUseFlag(boolean useFlag) {
-        super.changeUseFlag(useFlag);
-    }
 }

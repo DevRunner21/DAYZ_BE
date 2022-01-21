@@ -40,9 +40,15 @@ public class FollowService {
             Follow follow = followRepository
                 .findByMemberIdAndAtelierId(member.getId(), atelier.getId());
             follow.changeUseFlag(false);
+
             return false;
         } else {
-            followRepository.save(Follow.of(member, atelier));
+            Follow newFollow = Follow.builder()
+                .member(member)
+                .atelier(atelier)
+                .build();
+
+            followRepository.save(newFollow);
             return true;
         }
     }

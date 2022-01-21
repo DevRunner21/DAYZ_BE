@@ -81,12 +81,16 @@ public class MemberService {
                 String name = "ROLE_USER";
 
                 Permission permission = permissionRepository.findByName(name)
-                    .orElseThrow(
-                        () -> new IllegalStateException("Could not found group for USER_GROUP"));
+                    .orElseThrow(() -> new IllegalStateException("Could not found group for USER_GROUP"));
 
                 return memberRepository.save(
-                    Member.of(nickname, authorizedClientRegistrationId, providerId, profileImage,
-                        permission, null)
+                    Member.builder()
+                        .username(nickname)
+                        .provider(authorizedClientRegistrationId)
+                        .providerId(providerId)
+                        .profileImageUrl(profileImage)
+                        .permission(permission)
+                        .build()
                 );
             });
     }

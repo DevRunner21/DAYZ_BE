@@ -7,16 +7,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Where(clause = "use_flag = true")
 @Table(name = "onedayclass")
 public class OneDayClass extends BaseEntity {
@@ -49,6 +47,7 @@ public class OneDayClass extends BaseEntity {
     @JoinColumn(name = "atelier_id", foreignKey = @ForeignKey(name = "fk_onedayclass_to_atelier"))
     private Atelier atelier;
 
+    @Builder.Default
     @OrderBy("sequence ASC")
     @OneToMany(
         mappedBy = "oneDayClass",
@@ -57,6 +56,7 @@ public class OneDayClass extends BaseEntity {
     )
     List<OneDayClassImage> oneDayClassImages = new ArrayList<>();
 
+    @Builder.Default
     @OrderBy("step ASC")
     @OneToMany(
         mappedBy = "oneDayClass",
@@ -65,62 +65,49 @@ public class OneDayClass extends BaseEntity {
     )
     List<Curriculum> curriculums = new ArrayList<>();
 
-    public static OneDayClass of(Long id, String name, String intro, int price, Long requiredTime,
-        int maxPeopleNumber, Category category,
-        Atelier atelier, List<OneDayClassImage> oneDayClassImages, List<Curriculum> curriculums) {
-        OneDayClass oneDayClass = new OneDayClass();
-        oneDayClass.setId(id);
-        oneDayClass.setName(name);
-        oneDayClass.setIntro(intro);
-        oneDayClass.setPrice(price);
-        oneDayClass.setRequiredTime(requiredTime);
-        oneDayClass.setMaxPeopleNumber(maxPeopleNumber);
-        oneDayClass.setCategory(category);
-        oneDayClass.changeAtelier(atelier);
+    private OneDayClass(
+        Long id,
+        String name,
+        String intro,
+        int price,
+        Long requiredTime,
+        int maxPeopleNumber,
+        Category category,
+        Atelier atelier,
+        List<OneDayClassImage> oneDayClassImages,
+        List<Curriculum> curriculums
+    ) {
+        Assert.notNull(name, "name must be not null.");
+        Assert.notNull(intro, "intro must be not null.");
+        Assert.isTrue(price > 0, "price must be positive.");
+        Assert.notNull(requiredTime, "requiredTime must be not null.");
+        Assert.isTrue(maxPeopleNumber > 0, "maxPeopleNumber must be positive.");
+        Assert.notNull(category, "category must be not null.");
+        Assert.notNull(atelier, "atelier must be not null.");
 
-        if (Objects.nonNull(oneDayClassImages) && oneDayClassImages.size() > 0) {
-            oneDayClassImages.forEach(oneDayClass::addOneDayClassImage);
+        this.id = id;
+        this.name = name;
+        this.intro = intro;
+        this.price = price;
+        this.requiredTime = requiredTime;
+        this.maxPeopleNumber = maxPeopleNumber;
+        this.category = category;
+        this.atelier = atelier;
+
+        if (Objects.nonNull(oneDayClassImages) && !oneDayClassImages.isEmpty()) {
+            oneDayClassImages.forEach(this::addOneDayClassImage);
         }
 
-        if (Objects.nonNull(curriculums) && curriculums.size() > 0) {
-            curriculums.forEach(oneDayClass::addCurriculum);
+        if (Objects.nonNull(curriculums) && !curriculums.isEmpty()) {
+            curriculums.forEach(this::addCurriculum);
         }
-
-        return oneDayClass;
     }
 
-    public static OneDayClass of(String name, String intro, int price, Long requiredTime,
-        int maxPeopleNumber, Category category, Atelier atelier,
-        List<OneDayClassImage> oneDayClassImages, List<Curriculum> curriculums) {
-        OneDayClass oneDayClass = new OneDayClass();
-        oneDayClass.setName(name);
-        oneDayClass.setIntro(intro);
-        oneDayClass.setPrice(price);
-        oneDayClass.setRequiredTime(requiredTime);
-        oneDayClass.setMaxPeopleNumber(maxPeopleNumber);
-        oneDayClass.setCategory(category);
-        oneDayClass.changeAtelier(atelier);
-
-        if (Objects.nonNull(oneDayClassImages) && oneDayClassImages.size() > 0) {
-            oneDayClassImages.forEach(oneDayClass::addOneDayClassImage);
-        }
-
-        if (Objects.nonNull(curriculums) && curriculums.size() > 0) {
-            curriculums.forEach(oneDayClass::addCurriculum);
-        }
-
-        return oneDayClass;
-    }
-
-    public void changeAtelier(Atelier atelier) {
-        this.setAtelier(atelier);
-    }
-
-    public void addOneDayClassImage(OneDayClassImage oneDayClassImage) {
+    private void addOneDayClassImage(OneDayClassImage oneDayClassImage) {
         oneDayClassImage.changeOneDayClass(this);
     }
 
-    public void addCurriculum(Curriculum curriculum) {
+    private void addCurriculum(Curriculum curriculum) {
         curriculum.changeOneDayClass(this);
     }
 

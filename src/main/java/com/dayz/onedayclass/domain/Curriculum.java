@@ -3,15 +3,12 @@ package com.dayz.onedayclass.domain;
 import com.dayz.common.entity.BaseEntity;
 import java.util.Objects;
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "curriculum")
@@ -32,48 +29,25 @@ public class Curriculum extends BaseEntity {
     @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_curriculum_to_onedayclass"))
     private OneDayClass oneDayClass;
 
-    public static Curriculum of(Long id,
-        int step,
-        String content,
-        OneDayClass oneDayClass
-    ) {
-        Curriculum curriculum = new Curriculum();
-        curriculum.setId(id);
-        curriculum.setStep(step);
-        curriculum.setContent(content);
-        curriculum.changeOneDayClass(oneDayClass);
+    @Builder
+    private Curriculum(Long id, int step, String content, OneDayClass oneDayClass) {
+        Assert.isTrue(step > 0, "step must be positive");
+        Assert.notNull(content, "content must be not null");
+        Assert.notNull(oneDayClass, "oneDayClass must be not null");
 
-        return curriculum;
+        this.id = id;
+        this.step = step;
+        this.content = content;
+        changeOneDayClass(oneDayClass);
     }
 
-    public static Curriculum of(int step,
-        String content,
-        OneDayClass oneDayClass
-    ) {
-        Curriculum curriculum = new Curriculum();
-        curriculum.setStep(step);
-        curriculum.setContent(content);
-        curriculum.changeOneDayClass(oneDayClass);
-
-        return curriculum;
-    }
-
-    public static Curriculum of(int step,
-        String content
-    ) {
-        Curriculum curriculum = new Curriculum();
-        curriculum.setStep(step);
-        curriculum.setContent(content);
-
-        return curriculum;
-    }
 
     public void changeOneDayClass(OneDayClass oneDayClass) {
         if (Objects.nonNull(oneDayClass)) {
             oneDayClass.getCurriculums().remove(this);
         }
 
-        this.setOneDayClass(oneDayClass);
+        this.oneDayClass = oneDayClass;
         oneDayClass.getCurriculums().add(this);
     }
 
