@@ -27,7 +27,7 @@ public class AtelierConverter {
             atelier.getId(),
             atelier.getName(),
             atelier.getIntro(),
-            getFullAddress(atelier.getAddress(), atelier.getDetail()),
+            atelier.getAddress().getFullAddress(atelier.getDetail()),
             atelier.getCallNumber(),
             LocalTime.ofSecondOfDay(atelier.getWorkTime().getStartTime()),
             LocalTime.ofSecondOfDay(atelier.getWorkTime().getEndTime()),
@@ -39,11 +39,5 @@ public class AtelierConverter {
         return SaveAtelierResponse.of(atelierId, token);
     }
 
-    private String getFullAddress(Address address, String detail) {
-        String cityName = address.getCityName();
-        String regionName = address.getRegionName();
-
-        return cityName + " " + regionName + " " + detail;
-    }
 
 }

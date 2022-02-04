@@ -79,7 +79,7 @@ public class OneDayClassConverter {
         return ReadOneDayClassDetailResponse.AtelierResult.of(
             atelier.getId(),
             atelier.getName(),
-            getFullAddress(atelier.getAddress(), atelier.getDetail()),
+            atelier.getAddress().getFullAddress(atelier.getDetail()),
             atelier.getCallNumber(),
             LocalTime.ofSecondOfDay(atelier.getWorkTime().getStartTime()),
             LocalTime.ofSecondOfDay(atelier.getWorkTime().getEndTime()),
@@ -151,6 +151,7 @@ public class OneDayClassConverter {
             .build();
     }
 
+    // TODO: convertToDomain 로직을 다른곳으로 옮길지 고민해야함
     public OneDayClassImage convertToOneDayClassImage(
         OneDayClassImageParam imageRequest) {
         return OneDayClassImage.builder()
@@ -164,13 +165,6 @@ public class OneDayClassConverter {
             .step(curriculumParam.getStep())
             .content(curriculumParam.getContent())
             .build();
-    }
-
-    private String getFullAddress(Address address, String detail) {
-        String cityName = address.getCityName();
-        String regionName = address.getRegionName();
-
-        return cityName + " " + regionName + " " + detail;
     }
 
     private String getFirstImageUrl(List<OneDayClassImage> oneDayClassImages) {

@@ -47,4 +47,8 @@ public class Address extends BaseEntity {
         this.regionName = regionName;
     }
 
+    public String getFullAddress(String detail) {
+        return this.cityName + " " + this.regionName + " " + detail;
+    }
+
 }
