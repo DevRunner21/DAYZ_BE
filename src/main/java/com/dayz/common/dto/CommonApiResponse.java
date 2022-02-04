@@ -10,14 +10,14 @@ import lombok.Getter;
 public class CommonApiResponse<T> {
 
     @ApiModelProperty(value = "통신성공여부", dataType = "boolean", example = "true")
-    private boolean success;
+    private final boolean success;
 
     @ApiModelProperty(value = "응답데이터", dataType = "object")
-    private T data;
+    private final T data;
 
     @ApiModelProperty(value = "응답시간", dataType = "string", example = "2021-11-0 16:55:37")
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss", timezone = "Asia/Seoul")
-    private LocalDateTime serverDatetime;
+    private final LocalDateTime serverDatetime;
 
     protected CommonApiResponse(boolean success, T data) {
         this.success = success;
@@ -29,15 +29,15 @@ public class CommonApiResponse<T> {
         return new CommonApiResponse<>(true, response);
     }
 
-    public static CommonApiResponse error(ErrorInfo errorInfo) {
+    public static CommonApiResponse<ApiError> error(ErrorInfo errorInfo) {
         return new CommonApiResponse<>(false, ApiError.of(errorInfo));
     }
 
-    public static CommonApiResponse error(String code, Object messages) {
+    public static CommonApiResponse<ApiError> error(String code, Object messages) {
         return new CommonApiResponse<>(false, ApiError.of(code, messages));
     }
 
-    public static CommonApiResponse noContent(){
+    public static CommonApiResponse<Object> noContent(){
         return new CommonApiResponse<>(true,null);
     }
 
