@@ -1,10 +1,13 @@
 package com.dayz.review.domain;
 
 
-import com.dayz.common.entity.BaseEntity;
+import com.dayz.common.entity.BaseImageEntity;
 import java.util.Objects;
 import javax.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
@@ -13,18 +16,12 @@ import org.springframework.util.Assert;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "review_image")
-public class ReviewImage extends BaseEntity {
+public class ReviewImage extends BaseImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "review_image_id")
     private Long id;
-
-    @Column(name = "image_file_name", nullable = false)
-    private String imageFileName;
-
-    @Column(name = "sequence")
-    private int sequence;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "review_id", foreignKey = @ForeignKey(name = "fk_review_image_to_review"))
@@ -32,12 +29,10 @@ public class ReviewImage extends BaseEntity {
 
     @Builder
     private ReviewImage(Long id, String imageFileName, int sequence, Review review) {
-        Assert.notNull(imageFileName,"imageFileName must be not null.");
-        Assert.isTrue(sequence > 0,"sequence must be positive.");
+        super(imageFileName, sequence);
 
+        Assert.notNull(review,"review must be not null.");
         this.id = id;
-        this.imageFileName = imageFileName;
-        this.sequence = sequence;
         this.review = review;
     }
 

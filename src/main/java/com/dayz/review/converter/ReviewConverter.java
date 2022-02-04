@@ -1,6 +1,5 @@
 package com.dayz.review.converter;
 
-import com.dayz.common.util.ImageUrlUtil;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.review.domain.Review;
@@ -21,8 +20,6 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReviewConverter {
 
-    private final ImageUrlUtil imageUrlUtil;
-
     public ReadReviewsByMemberResponse.ReviewResult convertToReadReviewsByMemberReviewResult(Review review) {
 
         ReadReviewsByMemberResponse.ReviewResult.MemberResult memberResult =
@@ -41,7 +38,7 @@ public class ReviewConverter {
         List<ReadReviewsByMemberResponse.ReviewResult.ReviewImageResult> reviewImageResult =
             review.getReviewImages().stream()
                 .map(reviewImage -> ReadReviewsByMemberResponse.ReviewResult.ReviewImageResult.of(
-                    imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
+                    reviewImage.getFullImageUrl(),
                     reviewImage.getSequence())
                 ).collect(Collectors.toList());
 
@@ -69,7 +66,7 @@ public class ReviewConverter {
         List<ReviewImageResult> reviewImageResults =
             review.getReviewImages().stream()
                 .map(reviewImage -> ReviewImageResult.of(
-                    imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
+                    reviewImage.getFullImageUrl(),
                     reviewImage.getSequence()
                     )
                 ).collect(Collectors.toList());
@@ -101,7 +98,8 @@ public class ReviewConverter {
         List<ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult> reviewImageResult =
             review.getReviewImages().stream()
                 .map(reviewImage -> ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult.of(
-                    imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()), reviewImage.getSequence()
+                        reviewImage.getFullImageUrl(),
+                        reviewImage.getSequence()
                     )
                 ).collect(Collectors.toList());
 
@@ -125,7 +123,7 @@ public class ReviewConverter {
             registerReviewRequest.getImages().stream().map(
                 imageRequest -> ReviewImage.builder()
                     .sequence(imageRequest.getSequence())
-                    .imageFileName(imageUrlUtil.extractFileName(imageRequest.getImageUrl())).build()
+                    .imageFileName(imageRequest.getImageUrl()).build()
             ).collect(Collectors.toList());
 
         return Review.builder()

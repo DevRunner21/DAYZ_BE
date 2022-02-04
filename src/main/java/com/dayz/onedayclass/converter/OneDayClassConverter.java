@@ -2,7 +2,6 @@ package com.dayz.onedayclass.converter;
 
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.category.domain.Category;
-import com.dayz.common.util.ImageUrlUtil;
 import com.dayz.member.domain.Address;
 import com.dayz.onedayclass.domain.Curriculum;
 import com.dayz.onedayclass.domain.OneDayClass;
@@ -22,8 +21,6 @@ import org.springframework.util.StringUtils;
 @Component
 @RequiredArgsConstructor
 public class OneDayClassConverter {
-
-    private final ImageUrlUtil imageUrlUtil;
 
     public ReadOneDayClassesByCategoryResponse.OneDayClassResult convertToReadOneDayClassesByCategoryResult(
         OneDayClass oneDayClass
@@ -61,7 +58,7 @@ public class OneDayClassConverter {
         OneDayClassImage oneDayClassImage
     ) {
         return ReadOneDayClassDetailResponse.OneDayClassImageResult.of(
-            imageUrlUtil.makeImageUrl(oneDayClassImage.getImageFileName()),
+            oneDayClassImage.getFullImageUrl(),
             oneDayClassImage.getSequence()
         );
     }
@@ -158,7 +155,7 @@ public class OneDayClassConverter {
         OneDayClassImageParam imageRequest) {
         return OneDayClassImage.builder()
             .sequence(imageRequest.getSequence())
-            .imageFileName(imageUrlUtil.extractFileName(imageRequest.getImageUrl()))
+            .imageFileName(imageRequest.getImageUrl())
             .build();
     }
 
@@ -181,13 +178,7 @@ public class OneDayClassConverter {
             return null;
         }
 
-        String firstImageFileName = oneDayClassImages.get(0).getImageFileName();
-
-        if (StringUtils.isEmpty(firstImageFileName)) {
-            return null;
-        }
-
-        return imageUrlUtil.makeImageUrl(firstImageFileName);
+        return oneDayClassImages.get(0).getFullImageUrl();
     }
 
 }

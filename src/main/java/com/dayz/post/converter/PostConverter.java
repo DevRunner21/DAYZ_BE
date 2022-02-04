@@ -1,6 +1,5 @@
 package com.dayz.post.converter;
 
-import com.dayz.common.util.ImageUrlUtil;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.post.domain.Post;
@@ -21,8 +20,6 @@ import org.springframework.util.StringUtils;
 @RequiredArgsConstructor
 public class PostConverter {
 
-    private final ImageUrlUtil imageUrlUtil;
-
     public Post convertToPost(RegisterPostRequest request, Member member, OneDayClass oneDayClass) {
         return Post.builder()
             .content(request.getContent())
@@ -39,7 +36,7 @@ public class PostConverter {
     public PostImage convertToPostImage(PostImageParam postImageParam) {
         return PostImage.builder()
             .sequence(postImageParam.getSequence())
-            .imageFileName(imageUrlUtil.extractFileName(postImageParam.getImageUrl()))
+            .imageFileName(postImageParam.getImageUrl())
             .build();
     }
 
@@ -59,7 +56,7 @@ public class PostConverter {
     public ReadPostDetailResponse.PostImageResult convertToReadPostDetailPostImageResult(
         PostImage postImage) {
         return ReadPostDetailResponse.PostImageResult.of(
-            imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
+            postImage.getFullImageUrl(),
             postImage.getSequence()
         );
     }
@@ -90,7 +87,7 @@ public class PostConverter {
         PostImage postImage
     ) {
         return ReadPostDetailsResponse.PostDetailResult.PostImageResult.of(
-            imageUrlUtil.makeImageUrl(postImage.getImageFileName()),
+            postImage.getFullImageUrl(),
             postImage.getSequence()
         );
     }
@@ -119,13 +116,7 @@ public class PostConverter {
             return null;
         }
 
-        String firstImageFileName = postImages.get(0).getImageFileName();
-
-        if (StringUtils.isEmpty(firstImageFileName)) {
-            return null;
-        }
-
-        return imageUrlUtil.makeImageUrl(firstImageFileName);
+        return postImages.get(0).getFullImageUrl();
     }
 
 }
