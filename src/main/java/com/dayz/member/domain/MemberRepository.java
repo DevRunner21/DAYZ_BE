@@ -12,10 +12,10 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @EntityGraph(attributePaths = {"address", "permission"})
     Optional<Member> findById(@Param("id") Long id);
 
-    @Query("select m from Member m join fetch m.permission where m.username = :username and m.useFlag = true")
+    @Query("select m from Member m join fetch m.permission where m.username = :username")
     Optional<Member> findByUsername(@Param("username") String username);
 
-    @Query("select m from Member m join fetch m.permission  where m.provider = :provider and m.providerId = :providerId and m.useFlag = true")
+    @Query("select m from Member m join fetch m.permission  where m.provider = :provider and m.providerId = :providerId")
     Optional<Member> findByProviderAndProviderId(@Param("provider") String provider, @Param("providerId") String providerId);
 
 }
