@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Where(clause = "use_flag = true")
 @Table(name = "review")
 public class Review extends BaseEntity {
@@ -41,91 +41,37 @@ public class Review extends BaseEntity {
     @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_review_to_onedayclass"))
     private OneDayClass oneDayClass;
 
+    @Builder.Default
     @OrderBy("sequence ASC")
     @OneToMany(mappedBy = "review", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ReviewImage> reviewImages = new ArrayList<>();
 
-
-    public static Review of(Long id,
+    private Review(
+        Long id,
         String content,
         int score,
         Member member,
         OneDayClass oneDayClass,
         List<ReviewImage> reviewImages
     ) {
-        Assert.notNull(id, "Review id 값이 null입니다");
-        Assert.notNull(content, "Review content이 null 입니다.");
-        Assert.isTrue(score >= 0, "Review score 0이상이어야 합니다.");
-        Assert.notNull(member, "Review member null 입니다.");
-        Assert.notNull(oneDayClass, "Review oneDayClass null 입니다.");
+        Assert.notNull(content, "content must be not null.");
+        Assert.isTrue(score > 0, "score must be positive.");
+        Assert.notNull(member, "member must be not null.");
+        Assert.notNull(oneDayClass, "oneDayClass must be not null.");
 
-        Review review = new Review();
-        review.setId(id);
-        review.setContent(content);
-        review.setScore(score);
-        review.changeMember(member);
-        review.changeOneDayClass(oneDayClass);
-        if (Objects.nonNull(reviewImages) && reviewImages.size() > 0) {
-            review.addReviewImage(reviewImages);
+        this.id = id;
+        this.content = content;
+        this.score = score;
+        this.member = member;
+        this.oneDayClass = oneDayClass;
+
+        if (Objects.nonNull(reviewImages) && !reviewImages.isEmpty()) {
+            reviewImages.forEach(this::addReviewImage);
         }
-
-        return review;
     }
 
-    public static Review of(
-        String content,
-        int score,
-        Member member,
-        OneDayClass oneDayClass,
-        List<ReviewImage> reviewImages
-    ) {
-        Assert.notNull(content, "Review content이 null 입니다.");
-        Assert.isTrue(score >= 0, "Review score 0이상이어야 합니다.");
-        Assert.notNull(member, "Review member null 입니다.");
-        Assert.notNull(oneDayClass, "Review oneDayClass null 입니다.");
-
-        Review review = new Review();
-        review.setContent(content);
-        review.setScore(score);
-        review.changeMember(member);
-        review.changeOneDayClass(oneDayClass);
-        if (Objects.nonNull(reviewImages) && reviewImages.size() > 0) {
-            review.addReviewImage(reviewImages);
-        }
-
-        return review;
-    }
-
-    public static Review of(
-        String content,
-        int score,
-        Member member,
-        OneDayClass oneDayClass
-    ) {
-        Assert.notNull(content, "Review content이 null 입니다.");
-        Assert.isTrue(score >= 0, "Review score 0이상이어야 합니다.");
-        Assert.notNull(member, "Review member null 입니다.");
-        Assert.notNull(oneDayClass, "Review oneDayClass null 입니다.");
-
-        Review review = new Review();
-        review.setContent(content);
-        review.setScore(score);
-        review.changeMember(member);
-        review.changeOneDayClass(oneDayClass);
-
-        return review;
-    }
-
-    public void changeMember(Member member) {
-        this.setMember(member);
-    }
-
-    public void changeOneDayClass(OneDayClass oneDayClass) {
-        this.setOneDayClass(oneDayClass);
-    }
-
-    public void addReviewImage(List<ReviewImage> reviewImages) {
-        reviewImages.forEach(reviewImage1 -> reviewImage1.changeReview(this));
+    public void addReviewImage(ReviewImage reviewImage) {
+        reviewImage.changeReview(this);
     }
 
 }

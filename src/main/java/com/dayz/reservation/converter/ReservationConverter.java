@@ -4,10 +4,10 @@ import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.reservation.domain.Reservation;
+import com.dayz.reservation.dto.query.ReservationInfoProjection;
+import com.dayz.reservation.dto.request.RegisterReservationRequest;
 import com.dayz.reservation.dto.response.ReadReservationsByAtelierResponse;
 import com.dayz.reservation.dto.response.ReadReservationsByMemberResponse;
-import com.dayz.reservation.dto.request.RegisterReservationRequest;
-import com.dayz.reservation.dto.query.ReservationInfoProjection;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import lombok.RequiredArgsConstructor;
@@ -24,10 +24,13 @@ public class ReservationConverter {
         Member member,
         OneDayClassTime oneDayClassTime
     ) {
-        return Reservation
-            .of(registerReservationRequest.getPeopleNumber(), registerReservationRequest
-                    .getPrice(),
-                LocalDate.now(), member, oneDayClassTime);
+        return Reservation.builder()
+            .peopleNumber(registerReservationRequest.getPeopleNumber())
+            .price(registerReservationRequest.getPrice())
+            .reservationDate(LocalDate.now())
+            .member(member)
+            .oneDayClassTime(oneDayClassTime)
+            .build();
     }
 
     public ReadReservationsByMemberResponse.ReservationResult convertReadReservationsByMemberReservationResult(

@@ -27,23 +27,12 @@ public abstract class CustomPageResponse<T> {
     @ApiModelProperty(value = "다음 페이지 여부", dataType = "boolean", example = "true")
     private boolean hasNext;
 
-    protected CustomPageResponse(Page tPage) {
+    protected CustomPageResponse(Page<T> tPage) {
         this.totalCount = tPage.getTotalElements();
         this.pageIndex = tPage.getNumber();
         this.pageSize = tPage.getSize();
         this.list = tPage.getContent();
         this.hasNext = tPage.hasNext();
     }
-//
-//    public static CustomPageResponse of(Page tPage) {
-//        CustomPageResponse customPageResponse = new CustomPageResponse();
-//        customPageResponse.setTotalCount(tPage.getTotalElements());
-//        customPageResponse.setPageIndex(tPage.getNumber());
-//        customPageResponse.setPageSize(tPage.getSize());
-//        customPageResponse.setList(tPage.getContent());
-//        customPageResponse.setHasNext(tPage.hasNext());
-//
-//        return customPageResponse;
-//    }
 
 }

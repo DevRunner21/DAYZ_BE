@@ -133,7 +133,7 @@ public class OneDayClassService {
             oneDayClassesByIds = oneDayClassRepository.findOneDayClassesByIds(ids);
         }
 
-        return oneDayClassConverter.converToReadPopularOneDayClassesResponse(oneDayClassesByIds);
+        return oneDayClassConverter.convertToReadPopularOneDayClassesResponse(oneDayClassesByIds);
     }
 
     @Transactional

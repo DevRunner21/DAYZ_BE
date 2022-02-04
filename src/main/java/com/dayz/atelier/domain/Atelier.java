@@ -5,14 +5,14 @@ import com.dayz.member.domain.Address;
 import com.dayz.member.domain.Member;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(
@@ -54,61 +54,41 @@ public class Atelier extends BaseEntity {
     @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_atelier_to_member"))
     private Member member;
 
-    public static Atelier of(Long id, String name, Address address, String detail, String intro,
-        WorkTime workTime, String businessNumber,
-        Member member) {
-        Atelier atelier = new Atelier();
-        atelier.setId(id);
-        atelier.setName(name);
-        atelier.changeAddress(address);
-        atelier.setDetail(detail);
-        atelier.setIntro(intro);
-        atelier.setCallNumber(null);
-        atelier.setWorkTime(workTime);
-        atelier.setBusinessNumber(businessNumber);
-        atelier.changeMember(member);
+    @Builder
+    private Atelier(
+        Long id,
+        String name,
+        Address address,
+        String detail,
+        String intro,
+        String callNumber,
+        WorkTime workTime,
+        String businessNumber,
+        Member member
+    ) {
+        Assert.notNull(name, "name must be net null");
+        Assert.notNull(address, "name must be net null");
+        Assert.notNull(detail, "detail must be net null");
+        Assert.notNull(intro, "intro must be net null");
+        Assert.notNull(callNumber, "callNumber must be net null");
+        Assert.notNull(workTime, "workTime must be net null");
+        Assert.notNull(businessNumber, "businessNumber must be net null");
+        Assert.notNull(member, "member must be net null");
 
-        return atelier;
-    }
-
-    public static Atelier of(String name, Address address, String detail, String intro,
-        WorkTime workTime, String businessNumber, Member member) {
-        Atelier atelier = new Atelier();
-        atelier.setName(name);
-        atelier.changeAddress(address);
-        atelier.setDetail(detail);
-        atelier.setIntro(intro);
-        atelier.setCallNumber(null);
-        atelier.setWorkTime(workTime);
-        atelier.setBusinessNumber(businessNumber);
-        atelier.changeMember(member);
-
-        return atelier;
-    }
-
-    // TODO : CallNumber가 새로 추가됨에 따라 생성자를 하나로 통일 할 필요가 있을 듯
-    // TODO : 정적 생성자는 이렇게 Entity가 비뀜에따라 추가로 생성자를 만들어야함. 이런점에서는 Builder가 확실히 편한듯
-    public static Atelier of(String name, Address address, String detail, String intro,
-        String callNumber, WorkTime workTime, String businessNumber, Member member) {
-        Atelier atelier = new Atelier();
-        atelier.setName(name);
-        atelier.changeAddress(address);
-        atelier.setDetail(detail);
-        atelier.setIntro(intro);
-        atelier.setCallNumber(callNumber);
-        atelier.setWorkTime(workTime);
-        atelier.setBusinessNumber(businessNumber);
-        atelier.changeMember(member);
-
-        return atelier;
-    }
-
-    public void changeAddress(Address address) {
-        this.setAddress(address);
+        this.id = id;
+        this.name = name;
+        this.address = address;
+        this.detail = detail;
+        this.intro = intro;
+        this.callNumber = callNumber;
+        this.workTime = workTime;
+        this.businessNumber = businessNumber;
+        changeMember(member);
     }
 
     public void changeMember(Member member) {
-        this.setMember(member);
+        this.member = member;
+        member.changeAtelier(this);
     }
 
 }

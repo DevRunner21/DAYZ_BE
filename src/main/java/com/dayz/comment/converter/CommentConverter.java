@@ -10,7 +10,11 @@ import org.springframework.stereotype.Component;
 public class CommentConverter {
 
     public Comment convertToComment(String content, Post post, Member member) {
-        return Comment.of(content, post, member);
+        return Comment.builder()
+            .content(content)
+            .post(post)
+            .member(member)
+            .build();
     }
 
     public ReadCommentsResponse.CommentResult convertToReadCommentsResult(Comment comment) {

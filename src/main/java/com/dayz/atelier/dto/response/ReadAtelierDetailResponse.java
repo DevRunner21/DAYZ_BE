@@ -36,14 +36,16 @@ public class ReadAtelierDetailResponse {
     @ApiModelProperty(value = "공방 썸네일 이미지 URL", dataType = "string", example = "https://dayz-s3.s3.ap-northeast-2.amazonaws.com/dochi.jpg")
     private String imageUrl;
 
-    public static ReadAtelierDetailResponse of(Long atelierId,
+    public static ReadAtelierDetailResponse of(
+        Long atelierId,
         String name,
         String intro,
         String address,
         String callNumber,
         String startTime,
         String endTime,
-        String imageUrl) {
+        String imageUrl
+    ) {
         ReadAtelierDetailResponse readAtelierDetailResponse = new ReadAtelierDetailResponse();
         readAtelierDetailResponse.setAtelierId(atelierId);
         readAtelierDetailResponse.setName(name);

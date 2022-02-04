@@ -5,20 +5,21 @@ import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClass;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "post")
+@Builder
 public class Post extends BaseEntity {
 
     @Id
@@ -37,47 +38,24 @@ public class Post extends BaseEntity {
     @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_post_to_onedayclass"))
     private OneDayClass oneDayClass;
 
+    @Builder.Default
     @OrderBy("sequence ASC")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
 
-    public static Post of(Long id, String content, Member member, OneDayClass oneDayClass,
-        List<PostImage> postImages) {
-        Assert.notNull(content, "Content must not be null.");
-        Assert.notNull(member, "Member must not be null.");
-        Assert.notNull(oneDayClass, "OneDayClass must not be null.");
+    private Post(Long id, String content, Member member, OneDayClass oneDayClass, List<PostImage> postImages) {
+        Assert.notNull(content, "content must be not null");
+        Assert.notNull(member, "member must be not null");
+        Assert.notNull(oneDayClass, "oneDayClass must be not null");
 
-        Post post = new Post();
-        post.setId(id);
-        post.setContent(content);
-        post.changeMember(member);
-        post.changeOneDayClass(oneDayClass);
-        postImages.forEach(post::addPostImage);
+        this.id = id;
+        this.content = content;
+        this.member = member;
+        this.oneDayClass = oneDayClass;
 
-        return post;
-    }
-
-    public static Post of(String content, Member member, OneDayClass oneDayClass,
-        List<PostImage> postImages) {
-        Assert.notNull(content, "Content must not be null.");
-        Assert.notNull(member, "Member must not be null.");
-        Assert.notNull(oneDayClass, "oneDayClass must not be null.");
-
-        Post post = new Post();
-        post.setContent(content);
-        post.changeMember(member);
-        post.changeOneDayClass(oneDayClass);
-        postImages.forEach(post::addPostImage);
-
-        return post;
-    }
-
-    public void changeMember(Member member) {
-        this.setMember(member);
-    }
-
-    public void changeOneDayClass(OneDayClass oneDayClass) {
-        this.setOneDayClass(oneDayClass);
+        if (Objects.nonNull(postImages) && !postImages.isEmpty()) {
+            postImages.forEach(this::addPostImage);
+        }
     }
 
     public void addPostImage(PostImage postImage) {

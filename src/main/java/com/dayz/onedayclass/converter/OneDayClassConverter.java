@@ -2,21 +2,16 @@ package com.dayz.onedayclass.converter;
 
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.category.domain.Category;
-import com.dayz.common.enums.TimeStatus;
 import com.dayz.common.util.ImageUrlUtil;
 import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.Address;
 import com.dayz.onedayclass.domain.Curriculum;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassImage;
-import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.CurriculumParam;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.OneDayClassImageParam;
-import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.OneDayClassTimeParam;
 import com.dayz.onedayclass.dto.response.*;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -116,17 +111,17 @@ public class OneDayClassConverter {
         );
     }
 
-    public ReadPopularOneDayClassesResponse converToReadPopularOneDayClassesResponse(
+    public ReadPopularOneDayClassesResponse convertToReadPopularOneDayClassesResponse(
         List<OneDayClass> oneDayClasses
     ) {
         return ReadPopularOneDayClassesResponse.of(
             oneDayClasses.stream()
-                .map(this::converToReadPopularOneDayClassesOneDayClassResult)
+                .map(this::convertToReadPopularOneDayClassesOneDayClassResult)
                 .collect(Collectors.toList())
         );
     }
 
-    public ReadPopularOneDayClassesResponse.OneDayClassResult converToReadPopularOneDayClassesOneDayClassResult(
+    public ReadPopularOneDayClassesResponse.OneDayClassResult convertToReadPopularOneDayClassesOneDayClassResult(
         OneDayClass oneDayClasses
     ) {
         return ReadPopularOneDayClassesResponse.OneDayClassResult.of(
@@ -137,52 +132,44 @@ public class OneDayClassConverter {
         );
     }
 
-    public OneDayClass convertToOneDayClass(RegisterOneDayClassRequest request, Category category,
-        Atelier atelier) {
-        return OneDayClass.of(
-            request.getName(),
-            request.getIntro(),
-            request.getPrice(),
-            timeUtil.timeStringToSecond(request.getRequiredTime()),
-            request.getMaxPeopleNumber(),
-            category,
-            atelier,
-            request.getImages().stream()
-                .map(this::convertToOneDayClassImage)
-                .collect(Collectors.toList()),
-            request.getCurriculums().stream()
+    public OneDayClass convertToOneDayClass(
+        RegisterOneDayClassRequest request,
+        Category category,
+        Atelier atelier
+    ) {
+        return OneDayClass.builder()
+            .name(request.getName())
+            .intro(request.getIntro())
+            .price(request.getPrice())
+            .requiredTime(timeUtil.timeStringToSecond(request.getRequiredTime()))
+            .maxPeopleNumber(request.getMaxPeopleNumber())
+            .category(category)
+            .atelier(atelier)
+            .oneDayClassImages(
+                request.getImages().stream()
+                    .map(this::convertToOneDayClassImage)
+                    .collect(Collectors.toList())
+            )
+            .curriculums(request.getCurriculums().stream()
                 .map(this::convertToCurriculum)
-                .collect(Collectors.toList())
-        );
+                .collect(Collectors.toList()))
+            .build();
     }
 
     public OneDayClassImage convertToOneDayClassImage(
         OneDayClassImageParam imageRequest) {
-        return OneDayClassImage.of(
-            imageUrlUtil.extractFileName(imageRequest.getImageUrl()),
-            imageRequest.getSequence()
-        );
+        return OneDayClassImage.builder()
+            .sequence(imageRequest.getSequence())
+            .imageFileName(imageUrlUtil.extractFileName(imageRequest.getImageUrl()))
+            .build();
     }
 
-    public Curriculum convertToCurriculum(
-        CurriculumParam curriculumParam) {
-        return Curriculum.of(
-            curriculumParam.getStep(),
-            curriculumParam.getContent()
-        );
+    public Curriculum convertToCurriculum(CurriculumParam curriculumParam) {
+        return Curriculum.builder()
+            .step(curriculumParam.getStep())
+            .content(curriculumParam.getContent())
+            .build();
     }
-
-    public OneDayClassTime convertToOneDayClassTime(
-        OneDayClassTimeParam oneDayClassTimeParam) {
-        return OneDayClassTime.of(
-            LocalDate
-                .parse(oneDayClassTimeParam.getDate(), DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-            timeUtil.timeStringToSecond(oneDayClassTimeParam.getStartTime()),
-            timeUtil.timeStringToSecond(oneDayClassTimeParam.getEndTime()),
-            TimeStatus.PROCESS
-        );
-    }
-
 
     private String getFullAddress(Address address, String detail) {
         String cityName = address.getCityName();

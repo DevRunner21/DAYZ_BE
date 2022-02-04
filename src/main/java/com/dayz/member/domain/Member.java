@@ -5,18 +5,16 @@ import com.dayz.common.entity.BaseEntity;
 import com.dayz.follow.domain.Follow;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 @Where(clause = "use_flag = true")
 @Table(name = "member")
 public class Member extends BaseEntity {
@@ -49,62 +47,42 @@ public class Member extends BaseEntity {
     @OneToOne(optional = false, mappedBy = "member")
     private Atelier atelier;
 
+    @Builder.Default
     @OneToMany(mappedBy = "member")
     private List<Follow> follows = new ArrayList<>();
 
-    public static Member of(
+    private Member(
         Long id,
         String username,
         String provider,
         String providerId,
         String profileImageUrl,
         Permission permission,
-        Address address
-    ) {
-        Assert.notNull(id, "id must not be null!");
-        Assert.notNull(username, "username must not be null!");
-        Assert.notNull(provider, "provider must not be null!");
-        Assert.notNull(providerId, "providerId must not be null!");
-        Assert.notNull(permission, "permission must not be null!");
-
-        Member member = new Member();
-        member.setId(id);
-        member.setUsername(username);
-        member.setProvider(provider);
-        member.setProviderId(providerId);
-        member.setProfileImageUrl(profileImageUrl);
-        member.setPermission(permission);
-        member.changeAddress(address);
-
-        return member;
-    }
-
-    public static Member of(
-        String username,
-        String provider,
-        String providerId,
-        String profileImageUrl,
-        Permission permission,
-        Address address
+        Address address,
+        Atelier atelier,
+        List<Follow> follows
     ) {
         Assert.notNull(username, "username must not be null!");
         Assert.notNull(provider, "provider must not be null!");
         Assert.notNull(providerId, "providerId must not be null!");
         Assert.notNull(permission, "permission must not be null!");
 
-        Member member = new Member();
-        member.setUsername(username);
-        member.setProvider(provider);
-        member.setProviderId(providerId);
-        member.setProfileImageUrl(profileImageUrl);
-        member.setPermission(permission);
-        member.changeAddress(address);
+        this.id = id;
+        this.username = username;
+        this.provider = provider;
+        this.providerId = providerId;
+        this.profileImageUrl = profileImageUrl;
+        changePermission(permission);
+        changeAddress(address);
+        changeAtelier(atelier);
 
-        return member;
+        if (Objects.nonNull(follows) && !follows.isEmpty()) {
+            follows.forEach(this::addFollow);
+        }
     }
 
     public void changeAddress(Address address) {
-        this.setAddress(address);
+        this.address = address;
     }
 
     public void changeAtelier(Atelier atelier) {
@@ -112,15 +90,15 @@ public class Member extends BaseEntity {
     }
 
     public void changePermission(Permission permission) {
-        this.setPermission(permission);
+        this.permission = permission;
     }
 
-    public void changeUserName(String userName) {
-        this.setUsername(userName);
+    public void changeUserName(String name) {
+        this.username = name;
     }
 
-    public void changeProfileImageUrl(String profileImageUrl) {
-        this.setProfileImageUrl(profileImageUrl);
+    public void changeProfileImageUrl(String imageUrl) {
+        this.profileImageUrl = imageUrl;
     }
 
     public void addFollow(Follow follow) {

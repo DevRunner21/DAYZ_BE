@@ -18,6 +18,7 @@ import com.dayz.common.jwt.JwtAuthenticationToken;
 import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.*;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -69,34 +70,49 @@ public class AtelierService {
             throw new BusinessException(ErrorInfo.DUPLICATED_ATELIER_ID);
         }
 
-        Atelier newAtelier = Atelier.of(
-            request.getName(),
-            address,
-            request.getAddress().getDetail(),
-            request.getIntro(),
-            request.getCallNumber(),
-            WorkTime.of(timeUtil.timeStringToSecond(request.getWorkStartTime()),
-                timeUtil.timeStringToSecond(request.getWorkEndTime())),
-            request.getBusinessNumber(),
-            member
-        );
+        Atelier newAtelier = Atelier.builder()
+            .name(request.getName())
+            .address(address)
+            .detail(request.getAddress().getDetail())
+            .intro(request.getIntro())
+            .callNumber(request.getCallNumber())
+            .workTime(
+                WorkTime.builder()
+                    .startTime(timeUtil.timeStringToSecond(request.getWorkStartTime()))
+                    .endTime(timeUtil.timeStringToSecond(request.getWorkEndTime()))
+                    .build()
+            )
+            .businessNumber(request.getBusinessNumber())
+            .member(member)
+            .build();
 
         Atelier savedAtelier = atelierRepository.save(newAtelier);
 
-        Permission permission = permissionRepository.findByName("ROLE_" + Auth.ATELIER.getValue())
-            .get();
+        Permission permission = permissionRepository.findByName("ROLE_" + Auth.ATELIER.getValue()).get();
         member.changePermission(permission);
 
-        String token = jwt
-            .sign(Jwt.Claims.from(member.getId(), member.getProviderId(), member.getUsername(),
-                new String[]{member.getPermission().getName()}));
+        String token = jwt.sign(
+            Jwt.Claims.from(
+                member.getId(),
+                member.getProviderId(),
+                member.getUsername(),
+                new String[]{member.getPermission().getName()}
+            )
+        );
 
-        List<SimpleGrantedAuthority> authorities = Arrays
-            .asList(new SimpleGrantedAuthority(member.getPermission().getName()));
+        List<SimpleGrantedAuthority> authorities =
+            Collections.singletonList(new SimpleGrantedAuthority(member.getPermission().getName()));
+
         JwtAuthenticationToken authentication = new JwtAuthenticationToken(
-            new JwtAuthentication(member.getId(), member.getProviderId(), token,
-                member.getUsername()),
-            null, authorities);
+            new JwtAuthentication(
+                member.getId(),
+                member.getProviderId(),
+                token,
+                member.getUsername()
+            ),
+            null,
+            authorities
+        );
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         return atelierConverter.convertToSaveAtelierResponse(savedAtelier.getId(), token);
@@ -126,8 +142,8 @@ public class AtelierService {
         Member foundMember = memberRepository.findById(memberId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
-        Page<SearchAtelierResponse.AtelierResult> searchOneDayClassResponsePage = atelierRepository
-            .searchAteliers(
+        Page<SearchAtelierResponse.AtelierResult> searchOneDayClassResponsePage =
+            atelierRepository.searchAteliers(
                 foundMember.getAddress().getCityId(),
                 foundMember.getAddress().getRegionId(),
                 keyword,

@@ -69,8 +69,8 @@ public class ReviewConverter {
         List<ReviewImageResult> reviewImageResults =
             review.getReviewImages().stream()
                 .map(reviewImage -> ReviewImageResult.of(
-                        imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
-                        reviewImage.getSequence()
+                    imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()),
+                    reviewImage.getSequence()
                     )
                 ).collect(Collectors.toList());
 
@@ -101,7 +101,7 @@ public class ReviewConverter {
         List<ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult> reviewImageResult =
             review.getReviewImages().stream()
                 .map(reviewImage -> ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult.of(
-                        imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()), reviewImage.getSequence()
+                    imageUrlUtil.makeImageUrl(reviewImage.getImageFileName()), reviewImage.getSequence()
                     )
                 ).collect(Collectors.toList());
 
@@ -121,17 +121,20 @@ public class ReviewConverter {
         Member member,
         OneDayClass oneDayClass
     ) {
-        List<ReviewImage> reviewImages = registerReviewRequest.getImages().stream().map(
-            imageRequest -> ReviewImage.of(imageUrlUtil.extractFileName(imageRequest.getImageUrl()),
-                imageRequest.getSequence())).collect(Collectors.toList());
+        List<ReviewImage> reviewImages =
+            registerReviewRequest.getImages().stream().map(
+                imageRequest -> ReviewImage.builder()
+                    .sequence(imageRequest.getSequence())
+                    .imageFileName(imageUrlUtil.extractFileName(imageRequest.getImageUrl())).build()
+            ).collect(Collectors.toList());
 
-        return Review.of(
-            registerReviewRequest.getContent(),
-            registerReviewRequest.getScore(),
-            member,
-            oneDayClass,
-            reviewImages
-        );
+        return Review.builder()
+            .content(registerReviewRequest.getContent())
+            .score(registerReviewRequest.getScore())
+            .member(member)
+            .oneDayClass(oneDayClass)
+            .reviewImages(reviewImages)
+            .build();
     }
 
 }

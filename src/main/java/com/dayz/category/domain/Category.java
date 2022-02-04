@@ -3,14 +3,14 @@ package com.dayz.category.domain;
 import com.dayz.common.entity.BaseEntity;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(
@@ -29,19 +29,12 @@ public class Category extends BaseEntity {
     @Column(name = "name", nullable = false, length = 50)
     private String name;
 
-    public static Category of(Long id, String name) {
-        Category category = new Category();
-        category.setId(id);
-        category.setName(name);
+    @Builder
+    private Category(Long id, String name) {
+        Assert.notNull(name, "name must be not null");
 
-        return category;
-    }
-
-    public static Category of(String name) {
-        Category category = new Category();
-        category.setName(name);
-
-        return category;
+        this.id = id;
+        this.name = name;
     }
 
 }

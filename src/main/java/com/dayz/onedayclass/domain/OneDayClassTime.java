@@ -1,23 +1,21 @@
 package com.dayz.onedayclass.domain;
 
 import com.dayz.common.entity.BaseEntity;
-import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.enums.TimeStatus;
-import com.dayz.common.exception.BusinessException;
 import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import javax.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.util.Assert;
 
 @Entity
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
 @Table(name = "onedayclass_time")
@@ -44,56 +42,24 @@ public class OneDayClassTime extends BaseEntity {
     @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_time_to_onedayclass"))
     private OneDayClass oneDayClass;
 
-    public static OneDayClassTime of(Long id,
-        LocalDate classDate,
-        Long startTime,
-        Long endTime,
-        TimeStatus status,
-        OneDayClass oneDayClass
-    ) {
-        OneDayClassTime oneDayClassTime = new OneDayClassTime();
-        oneDayClassTime.setId(id);
-        oneDayClassTime.setClassDate(classDate);
-        oneDayClassTime.setStartTime(startTime);
-        oneDayClassTime.setEndTime(endTime);
-        oneDayClassTime.setStatus(status);
-        oneDayClassTime.changeOneDayClass(oneDayClass);
+    @Builder
+    private OneDayClassTime(Long id, LocalDate classDate, Long startTime, Long endTime, TimeStatus status, OneDayClass oneDayClass) {
+        Assert.notNull(classDate, "classDate must be not null");
+        Assert.notNull(startTime, "startTime must be not null");
+        Assert.notNull(endTime, "endTime must be not null");
+        Assert.notNull(status, "status must be not null");
+        Assert.notNull(oneDayClass, "oneDayClass must be not null");
 
-        return oneDayClassTime;
-    }
-
-    public static OneDayClassTime of(LocalDate classDate,
-        Long startTime,
-        Long endTime,
-        TimeStatus status,
-        OneDayClass oneDayClass
-    ) {
-        OneDayClassTime oneDayClassTime = new OneDayClassTime();
-        oneDayClassTime.setClassDate(classDate);
-        oneDayClassTime.setStartTime(startTime);
-        oneDayClassTime.setEndTime(endTime);
-        oneDayClassTime.setStatus(status);
-        oneDayClassTime.changeOneDayClass(oneDayClass);
-
-        return oneDayClassTime;
-    }
-
-    public static OneDayClassTime of(LocalDate classDate,
-        Long startTime,
-        Long endTime,
-        TimeStatus status
-    ) {
-        OneDayClassTime oneDayClassTime = new OneDayClassTime();
-        oneDayClassTime.setClassDate(classDate);
-        oneDayClassTime.setStartTime(startTime);
-        oneDayClassTime.setEndTime(endTime);
-        oneDayClassTime.setStatus(status);
-
-        return oneDayClassTime;
+        this.id = id;
+        this.classDate = classDate;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.status = status;
+        changeOneDayClass(oneDayClass);
     }
 
     public void changeOneDayClass(OneDayClass oneDayClass) {
-        this.setOneDayClass(oneDayClass);
+        this.oneDayClass = oneDayClass;
     }
 
     public boolean validateReservationPossibleDateTime() {
@@ -103,22 +69,14 @@ public class OneDayClassTime extends BaseEntity {
         ).toSeconds();
 
         // 예약 가능 날짜, 시간이 지난경우
-        if (secondOfOverDateTime > 0) {
-            return false;
-        }
-        return true;
+        return secondOfOverDateTime <= 0;
     }
 
     public boolean validateReservationPossiblePeopleNumber(int requestPeopleNumber, int currentReservationPeopleNumber) {
         int possibleReservationPeopleNumber =
             oneDayClass.getMaxPeopleNumber() - currentReservationPeopleNumber;
 
-        // 예약 가능한 인원을 초과한 경우
-        if (requestPeopleNumber > possibleReservationPeopleNumber) {
-            return false;
-        }
-
-        return true;
+        return requestPeopleNumber <= possibleReservationPeopleNumber;
     }
 
 }

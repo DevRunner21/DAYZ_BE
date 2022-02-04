@@ -2,13 +2,10 @@ package com.dayz.atelier.domain;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+import org.springframework.util.Assert;
 
 @Getter
-@Setter(AccessLevel.PRIVATE)
 @NoArgsConstructor
 @Embeddable
 public class WorkTime {
@@ -19,12 +16,13 @@ public class WorkTime {
     @Column(name = "work_end_time")
     private Long endTime;
 
-    public static WorkTime of(Long startTime, Long endTime) {
-        WorkTime workTime = new WorkTime();
-        workTime.setStartTime(startTime);
-        workTime.setEndTime(endTime);
+    @Builder
+    private WorkTime(Long startTime, Long endTime) {
+        Assert.notNull(startTime, "startTime must be not null.");
+        Assert.notNull(endTime, "endTime must be not null.");
 
-        return workTime;
+        this.startTime = startTime;
+        this.endTime = endTime;
     }
 
 }
