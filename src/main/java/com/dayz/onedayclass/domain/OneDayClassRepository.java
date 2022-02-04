@@ -34,20 +34,20 @@ public interface OneDayClassRepository extends JpaRepository<OneDayClass, Long>,
            + "join fetch o.category "
            + "join fetch o.atelier "
            + "where o.id = :classId "
-           + "and o.useFlag = true")
+    )
     Optional<OneDayClass> findOneDayClassById(@Param("classId") Long classId);
 
     @Query(
             "select o from OneDayClass o "
            + "where o.atelier.id = :atelierId "
-           + "and o.useFlag = true"
     )
     Page<OneDayClass> findOneDayClassByAtelierId(@Param("atelierId") Long atelierId, Pageable pageRequest);
 
     @Query("select o from OneDayClass o"
            + " join fetch o.atelier"
            + " join fetch o.category"
-           + " where o.id in :ids")
+           + " where o.id in :ids"
+    )
     List<OneDayClass> findOneDayClassesByIds(@Param("ids") List<Long> ids);
 
     @Query(value = SQL_findPopularOneDayClassIds, nativeQuery = true)

@@ -137,8 +137,7 @@ public class OneDayClassController {
     public CommonApiResponse<ReadPopularOneDayClassesResponse> readPopularOneDayClasses(
         @ApiIgnore @LoginMemberId Long memberId
     ) {
-        ReadPopularOneDayClassesResponse response = oneDayClassService
-            .getPopularOneDayClasses(memberId);
+        ReadPopularOneDayClassesResponse response = oneDayClassService.getPopularOneDayClasses(memberId);
 
         return CommonApiResponse.<ReadPopularOneDayClassesResponse>ok(response);
     }

@@ -73,8 +73,10 @@ public class OneDayClassService {
 
         double avgScore = reviewRepository.getReviewAverageByOneDayClass(classId);
 
-        return oneDayClassConverter.convertToReadOneDayClassDetailResponse(foundOneDayClass,
-            avgScore);
+        return oneDayClassConverter.convertToReadOneDayClassDetailResponse(
+            foundOneDayClass,
+            avgScore
+        );
     }
 
     public ReadOneDayClassesByAtelierResponse getOneDayClassesByAtelier(
@@ -108,7 +110,6 @@ public class OneDayClassService {
             ).map(oneDayClassConverter::convertSearchOneDayClassOneDayClassResult);
 
         return SearchOneDayClassResponse.of(searchOneDayClassResponsePage);
-
     }
 
     public ReadPopularOneDayClassesResponse getPopularOneDayClasses(Long memberId) {
@@ -126,7 +127,8 @@ public class OneDayClassService {
             address.getRegionId(),
             startDate,
             endDate,
-            POPULAR_ONEDAYCLASS_LIMIT);
+            POPULAR_ONEDAYCLASS_LIMIT
+        );
 
         List<OneDayClass> oneDayClassesByIds = new ArrayList<OneDayClass>();
         if ((Objects.nonNull(ids)) && (ids.size() > 0)) {
@@ -144,8 +146,11 @@ public class OneDayClassService {
         Category foundCategory = categoryRepository.findById(request.getCategoryId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.CATEGORY_NOT_FOUND));
 
-        OneDayClass newOneDayClass = oneDayClassConverter
-            .convertToOneDayClass(request, foundCategory, foundAtelier);
+        OneDayClass newOneDayClass = oneDayClassConverter.convertToOneDayClass(
+            request,
+            foundCategory,
+            foundAtelier
+        );
 
         OneDayClass savedOneDayClass = oneDayClassRepository.save(newOneDayClass);
 
