@@ -15,13 +15,12 @@ import com.dayz.common.exception.BusinessException;
 import com.dayz.common.jwt.Jwt;
 import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.common.jwt.JwtAuthenticationToken;
-import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.*;
+import java.time.LocalTime;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -45,7 +44,7 @@ public class AtelierService {
 
     private final Jwt jwt;
 
-    private final TimeUtil timeUtil;
+//    private final TimeUtil timeUtil;
 
     public ReadAteliersResponse getAteliers(Long memberId, Pageable pageRequest) {
         Member foundMember = memberRepository.findById(memberId)
@@ -144,8 +143,8 @@ public class AtelierService {
             .callNumber(request.getCallNumber())
             .workTime(
                 WorkTime.builder()
-                    .startTime(timeUtil.timeStringToSecond(request.getWorkStartTime()))
-                    .endTime(timeUtil.timeStringToSecond(request.getWorkEndTime()))
+                    .startTime(LocalTime.parse(request.getWorkStartTime()))
+                    .endTime(LocalTime.parse(request.getWorkEndTime()))
                     .build()
             )
             .businessNumber(request.getBusinessNumber())

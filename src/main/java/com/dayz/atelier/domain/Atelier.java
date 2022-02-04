@@ -88,7 +88,7 @@ public class Atelier extends BaseEntity {
 
     public void changeMember(Member member) {
         this.member = member;
-        member.changeAtelier(this);
+//        member.changeAtelier(this);
     }
 
 }

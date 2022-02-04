@@ -2,6 +2,7 @@ package com.dayz.atelier.dto.request;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalTime;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
@@ -10,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Getter
 @Setter
@@ -46,9 +48,14 @@ public class RegisterAtelierRequest {
     @Pattern(regexp = "^(([0-1]{1}[0-9]{1})|([2]{1}[0-3]{1})):(([0-5]{1}[0-9]{1}))$", message = "workEndTime must be HH:mm format")
     private String workEndTime;
 
-    public static RegisterAtelierRequest of(String name, String businessNumber,
+    public static RegisterAtelierRequest of(
+        String name,
+        String businessNumber,
         AddressParam address,
-        String callNumber, String workStartTime, String workEndTime) {
+        String callNumber,
+        String workStartTime,
+        String workEndTime
+    ) {
         RegisterAtelierRequest registerAtelierRequest = new RegisterAtelierRequest();
         registerAtelierRequest.setName(name);
         registerAtelierRequest.setBusinessNumber(businessNumber);
@@ -59,6 +66,8 @@ public class RegisterAtelierRequest {
 
         return registerAtelierRequest;
     }
+
+
 
     @ApiModel(value = "RegisterAtelierRequest.AddressParam")
     @Getter

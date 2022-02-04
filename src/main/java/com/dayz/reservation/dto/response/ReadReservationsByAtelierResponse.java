@@ -1,8 +1,11 @@
 package com.dayz.reservation.dto.response;
 
 import com.dayz.common.dto.CustomPageResponse;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -35,16 +38,20 @@ public class ReadReservationsByAtelierResponse extends CustomPageResponse<ReadRe
         private String className;
 
         @ApiModelProperty(value = "예약날짜", dataType = "string", example = "2022-01-07")
-        private String reservationDate;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        private LocalDate reservationDate;
 
         @ApiModelProperty(value = "클래스 시작 날짜", dataType = "string", example = "2022-01-09")
-        private String classDate;
+        @JsonFormat(pattern = "yyyy-MM-dd")
+        private LocalDate classDate;
 
         @ApiModelProperty(value = "수업 시작 시간", dataType = "string", example = "13:30")
-        private String startTime;
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime startTime;
 
         @ApiModelProperty(value = "수업 종료 시간", dataType = "string", example = "14:30")
-        private String endTime;
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime endTime;
 
         @ApiModelProperty(value = "예약 상태", dataType = "string", example = "ACCEPTED")
         private String status;
@@ -52,13 +59,13 @@ public class ReadReservationsByAtelierResponse extends CustomPageResponse<ReadRe
         public static ReservationResult of(
             Long reservationId,
             String className,
-            String reservationDate,
-            String classDate,
-            String startTime,
-            String endTime,
+            LocalDate reservationDate,
+            LocalDate classDate,
+            LocalTime startTime,
+            LocalTime endTime,
             String status
         ) {
-            ReservationResult reservationResult = new ReservationResult();
+            ReadReservationsByAtelierResponse.ReservationResult reservationResult = new ReservationResult();
             reservationResult.setReservationId(reservationId);
             reservationResult.setClassName(className);
             reservationResult.setReservationDate(reservationDate);

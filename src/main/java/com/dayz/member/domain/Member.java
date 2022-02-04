@@ -86,7 +86,7 @@ public class Member extends BaseEntity {
     }
 
     public void changeAtelier(Atelier atelier) {
-        atelier.changeMember(this);
+        this.atelier = atelier;
     }
 
     public void changePermission(Permission permission) {

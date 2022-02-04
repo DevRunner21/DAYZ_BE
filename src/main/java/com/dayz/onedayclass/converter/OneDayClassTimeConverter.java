@@ -1,10 +1,10 @@
 package com.dayz.onedayclass.converter;
 
 import com.dayz.common.enums.TimeStatus;
-import com.dayz.common.util.TimeUtil;
 import com.dayz.onedayclass.dto.response.ReadOneDayClassTimesByDateResponse;
 import com.dayz.onedayclass.dto.query.CurrentOneDayClassTime;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +13,6 @@ import org.springframework.stereotype.Component;
 @Component
 @RequiredArgsConstructor
 public class OneDayClassTimeConverter {
-
-    private final TimeUtil timeUtil;
 
     public ReadOneDayClassTimesByDateResponse convertToReadOneDayClassTimesByDateResponse(
         List<CurrentOneDayClassTime> oneDayClassTimes
@@ -32,22 +30,18 @@ public class OneDayClassTimeConverter {
         return ReadOneDayClassTimesByDateResponse.OneDayClassTimeResult.of(
             oneDayClassTime.getClassTimeId(),
             oneDayClassTime.getCurrentPeopleNumber(),
-            timeUtil.secondToTimeString(oneDayClassTime.getStartTime()),
-            timeUtil.secondToTimeString(oneDayClassTime.getEndTime()),
-            ckeckTimeStatus(oneDayClassTime)
+            LocalTime.ofSecondOfDay(oneDayClassTime.getStartTime()),
+            LocalTime.ofSecondOfDay(oneDayClassTime.getEndTime()),
+            checkTimeStatus(oneDayClassTime)
         );
     }
 
-    private boolean ckeckTimeStatus(CurrentOneDayClassTime classTimeQuery) {
+    private boolean checkTimeStatus(CurrentOneDayClassTime classTimeQuery) {
         LocalDateTime now = LocalDateTime.now();
 
-        if (classTimeQuery.getStatus().equals(TimeStatus.PROCESS.getValue())
+        return classTimeQuery.getStatus().equals(TimeStatus.PROCESS.getValue())
             && (classTimeQuery.getCurrentPeopleNumber() < classTimeQuery.getMaxPeopleNumber())
-            && (timeUtil.localTimeToSecond(now.toLocalTime()) < classTimeQuery.getStartTime())
-        ) {
-            return true;
-        }
-        return false;
+            && (now.toLocalTime().toSecondOfDay()) < classTimeQuery.getStartTime();
     }
 
 }

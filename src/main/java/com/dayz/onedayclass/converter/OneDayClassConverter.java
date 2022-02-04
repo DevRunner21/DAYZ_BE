@@ -3,7 +3,6 @@ package com.dayz.onedayclass.converter;
 import com.dayz.atelier.domain.Atelier;
 import com.dayz.category.domain.Category;
 import com.dayz.common.util.ImageUrlUtil;
-import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.Address;
 import com.dayz.onedayclass.domain.Curriculum;
 import com.dayz.onedayclass.domain.OneDayClass;
@@ -12,6 +11,7 @@ import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.CurriculumParam;
 import com.dayz.onedayclass.dto.request.RegisterOneDayClassRequest.OneDayClassImageParam;
 import com.dayz.onedayclass.dto.response.*;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -24,8 +24,6 @@ import org.springframework.util.StringUtils;
 public class OneDayClassConverter {
 
     private final ImageUrlUtil imageUrlUtil;
-
-    private final TimeUtil timeUtil;
 
     public ReadOneDayClassesByCategoryResponse.OneDayClassResult convertToReadOneDayClassesByCategoryResult(
         OneDayClass oneDayClass
@@ -86,8 +84,8 @@ public class OneDayClassConverter {
             atelier.getName(),
             getFullAddress(atelier.getAddress(), atelier.getDetail()),
             atelier.getCallNumber(),
-            timeUtil.secondToTimeString(atelier.getWorkTime().getStartTime()),
-            timeUtil.secondToTimeString(atelier.getWorkTime().getEndTime()),
+            LocalTime.ofSecondOfDay(atelier.getWorkTime().getStartTime()),
+            LocalTime.ofSecondOfDay(atelier.getWorkTime().getEndTime()),
             atelier.getMember().getProfileImageUrl()
         );
     }
@@ -141,7 +139,7 @@ public class OneDayClassConverter {
             .name(request.getName())
             .intro(request.getIntro())
             .price(request.getPrice())
-            .requiredTime(timeUtil.timeStringToSecond(request.getRequiredTime()))
+            .requiredTime((long)LocalTime.parse(request.getRequiredTime()).toSecondOfDay()) // TODO : 맘에 안듬...
             .maxPeopleNumber(request.getMaxPeopleNumber())
             .category(category)
             .atelier(atelier)

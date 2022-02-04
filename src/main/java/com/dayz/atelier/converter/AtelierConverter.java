@@ -4,16 +4,14 @@ import com.dayz.atelier.domain.Atelier;
 import com.dayz.atelier.dto.response.ReadAtelierDetailResponse;
 import com.dayz.atelier.dto.response.ReadAteliersResponse;
 import com.dayz.atelier.dto.response.SaveAtelierResponse;
-import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.Address;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class AtelierConverter {
-
-    private final TimeUtil timeUtil;
 
     public ReadAteliersResponse.AtelierResult convertToReadAteliersAtelierResult(Atelier atelier) {
         return ReadAteliersResponse.AtelierResult.of(
@@ -31,8 +29,8 @@ public class AtelierConverter {
             atelier.getIntro(),
             getFullAddress(atelier.getAddress(), atelier.getDetail()),
             atelier.getCallNumber(),
-            timeUtil.secondToTimeString(atelier.getWorkTime().getStartTime()),
-            timeUtil.secondToTimeString(atelier.getWorkTime().getEndTime()),
+            LocalTime.ofSecondOfDay(atelier.getWorkTime().getStartTime()),
+            LocalTime.ofSecondOfDay(atelier.getWorkTime().getEndTime()),
             atelier.getMember().getProfileImageUrl()
         );
     }

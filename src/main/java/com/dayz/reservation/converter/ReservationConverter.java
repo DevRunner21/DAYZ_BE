@@ -1,6 +1,5 @@
 package com.dayz.reservation.converter;
 
-import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.Member;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.reservation.domain.Reservation;
@@ -9,15 +8,13 @@ import com.dayz.reservation.dto.request.RegisterReservationRequest;
 import com.dayz.reservation.dto.response.ReadReservationsByAtelierResponse;
 import com.dayz.reservation.dto.response.ReadReservationsByMemberResponse;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
+import java.time.LocalTime;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 public class ReservationConverter {
-
-    private final TimeUtil timeUtil;
 
     public Reservation convertToReservation(
         RegisterReservationRequest registerReservationRequest,
@@ -39,10 +36,10 @@ public class ReservationConverter {
         return ReadReservationsByMemberResponse.ReservationResult.of(
             reservationInfoProjection.getReservationId(),
             reservationInfoProjection.getClassName(),
-            convertToDate(reservationInfoProjection.getReservationDate()),
-            convertToDate(reservationInfoProjection.getClassDate()),
-            timeUtil.secondToTimeString(reservationInfoProjection.getStartTime()),
-            timeUtil.secondToTimeString(reservationInfoProjection.getEndTime()),
+            reservationInfoProjection.getReservationDate(),
+            reservationInfoProjection.getClassDate(),
+            LocalTime.ofSecondOfDay(reservationInfoProjection.getStartTime()),
+            LocalTime.ofSecondOfDay(reservationInfoProjection.getEndTime()),
             reservationInfoProjection.getStatus());
     }
 
@@ -52,15 +49,11 @@ public class ReservationConverter {
         return ReadReservationsByAtelierResponse.ReservationResult.of(
             reservationInfoProjection.getReservationId(),
             reservationInfoProjection.getClassName(),
-            convertToDate(reservationInfoProjection.getReservationDate()),
-            convertToDate(reservationInfoProjection.getClassDate()),
-            timeUtil.secondToTimeString(reservationInfoProjection.getStartTime()),
-            timeUtil.secondToTimeString(reservationInfoProjection.getEndTime()),
+            reservationInfoProjection.getReservationDate(),
+            reservationInfoProjection.getClassDate(),
+            LocalTime.ofSecondOfDay(reservationInfoProjection.getStartTime()),
+            LocalTime.ofSecondOfDay(reservationInfoProjection.getEndTime()),
             reservationInfoProjection.getStatus());
-    }
-
-    public String convertToDate(LocalDate date) {
-        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
 }

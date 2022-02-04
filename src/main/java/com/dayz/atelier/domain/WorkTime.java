@@ -1,8 +1,11 @@
 package com.dayz.atelier.domain;
 
+import java.time.LocalTime;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.util.Assert;
 
 @Getter
@@ -17,12 +20,29 @@ public class WorkTime {
     private Long endTime;
 
     @Builder
-    private WorkTime(Long startTime, Long endTime) {
+    private WorkTime(LocalTime startTime, LocalTime endTime) {
         Assert.notNull(startTime, "startTime must be not null.");
         Assert.notNull(endTime, "endTime must be not null.");
 
-        this.startTime = startTime;
-        this.endTime = endTime;
+        this.startTime = convertLocalTimeToSecond(startTime);
+        this.endTime = convertLocalTimeToSecond(endTime);
+    }
+
+//    @Builder
+//    private WorkTime(Long startTime, Long endTime) {
+//        Assert.notNull(startTime, "startTime must be not null.");
+//        Assert.notNull(endTime, "endTime must be not null.");
+//
+//        this.startTime = startTime;
+//        this.endTime = endTime;
+//    }
+
+    public Long convertLocalTimeToSecond(LocalTime nowTime) {
+        return (long) ((nowTime.getHour() * 3600) + (nowTime.getMinute() * 60) + nowTime.getSecond());
+    }
+
+    public LocalTime convertSecondsToLocalTime(Long seconds) {
+        return LocalTime.ofSecondOfDay(seconds);
     }
 
 }

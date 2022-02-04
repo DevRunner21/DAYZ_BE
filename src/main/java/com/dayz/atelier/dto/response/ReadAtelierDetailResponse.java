@@ -1,7 +1,9 @@
 package com.dayz.atelier.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalTime;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -28,10 +30,12 @@ public class ReadAtelierDetailResponse {
     private String callNumber;
 
     @ApiModelProperty(value = "공방 오픈시간", dataType = "string", example = "09:30")
-    private String startTime;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime startTime;
 
     @ApiModelProperty(value = "공방 마감시간", dataType = "string", example = "19:30")
-    private String endTime;
+    @JsonFormat(pattern = "HH:mm")
+    private LocalTime endTime;
 
     @ApiModelProperty(value = "공방 썸네일 이미지 URL", dataType = "string", example = "https://dayz-s3.s3.ap-northeast-2.amazonaws.com/dochi.jpg")
     private String imageUrl;
@@ -42,8 +46,8 @@ public class ReadAtelierDetailResponse {
         String intro,
         String address,
         String callNumber,
-        String startTime,
-        String endTime,
+        LocalTime startTime,
+        LocalTime endTime,
         String imageUrl
     ) {
         ReadAtelierDetailResponse readAtelierDetailResponse = new ReadAtelierDetailResponse();

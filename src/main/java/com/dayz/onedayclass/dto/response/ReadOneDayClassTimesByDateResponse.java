@@ -1,7 +1,9 @@
 package com.dayz.onedayclass.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import java.time.LocalTime;
 import java.util.List;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,20 +39,23 @@ public class ReadOneDayClassTimesByDateResponse {
         private int currentPeopleNumber;
 
         @ApiModelProperty(value = "수업 시작 시간", dataType = "string", example = "13:30")
-        private String startTime;
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime startTime;
 
         @ApiModelProperty(value = "수업 종료 시간", dataType = "string", example = "14:30")
-        private String endTime;
+        @JsonFormat(pattern = "HH:mm")
+        private LocalTime endTime;
 
         @ApiModelProperty(value = "예약 가능 여부", dataType = "boolean", example = "true")
         private Boolean status;
 
         public static OneDayClassTimeResult of(
-                Long classTimeId,
-                int currentPeopleNumber,
-                String startTime,
-                String endTime,
-                Boolean status) {
+            Long classTimeId,
+            int currentPeopleNumber,
+            LocalTime startTime,
+            LocalTime endTime,
+            Boolean status
+        ) {
             OneDayClassTimeResult oneDayClassTimeResult = new OneDayClassTimeResult();
             oneDayClassTimeResult.setClassTimeId(classTimeId);
             oneDayClassTimeResult.setCurrentPeopleNumber(currentPeopleNumber);
