@@ -28,6 +28,27 @@ public class AtelierController {
     private final AtelierService atelierService;
 
     @ApiOperation(
+        value = "공방 목록 조회",
+        notes = "공방 목록을 조회합니다.",
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
+    @ApiResponses({
+        @ApiResponse(code = 200, response = ReadAteliersResponse.class, message = "성공")
+    })
+    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
+    public CommonApiResponse<ReadAteliersResponse> readAteliers(
+        @ApiIgnore @LoginMemberId Long memberId,
+        @Valid ReadAteliersRequest pageRequest
+    ) {
+        ReadAteliersResponse response = atelierService.getAteliers(
+            memberId,
+            pageRequest.convertToPageRequest(Atelier.class)
+        );
+
+        return CommonApiResponse.<ReadAteliersResponse>ok(response);
+    }
+
+    @ApiOperation(
         value = "공방 상세정보 조회",
         notes = "atelierId에 해당하는 공방 상세정보를 조회합니다.",
         produces = MediaType.APPLICATION_JSON_VALUE
@@ -49,29 +70,10 @@ public class AtelierController {
     }
 
     @ApiOperation(
-        value = "공방 목록 조회",
-        notes = "공방 목록을 조회합니다.",
-        produces = MediaType.APPLICATION_JSON_VALUE)
-    @ApiResponses({
-        @ApiResponse(code = 200, response = ReadAteliersResponse.class, message = "성공")
-    })
-    @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public CommonApiResponse<ReadAteliersResponse> readAteliers(
-        @ApiIgnore @LoginMemberId Long memberId,
-        @Valid ReadAteliersRequest pageRequest
-    ) {
-        ReadAteliersResponse response = atelierService.getAteliers(
-            memberId,
-            pageRequest.convertToPageRequest(Atelier.class)
-        );
-
-        return CommonApiResponse.<ReadAteliersResponse>ok(response);
-    }
-
-    @ApiOperation(
         value = "공방 등록",
         notes = "새 공방을 등록합니다.",
-        produces = MediaType.APPLICATION_JSON_VALUE)
+        produces = MediaType.APPLICATION_JSON_VALUE
+    )
     @ApiResponses({
         @ApiResponse(code = 200, response = SaveAtelierResponse.class, message = "성공")
     })
@@ -79,9 +81,9 @@ public class AtelierController {
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CommonApiResponse<SaveAtelierResponse> registerAtelier(
         @ApiIgnore @LoginMemberId Long memberId,
-        @Valid @RequestBody RegisterAtelierRequest request) {
-        SaveAtelierResponse response = atelierService
-            .saveAtelierInfo(memberId, request);
+        @Valid @RequestBody RegisterAtelierRequest request
+    ) {
+        SaveAtelierResponse response = atelierService.saveAtelierInfo(memberId, request);
 
         return CommonApiResponse.<SaveAtelierResponse>ok(response);
     }

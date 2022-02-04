@@ -15,6 +15,15 @@ public class AtelierConverter {
 
     private final TimeUtil timeUtil;
 
+    public ReadAteliersResponse.AtelierResult convertToReadAteliersAtelierResult(Atelier atelier) {
+        return ReadAteliersResponse.AtelierResult.of(
+            atelier.getId(),
+            atelier.getName(),
+            atelier.getMember().getProfileImageUrl(),
+            atelier.getIntro()
+        );
+    }
+
     public ReadAtelierDetailResponse convertToReadAtelierDetailResponse(Atelier atelier) {
         return ReadAtelierDetailResponse.of(
             atelier.getId(),
@@ -37,15 +46,6 @@ public class AtelierConverter {
         String regionName = address.getRegionName();
 
         return cityName + " " + regionName + " " + detail;
-    }
-
-    public ReadAteliersResponse.AtelierResult convertToReadAteliersAtelierResult(Atelier atelier) {
-        return ReadAteliersResponse.AtelierResult.of(
-            atelier.getId(),
-            atelier.getName(),
-            atelier.getMember().getProfileImageUrl(),
-            atelier.getIntro()
-        );
     }
 
 }

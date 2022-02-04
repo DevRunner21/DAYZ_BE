@@ -17,7 +17,6 @@ import com.dayz.common.jwt.JwtAuthentication;
 import com.dayz.common.jwt.JwtAuthenticationToken;
 import com.dayz.common.util.TimeUtil;
 import com.dayz.member.domain.*;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -38,15 +37,29 @@ public class AtelierService {
 
     private final AddressRepository addressRepository;
 
-    private final AtelierConverter atelierConverter;
-
     private final PermissionRepository permissionRepository;
 
     private final MemberRepository memberRepository;
 
+    private final AtelierConverter atelierConverter;
+
     private final Jwt jwt;
 
     private final TimeUtil timeUtil;
+
+    public ReadAteliersResponse getAteliers(Long memberId, Pageable pageRequest) {
+        Member foundMember = memberRepository.findById(memberId)
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+        Address foundMemberAddress = foundMember.getAddress();
+
+        Page<ReadAteliersResponse.AtelierResult> atelierResultPage = atelierRepository.findAteliersByAddress(
+                foundMemberAddress.getCityId(),
+                foundMemberAddress.getRegionId(),
+                pageRequest
+            ).map(atelierConverter::convertToReadAteliersAtelierResult);
+
+        return ReadAteliersResponse.of(atelierResultPage);
+    }
 
     public ReadAtelierDetailResponse getAtelierDetail(Long atelierId) {
         Atelier foundAtelier = atelierRepository.findById(atelierId)
@@ -57,11 +70,10 @@ public class AtelierService {
 
     @Transactional
     public SaveAtelierResponse saveAtelierInfo(Long memberId, RegisterAtelierRequest request) {
-
-        Address address = addressRepository
-            .findByCityIdAndRegionId(request.getAddress().getCityId(),
-                request.getAddress().getRegionId())
-            .orElseThrow(() -> new BusinessException(ErrorInfo.ADDRESS_NOT_FOUND));
+        Address address = addressRepository.findByCityIdAndRegionId(
+            request.getAddress().getCityId(),
+            request.getAddress().getRegionId()
+        ).orElseThrow(() -> new BusinessException(ErrorInfo.ADDRESS_NOT_FOUND));
 
         Member member = memberRepository.findById(memberId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
@@ -70,24 +82,10 @@ public class AtelierService {
             throw new BusinessException(ErrorInfo.DUPLICATED_ATELIER_ID);
         }
 
-        Atelier newAtelier = Atelier.builder()
-            .name(request.getName())
-            .address(address)
-            .detail(request.getAddress().getDetail())
-            .intro(request.getIntro())
-            .callNumber(request.getCallNumber())
-            .workTime(
-                WorkTime.builder()
-                    .startTime(timeUtil.timeStringToSecond(request.getWorkStartTime()))
-                    .endTime(timeUtil.timeStringToSecond(request.getWorkEndTime()))
-                    .build()
-            )
-            .businessNumber(request.getBusinessNumber())
-            .member(member)
-            .build();
-
+        Atelier newAtelier = createNewAtelier(request, address, member);
         Atelier savedAtelier = atelierRepository.save(newAtelier);
 
+        // TODO : 수정이 필요!!
         Permission permission = permissionRepository.findByName("ROLE_" + Auth.ATELIER.getValue()).get();
         member.changePermission(permission);
 
@@ -118,22 +116,6 @@ public class AtelierService {
         return atelierConverter.convertToSaveAtelierResponse(savedAtelier.getId(), token);
     }
 
-    public ReadAteliersResponse getAteliers(Long memberId, PageRequest pageRequest) {
-        Member foundMember = memberRepository.findById(memberId)
-            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
-
-        Address foundMemberAddress = foundMember.getAddress();
-
-        Page<ReadAteliersResponse.AtelierResult> atelierResultPage = atelierRepository
-            .findAteliersByAddress(
-                foundMemberAddress.getCityId(),
-                foundMemberAddress.getRegionId(),
-                pageRequest
-            ).map(atelierConverter::convertToReadAteliersAtelierResult);
-
-        return ReadAteliersResponse.of(atelierResultPage);
-    }
-
     public SearchAtelierResponse searchAtelier(
         Long memberId,
         String keyword,
@@ -151,6 +133,24 @@ public class AtelierService {
             );
 
         return SearchAtelierResponse.of(searchOneDayClassResponsePage);
+    }
+
+    private Atelier createNewAtelier(RegisterAtelierRequest request, Address address, Member member) {
+        return Atelier.builder()
+            .name(request.getName())
+            .address(address)
+            .detail(request.getAddress().getDetail())
+            .intro(request.getIntro())
+            .callNumber(request.getCallNumber())
+            .workTime(
+                WorkTime.builder()
+                    .startTime(timeUtil.timeStringToSecond(request.getWorkStartTime()))
+                    .endTime(timeUtil.timeStringToSecond(request.getWorkEndTime()))
+                    .build()
+            )
+            .businessNumber(request.getBusinessNumber())
+            .member(member)
+            .build();
     }
 
 }
