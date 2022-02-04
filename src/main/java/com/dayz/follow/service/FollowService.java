@@ -36,9 +36,8 @@ public class FollowService {
         Atelier atelier = atelierRepository.findById(atelierId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
 
-        if (followRepository.existsByMemberIdAndAtelierIdAndUseFlagIsTrue(member.getId(), atelier.getId())) {
-            Follow follow = followRepository
-                .findByMemberIdAndAtelierId(member.getId(), atelier.getId());
+        if (followRepository.existsByMemberIdAndAtelierId(member.getId(), atelier.getId())) {
+            Follow follow = followRepository.findFollowByMemberIdAndAtelierId(member.getId(), atelier.getId());
             follow.changeUseFlag(false);
 
             return false;
@@ -47,8 +46,8 @@ public class FollowService {
                 .member(member)
                 .atelier(atelier)
                 .build();
-
             followRepository.save(newFollow);
+
             return true;
         }
     }
@@ -61,7 +60,7 @@ public class FollowService {
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
         Page<ReadFollowsResponse.FollowResult> followResultPage =
-            followRepository.findAllByMemberIdAndUseFlagIsTrue(member.getId(), pageRequest)
+            followRepository.findFollowsByMemberId(member.getId(), pageRequest)
                 .map(followConverter::convertToReadFollowsFollowResult);
 
         return ReadFollowsResponse.of(followResultPage);

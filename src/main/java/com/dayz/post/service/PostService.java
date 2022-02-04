@@ -64,7 +64,7 @@ public class PostService {
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
         // TODO : 애초에 DTO를 쓰던지, 아니면 다른 방법으로 ID 값들만 가져오는게 좋아보임
-        List<Long> ids = followRepository.findFollowsByMemberIdAndUseFlagIsTrue(foundMember.getId())
+        List<Long> ids = followRepository.findFollowsByMemberId(foundMember.getId())
             .stream()
             .map(follow -> follow.getAtelier().getMember().getId())
             .collect(Collectors.toList());

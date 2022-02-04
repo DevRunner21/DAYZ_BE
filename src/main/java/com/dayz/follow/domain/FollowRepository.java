@@ -10,15 +10,14 @@ import org.springframework.data.repository.query.Param;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
-    @Query("select f from Follow f join fetch f.member m join fetch f.atelier a where m.id = :memberId and a.id = :atelierId and f.useFlag = true")
-    Follow findByMemberIdAndAtelierId(@Param("memberId") Long memberId, @Param("atelierId") Long atelierId);
+    @Query("select f from Follow f join fetch f.member m join fetch f.atelier a where m.id = :memberId and a.id = :atelierId")
+    Follow findFollowByMemberIdAndAtelierId(@Param("memberId") Long memberId, @Param("atelierId") Long atelierId);
 
-    boolean existsByMemberIdAndAtelierIdAndUseFlagIsTrue(Long memberId, Long atelier);
+    boolean existsByMemberIdAndAtelierId(Long memberId, Long atelierId);
 
-    // TODO: QueryDSL로 성늘 최적화가 필요함
-    @Query("select f from Follow f where f.member.id = :memberId and f.useFlag = true")
-    Page<Follow> findAllByMemberIdAndUseFlagIsTrue(@Param("memberId") Long memberId, Pageable pageable);
+    @Query("select f from Follow f join fetch f.member m join fetch f.atelier a where m.id = :memberId")
+    Page<Follow> findFollowsByMemberId(@Param("memberId") Long memberId, Pageable pageable);
 
-    List<Follow> findFollowsByMemberIdAndUseFlagIsTrue(@Param("memberId") Long memberId);
+    List<Follow> findFollowsByMemberId(@Param("memberId") Long memberId);
 
 }

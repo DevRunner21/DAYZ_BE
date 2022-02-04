@@ -1,6 +1,5 @@
 package com.dayz.follow.controller;
 
-import com.dayz.atelier.dto.response.ReadAtelierDetailResponse;
 import com.dayz.common.aop.LoginMemberId;
 import com.dayz.common.dto.CommonApiResponse;
 import com.dayz.follow.domain.Follow;
@@ -9,7 +8,10 @@ import com.dayz.follow.dto.request.ReadFollowsRequest;
 import com.dayz.follow.dto.response.ReadFollowsResponse;
 import com.dayz.follow.dto.response.RegisterFollowResponse;
 import com.dayz.follow.service.FollowService;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
