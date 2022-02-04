@@ -1,12 +1,10 @@
 package com.dayz.comment.service;
 
-import com.dayz.atelier.domain.Atelier;
-import com.dayz.atelier.domain.AtelierRepository;
 import com.dayz.comment.converter.CommentConverter;
 import com.dayz.comment.domain.CommentRepository;
+import com.dayz.comment.dto.request.RegisterCommentRequest;
 import com.dayz.comment.dto.response.ReadCommentsResponse;
 import com.dayz.comment.dto.response.ReadCommentsResponse.CommentResult;
-import com.dayz.comment.dto.request.RegisterCommentRequest;
 import com.dayz.common.enums.ErrorInfo;
 import com.dayz.common.exception.BusinessException;
 import com.dayz.member.domain.Member;
@@ -28,15 +26,13 @@ public class CommentService {
 
     private final PostRepository postRepository;
 
-    private final AtelierRepository atelierRepository;
-
     private final MemberRepository memberRepository;
 
     private final CommentConverter commentConverter;
 
-    public ReadCommentsResponse getComments(PageRequest pageRequest, Long postId) {
+    public ReadCommentsResponse getComments( Long postId, PageRequest pageRequest) {
         Page<CommentResult> readCommentsResultPage =
-            commentRepository.findAllByPostId(postId, pageRequest)
+            commentRepository.findCommentsByPostId(postId, pageRequest)
                 .map(commentConverter::convertToReadCommentsResult);
 
         return ReadCommentsResponse.of(readCommentsResultPage);
@@ -44,7 +40,6 @@ public class CommentService {
 
     @Transactional
     public Long save(Long memberId, RegisterCommentRequest request) {
-
         Post foundPost = postRepository.findById(request.getPostId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
 
@@ -52,9 +47,12 @@ public class CommentService {
             .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
 
         return commentRepository.save(
-            commentConverter
-                .convertToComment(request.getContent(), foundPost, foundMember))
-            .getId();
+            commentConverter.convertToComment(
+                request.getContent(),
+                foundPost,
+                foundMember
+            )
+        ).getId();
     }
 
 }

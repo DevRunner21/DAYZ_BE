@@ -5,6 +5,6 @@ import org.springframework.data.domain.Pageable;
 
 public interface QCommentRepository {
 
-    Page<Comment> findAllByPostId(Long postId, Pageable pageRequest);
+    Page<Comment> findCommentsByPostId(Long postId, Pageable pageRequest);
 
 }

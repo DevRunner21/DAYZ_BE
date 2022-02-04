@@ -42,11 +42,10 @@ public class CommentController {
         @PathVariable("postId") Long postId,
         @Valid ReadCommentsRequest request
     ) {
-        ReadCommentsResponse response =
-            commentService.getComments(
-                request.convertToPageRequest(Comment.class),
-                postId
-            );
+        ReadCommentsResponse response = commentService.getComments(
+            postId,
+            request.convertToPageRequest(Comment.class)
+        );
 
         return CommonApiResponse.<ReadCommentsResponse>ok(response);
     }

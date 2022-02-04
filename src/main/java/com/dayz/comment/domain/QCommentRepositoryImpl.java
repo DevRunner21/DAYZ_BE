@@ -22,7 +22,7 @@ public class QCommentRepositoryImpl implements QCommentRepository {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Comment> findAllByPostId(Long postId, Pageable pageRequest) {
+    public Page<Comment> findCommentsByPostId(Long postId, Pageable pageRequest) {
 
         JPAQuery<Comment> contentQuery = jpaQueryFactory.selectFrom(comment)
                 .innerJoin(comment.post, post).fetchJoin()
