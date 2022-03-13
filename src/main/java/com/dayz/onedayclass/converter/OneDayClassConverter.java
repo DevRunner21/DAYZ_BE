@@ -35,6 +35,7 @@ public class OneDayClassConverter {
 
     public ReadOneDayClassDetailResponse convertToReadOneDayClassDetailResponse(
         OneDayClass oneDayClass,
+        Atelier atelier,
         double avgScore
     ) {
         return ReadOneDayClassDetailResponse.of(
@@ -50,7 +51,7 @@ public class OneDayClassConverter {
             oneDayClass.getCurriculums().stream()
                 .map(this::convertToReadOneDayClassDetailCurriculum)
                 .collect(Collectors.toList()),
-            convertToReadOneDayClassDetailAtelierResult(oneDayClass.getAtelier())
+            convertToReadOneDayClassDetailAtelierResult(atelier)
         );
     }
 
@@ -129,8 +130,8 @@ public class OneDayClassConverter {
 
     public OneDayClass convertToOneDayClass(
         RegisterOneDayClassRequest request,
-        Category category,
-        Atelier atelier
+        Long categoryId,
+        Long atelierId
     ) {
         return OneDayClass.builder()
             .name(request.getName())
@@ -138,8 +139,8 @@ public class OneDayClassConverter {
             .price(request.getPrice())
             .requiredTime((long)LocalTime.parse(request.getRequiredTime()).toSecondOfDay()) // TODO : 맘에 안듬...
             .maxPeopleNumber(request.getMaxPeopleNumber())
-            .category(category)
-            .atelier(atelier)
+            .categoryId(categoryId)
+            .atelierId(atelierId)
             .oneDayClassImages(
                 request.getImages().stream()
                     .map(this::convertToOneDayClassImage)

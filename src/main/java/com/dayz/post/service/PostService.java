@@ -12,10 +12,10 @@ import com.dayz.onedayclass.domain.OneDayClassRepository;
 import com.dayz.post.converter.PostConverter;
 import com.dayz.post.domain.Post;
 import com.dayz.post.domain.PostRepository;
+import com.dayz.post.dto.request.RegisterPostRequest;
 import com.dayz.post.dto.response.ReadPostDetailResponse;
 import com.dayz.post.dto.response.ReadPostDetailsResponse;
 import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
-import com.dayz.post.dto.request.RegisterPostRequest;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -48,15 +48,24 @@ public class PostService {
         OneDayClass oneDayClass = oneDayClassRepository.findById(request.getOneDayClassId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
 
-        return postRepository
-            .save(postConverter.convertToPost(request, atelier.getMember(), oneDayClass)).getId();
+        Post savedPost = postRepository.save(
+            postConverter.convertToPost(request, atelier.getMember(), oneDayClass)
+        );
+
+        return savedPost.getId();
     }
 
     public ReadPostDetailResponse getPostDetail(Long postId) {
         Post foundPost = postRepository.findDetailPostById(postId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.POST_NOT_FOUND));
 
-        return postConverter.convertToReadPostDetailResponse(foundPost);
+        Member foundMember = memberRepository.findById(foundPost.getMemberId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND));
+
+        OneDayClass foundOneDayClass = oneDayClassRepository.findOneDayClassById(foundPost.getOneDayClassId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
+
+        return postConverter.convertToReadPostDetailResponse(foundPost, foundMember, foundOneDayClass);
     }
 
     public ReadPostDetailsResponse getPostDetails(Long memberId, Pageable pageRequest) {
@@ -71,7 +80,12 @@ public class PostService {
 
         Page<ReadPostDetailsResponse.PostDetailResult> readPostDetailsResultPage = postRepository
             .findPostsByFollows(ids, pageRequest)
-            .map(postConverter::convertToReadPostDetailsResult);
+            .map(post -> postConverter.convertToReadPostDetailsResult(
+                post,
+                memberRepository.findById(post.getMemberId())
+                    .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND))
+                )
+            );
 
         return ReadPostDetailsResponse.of(readPostDetailsResultPage);
     }

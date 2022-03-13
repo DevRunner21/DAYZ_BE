@@ -9,6 +9,7 @@ import com.dayz.post.dto.request.RegisterPostRequest.PostImageParam;
 import com.dayz.post.dto.response.ReadPostDetailResponse;
 import com.dayz.post.dto.response.ReadPostDetailsResponse;
 import com.dayz.post.dto.response.ReadPostsByAtelierResponse;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -23,8 +24,8 @@ public class PostConverter {
     public Post convertToPost(RegisterPostRequest request, Member member, OneDayClass oneDayClass) {
         return Post.builder()
             .content(request.getContent())
-            .member(member)
-            .oneDayClass(oneDayClass)
+            .memberId(member.getId())
+            .oneDayClassId(oneDayClass.getId())
             .postImages(
                 request.getImages().stream()
                     .map(this::convertToPostImage)
@@ -40,21 +41,22 @@ public class PostConverter {
             .build();
     }
 
-    public ReadPostDetailResponse convertToReadPostDetailResponse(Post post) {
+    public ReadPostDetailResponse convertToReadPostDetailResponse(Post post, Member member, OneDayClass oneDayClass) {
         return ReadPostDetailResponse.of(
             post.getId(),
             post.getContent(),
             post.getPostImages().stream()
                 .map(this::convertToReadPostDetailPostImageResult)
                 .collect(Collectors.toList()),
-            convertToReadPostDetailAtelierResult(post.getMember()),
-            post.getOneDayClass().getId(),
+            convertToReadPostDetailAtelierResult(member),
+            oneDayClass.getId(),
             post.getCreatedAt()
         );
     }
 
     public ReadPostDetailResponse.PostImageResult convertToReadPostDetailPostImageResult(
-        PostImage postImage) {
+        PostImage postImage
+    ) {
         return ReadPostDetailResponse.PostImageResult.of(
             postImage.getFullImageUrl(),
             postImage.getSequence()
@@ -62,7 +64,8 @@ public class PostConverter {
     }
 
     public ReadPostDetailResponse.AtelierResult convertToReadPostDetailAtelierResult(
-        Member member) {
+        Member member
+    ) {
         return ReadPostDetailResponse.AtelierResult.of(
             member.getAtelier().getId(),
             member.getAtelier().getName(),
@@ -70,15 +73,15 @@ public class PostConverter {
         );
     }
 
-    public ReadPostDetailsResponse.PostDetailResult convertToReadPostDetailsResult(Post post) {
+    public ReadPostDetailsResponse.PostDetailResult convertToReadPostDetailsResult(Post post, Member member) {
         return ReadPostDetailsResponse.PostDetailResult.of(
             post.getId(),
             post.getContent(),
             post.getPostImages().stream()
                 .map(this::convertToReadPostDetailsPostImageResult)
                 .collect(Collectors.toList()),
-            convertToReadPostDetailsAtelierResult(post.getMember()),
-            post.getOneDayClass().getId(),
+            convertToReadPostDetailsAtelierResult(member),
+            post.getOneDayClassId(),
             post.getCreatedAt()
         );
     }

@@ -1,5 +1,11 @@
 package com.dayz.review.domain;
 
+import static com.dayz.atelier.domain.QAtelier.atelier;
+import static com.dayz.member.domain.QMember.member;
+import static com.dayz.onedayclass.domain.QOneDayClass.oneDayClass;
+import static com.dayz.review.domain.QReview.review;
+
+import com.dayz.atelier.domain.QAtelier;
 import com.dayz.member.domain.QMember;
 import com.dayz.onedayclass.domain.QOneDayClass;
 import com.querydsl.core.QueryResults;
@@ -27,17 +33,16 @@ public class QReviewRepositoryImpl implements QReviewRepository {
         List<OrderSpecifier> orderlist = new ArrayList<>();
 
         for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(QReview.review.getType(),
-                QReview.review.getMetadata());
+            PathBuilder pathBuilder = new PathBuilder(review.getType(),
+                review.getMetadata());
             orderlist.add(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                 pathBuilder.get(o.getProperty())));
         }
         QueryResults<Review> results = jpaQueryFactory
-            .selectFrom(QReview.review)
-            .innerJoin(QReview.review.member, QMember.member).fetchJoin()
-            .innerJoin(QReview.review.oneDayClass, QOneDayClass.oneDayClass).fetchJoin()
-            .where(QReview.review.useFlag.eq(true),
-                QMember.member.id.eq(memberId))
+            .selectFrom(review)
+            .innerJoin(member).on(review.memberId.eq(member.id))
+            .innerJoin(oneDayClass).on(review.oneDayClassId.eq(oneDayClass.id))
+            .where(member.id.eq(memberId))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .orderBy(orderlist.stream().toArray(OrderSpecifier[]::new))
@@ -47,22 +52,22 @@ public class QReviewRepositoryImpl implements QReviewRepository {
     }
 
     @Override
-    public Page<Review> findAllByAtelierId(Long id, Pageable pageable) {
+    public Page<Review> findAllByAtelierId(Long atelierId, Pageable pageable) {
         List<OrderSpecifier> orderlist = new ArrayList<>();
 
         for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(QReview.review.getType(),
-                QReview.review.getMetadata());
+            PathBuilder pathBuilder = new PathBuilder(review.getType(),
+                review.getMetadata());
             orderlist.add(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                 pathBuilder.get(o.getProperty())));
         }
 
         QueryResults<Review> results = jpaQueryFactory
-            .selectFrom(QReview.review)
-            .innerJoin(QReview.review.member, QMember.member).fetchJoin()
-            .innerJoin(QReview.review.oneDayClass, QOneDayClass.oneDayClass).fetchJoin()
-            .where(QReview.review.useFlag.eq(true),
-                QOneDayClass.oneDayClass.atelier.id.eq(id))
+            .selectFrom(review)
+            .innerJoin(member).on(review.memberId.eq(member.id))
+            .innerJoin(oneDayClass).on(review.oneDayClassId.eq(oneDayClass.id))
+            .innerJoin(atelier).on(oneDayClass.id.eq(atelier.id))
+            .where(atelier.id.eq(atelierId))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .orderBy(orderlist.stream().toArray(OrderSpecifier[]::new))
@@ -73,22 +78,21 @@ public class QReviewRepositoryImpl implements QReviewRepository {
     }
 
     @Override
-    public Page<Review> findAllByOneDayClassId(Long id, Pageable pageable) {
+    public Page<Review> findAllByOneDayClassId(Long oneDayClassId, Pageable pageable) {
         List<OrderSpecifier> orderlist = new ArrayList<>();
 
         for (Sort.Order o : pageable.getSort()) {
-            PathBuilder pathBuilder = new PathBuilder(QReview.review.getType(),
-                QReview.review.getMetadata());
+            PathBuilder pathBuilder = new PathBuilder(review.getType(),
+                review.getMetadata());
             orderlist.add(new OrderSpecifier(o.isAscending() ? Order.ASC : Order.DESC,
                 pathBuilder.get(o.getProperty())));
         }
 
         QueryResults<Review> results = jpaQueryFactory
-            .selectFrom(QReview.review)
-            .innerJoin(QReview.review.member, QMember.member).fetchJoin()
-            .innerJoin(QReview.review.oneDayClass, QOneDayClass.oneDayClass).fetchJoin()
-            .where(QReview.review.useFlag.eq(true),
-                QOneDayClass.oneDayClass.id.eq(id))
+            .selectFrom(review)
+            .innerJoin(member).on(review.memberId.eq(member.id))
+            .innerJoin(oneDayClass).on(review.oneDayClassId.eq(oneDayClass.id))
+            .where(oneDayClass.id.eq(oneDayClassId))
             .offset(pageable.getOffset())
             .limit(pageable.getPageSize())
             .orderBy(orderlist.stream().toArray(OrderSpecifier[]::new))

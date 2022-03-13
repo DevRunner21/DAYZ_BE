@@ -20,19 +20,19 @@ import org.springframework.stereotype.Component;
 @Component
 public class ReviewConverter {
 
-    public ReadReviewsByMemberResponse.ReviewResult convertToReadReviewsByMemberReviewResult(Review review) {
+    public ReadReviewsByMemberResponse.ReviewResult convertToReadReviewsByMemberReviewResult(Review review, Member member, OneDayClass oneDayClass) {
 
         ReadReviewsByMemberResponse.ReviewResult.MemberResult memberResult =
             ReadReviewsByMemberResponse.ReviewResult.MemberResult.of(
-                review.getMember().getId(),
-                review.getMember().getUsername(),
-                review.getMember().getProfileImageUrl()
+                member.getId(),
+                member.getUsername(),
+                member.getProfileImageUrl()
             );
 
         ReadReviewsByMemberResponse.ReviewResult.OneDayClassResult oneDayClassResult =
             ReadReviewsByMemberResponse.ReviewResult.OneDayClassResult.of(
-                review.getOneDayClass().getId(),
-                review.getOneDayClass().getName()
+                oneDayClass.getId(),
+                oneDayClass.getName()
             );
 
         List<ReadReviewsByMemberResponse.ReviewResult.ReviewImageResult> reviewImageResult =
@@ -54,13 +54,14 @@ public class ReviewConverter {
     }
 
     public ReadReviewsByOneDayClassResponse.ReviewResult convertReadReviewsByOneDayClassReviewResult(
-        Review review
+        Review review,
+        Member member
     ) {
         MemberResult memberResult =
             MemberResult.of(
-                review.getMember().getId(),
-                review.getMember().getUsername(),
-                review.getMember().getProfileImageUrl()
+                member.getId(),
+                member.getUsername(),
+                member.getProfileImageUrl()
             );
 
         List<ReviewImageResult> reviewImageResults =
@@ -81,18 +82,18 @@ public class ReviewConverter {
         );
     }
 
-    public ReadReviewsByAtelierResponse.ReviewResult convertToReadReviewsByAtelierReviewResult(Review review) {
+    public ReadReviewsByAtelierResponse.ReviewResult convertToReadReviewsByAtelierReviewResult(Review review, Member member, OneDayClass oneDayClass) {
         ReadReviewsByAtelierResponse.ReviewResult.MemberResult memberResult =
             ReadReviewsByAtelierResponse.ReviewResult.MemberResult.of(
-                review.getMember().getId(),
-                review.getMember().getUsername(),
-                review.getMember().getProfileImageUrl()
+                member.getId(),
+                member.getUsername(),
+                member.getProfileImageUrl()
             );
 
         OneDayClassResult oneDayClassResult =
             OneDayClassResult.of(
-                review.getOneDayClass().getId(),
-                review.getOneDayClass().getName()
+                oneDayClass.getId(),
+                oneDayClass.getName()
             );
 
         List<ReadReviewsByAtelierResponse.ReviewResult.ReviewImageResult> reviewImageResult =
@@ -129,8 +130,8 @@ public class ReviewConverter {
         return Review.builder()
             .content(registerReviewRequest.getContent())
             .score(registerReviewRequest.getScore())
-            .member(member)
-            .oneDayClass(oneDayClass)
+            .memberId(member.getId())
+            .oneDayClassId(oneDayClass.getId())
             .reviewImages(reviewImages)
             .build();
     }

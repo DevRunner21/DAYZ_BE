@@ -17,9 +17,17 @@ public interface ReviewRepository extends JpaRepository<Review, Long>, QReviewRe
     //원데이 클래스별 후기 조회
     Page<Review> findAllByOneDayClassId(@Param("id") Long id, Pageable pageable);
 
-    @Query("select coalesce(avg(r.score),0) from Review r where r.oneDayClass.id= :classId and r.useFlag = true")
+    @Query("select coalesce(avg(r.score),0) from Review r"
+        + " inner join OneDayClass o "
+        + "     on r.oneDayClassId = o.id"
+        + " where o.id= :classId")
     double getReviewAverageByOneDayClass(@Param("classId") Long classId);
 
-    @Query("select coalesce(avg(r.score),0) from Review r where r.oneDayClass.atelier.id= :atelierId and r.useFlag = true")
+    @Query("select coalesce(avg(r.score),0) from Review r"
+        + " inner join OneDayClass o "
+        + "     on r.oneDayClassId = o.id"
+        + " inner join Atelier a "
+        + "     on o.atelierId = a.id"
+        + " where a.id= :atelierId")
     double getReviewAverageByAtelier(@Param("atelierId") Long atelierId);
 }

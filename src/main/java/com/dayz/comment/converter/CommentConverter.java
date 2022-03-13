@@ -12,16 +12,16 @@ public class CommentConverter {
     public Comment convertToComment(String content, Post post, Member member) {
         return Comment.builder()
             .content(content)
-            .post(post)
-            .member(member)
+            .postId(post.getId())
+            .memberId(member.getId())
             .build();
     }
 
-    public ReadCommentsResponse.CommentResult convertToReadCommentsResult(Comment comment) {
+    public ReadCommentsResponse.CommentResult convertToReadCommentsResult(Comment comment, Member member) {
         return ReadCommentsResponse.CommentResult.of(
             comment.getContent(),
             comment.getCreatedAt(),
-            convertToReadCommentsMemberResult(comment.getMember())
+            convertToReadCommentsMemberResult(member)
         );
     }
 

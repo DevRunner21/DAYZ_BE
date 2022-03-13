@@ -1,8 +1,6 @@
 package com.dayz.post.domain;
 
 import com.dayz.common.entity.BaseEntity;
-import com.dayz.member.domain.Member;
-import com.dayz.onedayclass.domain.OneDayClass;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -30,28 +28,27 @@ public class Post extends BaseEntity {
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_post_to_member"))
-    private Member member;
+    @Column(name = "member_id")
+    private Long memberId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_post_to_onedayclass"))
-    private OneDayClass oneDayClass;
+    @Column(name = "onedayclass_id")
+    private Long oneDayClassId;
 
     @Builder.Default
     @OrderBy("sequence ASC")
     @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<PostImage> postImages = new ArrayList<>();
 
-    private Post(Long id, String content, Member member, OneDayClass oneDayClass, List<PostImage> postImages) {
+    private Post(Long id, String content, Long memberId, Long oneDayClassId, List<PostImage> postImages) {
         Assert.notNull(content, "content must be not null");
-        Assert.notNull(member, "member must be not null");
-        Assert.notNull(oneDayClass, "oneDayClass must be not null");
+        Assert.notNull(memberId, "memberId must be not null");
+        Assert.notNull(oneDayClassId, "oneDayClassId must be not null");
 
         this.id = id;
         this.content = content;
-        this.member = member;
-        this.oneDayClass = oneDayClass;
+        this.memberId = memberId;
+        this.oneDayClassId = oneDayClassId;
+        this.postImages = new ArrayList<>();
 
         if (Objects.nonNull(postImages) && !postImages.isEmpty()) {
             postImages.forEach(this::addPostImage);

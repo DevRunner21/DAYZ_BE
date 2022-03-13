@@ -8,10 +8,14 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-public interface ReservationRepository extends JpaRepository<Reservation, Long>,
-    QReservationRepository {
+public interface ReservationRepository extends JpaRepository<Reservation, Long>, QReservationRepository {
 
-    @Query("select r from Reservation r JOIN fetch r.oneDayClassTime t join fetch t.oneDayClass o where r.id=:reservationId")
+    @Query("select r from Reservation r "
+        + "inner join  OneDayClassTime t"
+        + "     on r.oneDayClassTimeId = t.id"
+//        + " join fetch t.oneDayClass o "
+        + " where r.id=:reservationId"
+    )
     Optional<Reservation> findByReservationId(@Param("reservationId") Long reservationId);
 
     Page<ReservationInfoProjection> findReservationsByMember(Long memberId, Pageable pageable);
@@ -19,9 +23,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     Page<ReservationInfoProjection> findReservationsByAtelier(Long atelierId, Pageable pageable);
 
     @Query("select SUM(r.peopleNumber)"
-        + " from Reservation r "
-        + " where r.oneDayClassTime.id = :oneDayClassTimeId "
-        )
+        + " from Reservation r"
+        + " inner join OneDayClassTime t"
+        + "     on r.oneDayClassTimeId = t.id"
+        + " where t.id = :oneDayClassTimeId "
+    )
     int findSumReservationPeopleNumberByOneDayClassTime(@Param("oneDayClassTimeId") Long oneDayClassTimeId);
 
 }

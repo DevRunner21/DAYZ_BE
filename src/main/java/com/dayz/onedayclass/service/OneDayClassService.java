@@ -71,10 +71,14 @@ public class OneDayClassService {
         OneDayClass foundOneDayClass = oneDayClassRepository.findOneDayClassById(classId)
             .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND));
 
+        Atelier foundAtelier = atelierRepository.findById(foundOneDayClass.getAtelierId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ATELIER_NOT_FOUND));
+
         double avgScore = reviewRepository.getReviewAverageByOneDayClass(classId);
 
         return oneDayClassConverter.convertToReadOneDayClassDetailResponse(
             foundOneDayClass,
+            foundAtelier,
             avgScore
         );
     }
@@ -148,8 +152,8 @@ public class OneDayClassService {
 
         OneDayClass newOneDayClass = oneDayClassConverter.convertToOneDayClass(
             request,
-            foundCategory,
-            foundAtelier
+            foundCategory.getId(),
+            foundAtelier.getId()
         );
 
         OneDayClass savedOneDayClass = oneDayClassRepository.save(newOneDayClass);

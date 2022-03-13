@@ -1,16 +1,16 @@
 package com.dayz.common.entity;
-
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.MappedSuperclass;
+import javax.persistence.Transient;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.util.Assert;
 
 @MappedSuperclass
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class BaseImageEntity extends BaseEntity{
+public class BaseImageEntity extends BaseEntity {
 
     @Column(name = "image_file_name", nullable = false)
     protected String imageFileName;
@@ -19,8 +19,8 @@ public class BaseImageEntity extends BaseEntity{
     protected int sequence;
 
     @Transient
-    @Value("${cloud.aws.s3.bucket_path}")
-    private String bucketPath;
+//    @Value("${cloud.aws.s3.bucket_path}")
+    private final String bucketPath = "https://dayz-s3.s3.ap-northeast-2.amazonaws.com/";
 
     protected BaseImageEntity(String imageFileName, int sequence) {
         Assert.notNull(imageFileName, "imageFileName must not be null.");

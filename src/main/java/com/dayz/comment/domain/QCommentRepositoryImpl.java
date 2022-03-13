@@ -25,10 +25,9 @@ public class QCommentRepositoryImpl implements QCommentRepository {
     public Page<Comment> findCommentsByPostId(Long postId, Pageable pageRequest) {
 
         JPAQuery<Comment> contentQuery = jpaQueryFactory.selectFrom(comment)
-                .innerJoin(comment.post, post).fetchJoin()
-                .innerJoin(comment.member, member).fetchJoin()
-                .where(post.id.eq(postId)
-                        .and(comment.useFlag.eq(true)))
+                .innerJoin(post).on(comment.postId.eq(post.id))
+                .innerJoin(member).on(comment.memberId.eq(member.id))
+                .where(post.id.eq(postId))
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize());
 
@@ -41,10 +40,8 @@ public class QCommentRepositoryImpl implements QCommentRepository {
         List<Comment> content = contentQuery.fetch();
 
         JPAQuery<Comment> countQuery = jpaQueryFactory.selectFrom(comment)
-                .innerJoin(comment.post, post).fetchJoin()
-                .innerJoin(comment.member, member).fetchJoin()
-                .where(post.id.eq(postId)
-                        .and(comment.useFlag.eq(true)));
+                .innerJoin(post).on(comment.postId.eq(post.id))
+                .where(post.id.eq(postId));
 
         return PageableExecutionUtils.getPage(content, pageRequest, countQuery::fetchCount);
     }

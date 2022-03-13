@@ -25,24 +25,21 @@ public class Comment extends BaseEntity {
     @Column(name = "content", length = 1000)
     private String content;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_comment_to_post"))
-    private Post post;
+    @Column(name = "post_id", nullable = false)
+    private Long postId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_comment_to_member"))
-    private Member member;
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
     @Builder
-    private Comment(Long id, String content, Post post, Member member) {
+    public Comment(Long id, String content, Long postId, Long memberId) {
         Assert.notNull(content, "content must be not null");
-        Assert.notNull(post, "post must be not null");
-        Assert.notNull(member, "member must be not null");
+        Assert.notNull(postId, "postId must be not null");
+        Assert.notNull(memberId, "memberId must be not null");
 
         this.id = id;
         this.content = content;
-        this.post = post;
-        this.member = member;
+        this.postId = postId;
+        this.memberId = memberId;
     }
-
 }

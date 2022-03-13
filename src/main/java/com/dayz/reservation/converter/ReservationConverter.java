@@ -25,8 +25,8 @@ public class ReservationConverter {
             .peopleNumber(registerReservationRequest.getPeopleNumber())
             .price(registerReservationRequest.getPrice())
             .reservationDate(LocalDate.now())
-            .member(member)
-            .oneDayClassTime(oneDayClassTime)
+            .memberId(member.getId())
+            .oneDayClassTimeId(oneDayClassTime.getId())
             .build();
     }
 

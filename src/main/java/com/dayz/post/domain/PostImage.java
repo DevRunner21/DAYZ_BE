@@ -21,6 +21,7 @@ public class PostImage extends BaseImageEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "post_image_id")
     private Long id;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", foreignKey = @ForeignKey(name = "fk_post_image_to_post"))
     private Post post;
@@ -35,9 +36,9 @@ public class PostImage extends BaseImageEntity {
     public void changePost(Post post) {
         if (Objects.nonNull(post)) {
             post.getPostImages().remove(this);
+            post.getPostImages().add(this);
         }
         this.post = post;
-        post.getPostImages().add(this);
     }
 
 }

@@ -1,13 +1,14 @@
 package com.dayz.onedayclass.domain;
 
-import com.dayz.atelier.domain.Atelier;
-import com.dayz.category.domain.Category;
 import com.dayz.common.entity.BaseEntity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import javax.persistence.*;
-import lombok.*;
+import lombok.AccessLevel;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.hibernate.annotations.Where;
 import org.springframework.util.Assert;
 
@@ -39,13 +40,11 @@ public class OneDayClass extends BaseEntity {
     @Column(name = "max_people_number", nullable = false)
     private int maxPeopleNumber;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "category_id", foreignKey = @ForeignKey(name = "fk_onedayclass_to_category"))
-    private Category category;
+    @Column(name = "category_id")
+    private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "atelier_id", foreignKey = @ForeignKey(name = "fk_onedayclass_to_atelier"))
-    private Atelier atelier;
+    @Column(name = "atelier_id")
+    private Long atelierId;
 
     @Builder.Default
     @OrderBy("sequence ASC")
@@ -65,6 +64,44 @@ public class OneDayClass extends BaseEntity {
     )
     List<Curriculum> curriculums = new ArrayList<>();
 
+//    private OneDayClass(
+//        Long id,
+//        String name,
+//        String intro,
+//        int price,
+//        Long requiredTime,
+//        int maxPeopleNumber,
+//        Category category,
+//        Atelier atelier,
+//        List<OneDayClassImage> oneDayClassImages,
+//        List<Curriculum> curriculums
+//    ) {
+//        Assert.notNull(name, "name must be not null.");
+//        Assert.notNull(intro, "intro must be not null.");
+//        Assert.isTrue(price > 0, "price must be positive.");
+//        Assert.notNull(requiredTime, "requiredTime must be not null.");
+//        Assert.isTrue(maxPeopleNumber > 0, "maxPeopleNumber must be positive.");
+//        Assert.notNull(category, "category must be not null.");
+//        Assert.notNull(atelier, "atelier must be not null.");
+//
+//        this.id = id;
+//        this.name = name;
+//        this.intro = intro;
+//        this.price = price;
+//        this.requiredTime = requiredTime;
+//        this.maxPeopleNumber = maxPeopleNumber;
+//        this.category = category;
+//        this.atelier = atelier;
+//
+//        if (Objects.nonNull(oneDayClassImages) && !oneDayClassImages.isEmpty()) {
+//            oneDayClassImages.forEach(this::addOneDayClassImage);
+//        }
+//
+//        if (Objects.nonNull(curriculums) && !curriculums.isEmpty()) {
+//            curriculums.forEach(this::addCurriculum);
+//        }
+//    }
+
     private OneDayClass(
         Long id,
         String name,
@@ -72,8 +109,8 @@ public class OneDayClass extends BaseEntity {
         int price,
         Long requiredTime,
         int maxPeopleNumber,
-        Category category,
-        Atelier atelier,
+        Long categoryId,
+        Long atelierId,
         List<OneDayClassImage> oneDayClassImages,
         List<Curriculum> curriculums
     ) {
@@ -82,8 +119,8 @@ public class OneDayClass extends BaseEntity {
         Assert.isTrue(price > 0, "price must be positive.");
         Assert.notNull(requiredTime, "requiredTime must be not null.");
         Assert.isTrue(maxPeopleNumber > 0, "maxPeopleNumber must be positive.");
-        Assert.notNull(category, "category must be not null.");
-        Assert.notNull(atelier, "atelier must be not null.");
+        Assert.notNull(categoryId, "categoryId must be not null.");
+        Assert.notNull(atelierId, "atelierId must be not null.");
 
         this.id = id;
         this.name = name;
@@ -91,8 +128,8 @@ public class OneDayClass extends BaseEntity {
         this.price = price;
         this.requiredTime = requiredTime;
         this.maxPeopleNumber = maxPeopleNumber;
-        this.category = category;
-        this.atelier = atelier;
+        this.categoryId = categoryId;
+        this.atelierId = atelierId;
 
         if (Objects.nonNull(oneDayClassImages) && !oneDayClassImages.isEmpty()) {
             oneDayClassImages.forEach(this::addOneDayClassImage);

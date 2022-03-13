@@ -30,26 +30,6 @@ public interface OneDayClassRepository extends JpaRepository<OneDayClass, Long>,
             + " ORDER BY count(r.reservation_id) DESC"
             + " LIMIT :size";
 
-    @Query("select o from OneDayClass o "
-           + "join fetch o.category "
-           + "join fetch o.atelier "
-           + "where o.id = :classId "
-    )
-    Optional<OneDayClass> findOneDayClassById(@Param("classId") Long classId);
-
-    @Query(
-            "select o from OneDayClass o "
-           + "where o.atelier.id = :atelierId "
-    )
-    Page<OneDayClass> findOneDayClassByAtelierId(@Param("atelierId") Long atelierId, Pageable pageRequest);
-
-    @Query("select o from OneDayClass o"
-           + " join fetch o.atelier"
-           + " join fetch o.category"
-           + " where o.id in :ids"
-    )
-    List<OneDayClass> findOneDayClassesByIds(@Param("ids") List<Long> ids);
-
     @Query(value = SQL_findPopularOneDayClassIds, nativeQuery = true)
     List<Long> findPopularOneDayClassIds(
             @Param("cityId") Long cityId,

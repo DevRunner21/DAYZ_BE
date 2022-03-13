@@ -8,6 +8,8 @@ import com.dayz.member.domain.Member;
 import com.dayz.member.domain.MemberRepository;
 import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassRepository;
+import com.dayz.onedayclass.domain.OneDayClassTime;
+import com.dayz.onedayclass.domain.OneDayClassTimeRepository;
 import com.dayz.reservation.domain.Reservation;
 import com.dayz.reservation.domain.ReservationRepository;
 import com.dayz.review.converter.ReviewConverter;
@@ -36,6 +38,8 @@ public class ReviewService {
 
     private final OneDayClassRepository oneDayClassRepository;
 
+    private final OneDayClassTimeRepository oneDayClassTimeRepository;
+
     private final ReservationRepository reservationRepository;
 
     private final ReviewConverter reviewConverter;
@@ -50,7 +54,13 @@ public class ReviewService {
 
         Page<ReadReviewsByMemberResponse.ReviewResult> reviewsResponses =
             reviewRepository.findAllByMemberId(foundMember.getId(), pageRequest)
-                .map(reviewConverter::convertToReadReviewsByMemberReviewResult);
+                .map(review -> reviewConverter.convertToReadReviewsByMemberReviewResult(
+                    review,
+                    memberRepository.findById(review.getMemberId())
+                        .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND)),
+                    oneDayClassRepository.findOneDayClassById(review.getOneDayClassId())
+                        .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND))
+                ));
 
         return ReadReviewsByMemberResponse.of(reviewsResponses);
     }
@@ -62,7 +72,13 @@ public class ReviewService {
 
         Page<ReadReviewsByAtelierResponse.ReviewResult> reviewsResponses =
             reviewRepository.findAllByAtelierId(foundAtelier.getId(), pageRequest)
-                .map(reviewConverter::convertToReadReviewsByAtelierReviewResult);
+                .map(review -> reviewConverter.convertToReadReviewsByAtelierReviewResult(
+                    review,
+                    memberRepository.findById(review.getMemberId())
+                        .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND)),
+                    oneDayClassRepository.findOneDayClassById(review.getOneDayClassId())
+                        .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_NOT_FOUND))
+                ));
 
         return ReadReviewsByAtelierResponse.of(reviewsResponses);
     }
@@ -77,7 +93,11 @@ public class ReviewService {
 
         Page<ReadReviewsByOneDayClassResponse.ReviewResult> reviewsResponses =
             reviewRepository.findAllByOneDayClassId(foundOneDayClass.getId(), pageRequest)
-                .map(reviewConverter::convertReadReviewsByOneDayClassReviewResult);
+                .map(review -> reviewConverter.convertReadReviewsByOneDayClassReviewResult(
+                    review,
+                    memberRepository.findById(review.getMemberId())
+                        .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND))
+                ));
 
         return ReadReviewsByOneDayClassResponse.of(reviewsResponses);
     }
@@ -91,8 +111,10 @@ public class ReviewService {
         Reservation foundReservation = reservationRepository.findByReservationId(registerReviewRequest.getReservationId())
             .orElseThrow(() -> new BusinessException(ErrorInfo.RESERVATION_NOT_FOUND));
 
-        OneDayClass oneDayClass = foundReservation.getOneDayClassTime().getOneDayClass();
-        Review review = reviewConverter.convertToReview(registerReviewRequest, foundMember, oneDayClass);
+        OneDayClassTime foundOneDayClassTime = oneDayClassTimeRepository.findById(foundReservation.getOneDayClassTimeId())
+            .orElseThrow(() -> new BusinessException(ErrorInfo.ONE_DAY_CLASS_TIME_NOT_FOUND));
+
+        Review review = reviewConverter.convertToReview(registerReviewRequest, foundMember, foundOneDayClassTime.getOneDayClass());
 
         return reviewRepository.save(review).getId();
     }

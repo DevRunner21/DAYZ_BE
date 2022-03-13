@@ -33,7 +33,12 @@ public class CommentService {
     public ReadCommentsResponse getComments( Long postId, PageRequest pageRequest) {
         Page<CommentResult> readCommentsResultPage =
             commentRepository.findCommentsByPostId(postId, pageRequest)
-                .map(commentConverter::convertToReadCommentsResult);
+                .map(comment -> commentConverter.convertToReadCommentsResult(
+                    comment,
+                    memberRepository.findById(comment.getId())
+                        .orElseThrow(() -> new BusinessException(ErrorInfo.MEMBER_NOT_FOUND))
+                    )
+                );
 
         return ReadCommentsResponse.of(readCommentsResultPage);
     }
