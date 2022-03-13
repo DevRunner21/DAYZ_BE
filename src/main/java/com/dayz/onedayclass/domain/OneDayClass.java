@@ -64,44 +64,6 @@ public class OneDayClass extends BaseEntity {
     )
     List<Curriculum> curriculums = new ArrayList<>();
 
-//    private OneDayClass(
-//        Long id,
-//        String name,
-//        String intro,
-//        int price,
-//        Long requiredTime,
-//        int maxPeopleNumber,
-//        Category category,
-//        Atelier atelier,
-//        List<OneDayClassImage> oneDayClassImages,
-//        List<Curriculum> curriculums
-//    ) {
-//        Assert.notNull(name, "name must be not null.");
-//        Assert.notNull(intro, "intro must be not null.");
-//        Assert.isTrue(price > 0, "price must be positive.");
-//        Assert.notNull(requiredTime, "requiredTime must be not null.");
-//        Assert.isTrue(maxPeopleNumber > 0, "maxPeopleNumber must be positive.");
-//        Assert.notNull(category, "category must be not null.");
-//        Assert.notNull(atelier, "atelier must be not null.");
-//
-//        this.id = id;
-//        this.name = name;
-//        this.intro = intro;
-//        this.price = price;
-//        this.requiredTime = requiredTime;
-//        this.maxPeopleNumber = maxPeopleNumber;
-//        this.category = category;
-//        this.atelier = atelier;
-//
-//        if (Objects.nonNull(oneDayClassImages) && !oneDayClassImages.isEmpty()) {
-//            oneDayClassImages.forEach(this::addOneDayClassImage);
-//        }
-//
-//        if (Objects.nonNull(curriculums) && !curriculums.isEmpty()) {
-//            curriculums.forEach(this::addCurriculum);
-//        }
-//    }
-
     private OneDayClass(
         Long id,
         String name,
@@ -130,6 +92,8 @@ public class OneDayClass extends BaseEntity {
         this.maxPeopleNumber = maxPeopleNumber;
         this.categoryId = categoryId;
         this.atelierId = atelierId;
+        this.oneDayClassImages = new ArrayList<>();
+        this.curriculums = new ArrayList<>();
 
         if (Objects.nonNull(oneDayClassImages) && !oneDayClassImages.isEmpty()) {
             oneDayClassImages.forEach(this::addOneDayClassImage);

@@ -72,6 +72,7 @@ public class Member extends BaseEntity {
         this.provider = provider;
         this.providerId = providerId;
         this.profileImageUrl = profileImageUrl;
+        this.follows = new ArrayList<>();
         changePermission(permission);
         changeAddress(address);
         changeAtelier(atelier);

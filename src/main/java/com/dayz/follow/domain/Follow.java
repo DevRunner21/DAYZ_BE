@@ -4,6 +4,7 @@ import com.dayz.atelier.domain.Atelier;
 import com.dayz.common.entity.BaseEntity;
 import com.dayz.member.domain.Member;
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import java.util.Objects;
 import javax.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -44,6 +45,10 @@ public class Follow extends BaseEntity {
     }
 
     public void changeMember(Member member) {
+        if (Objects.nonNull(member)) {
+            member.getFollows().remove(this);
+            member.getFollows().add(this);
+        }
         this.member = member;
     }
 

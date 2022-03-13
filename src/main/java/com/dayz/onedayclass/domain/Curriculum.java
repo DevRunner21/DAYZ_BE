@@ -45,10 +45,10 @@ public class Curriculum extends BaseEntity {
     public void changeOneDayClass(OneDayClass oneDayClass) {
         if (Objects.nonNull(oneDayClass)) {
             oneDayClass.getCurriculums().remove(this);
+            oneDayClass.getCurriculums().add(this);
         }
 
         this.oneDayClass = oneDayClass;
-        oneDayClass.getCurriculums().add(this);
     }
 
 }

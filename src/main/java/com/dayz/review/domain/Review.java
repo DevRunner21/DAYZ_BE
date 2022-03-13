@@ -60,6 +60,7 @@ public class Review extends BaseEntity {
         this.score = score;
         this.memberId = memberId;
         this.oneDayClassId = oneDayClassId;
+        this.reviewImages = new ArrayList<>();
 
         if (Objects.nonNull(reviewImages) && !reviewImages.isEmpty()) {
             reviewImages.forEach(this::addReviewImage);

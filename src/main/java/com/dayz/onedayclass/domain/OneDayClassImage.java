@@ -29,8 +29,8 @@ public class OneDayClassImage extends BaseImageEntity {
     @Builder
     private OneDayClassImage(Long id, String imageFileName, int sequence, OneDayClass oneDayClass) {
         super(imageFileName, sequence);
-
         Assert.notNull(oneDayClass, "oneDayClass must be not null");
+
         this.id = id;
         changeOneDayClass(oneDayClass);
     }
@@ -38,9 +38,9 @@ public class OneDayClassImage extends BaseImageEntity {
     public void changeOneDayClass(OneDayClass oneDayClass) {
         if (Objects.nonNull(oneDayClass)) {
             oneDayClass.getOneDayClassImages().remove(this);
+            oneDayClass.getOneDayClassImages().add(this);
         }
         this.oneDayClass = oneDayClass;
-        oneDayClass.getOneDayClassImages().add(this);
     }
 
 }
