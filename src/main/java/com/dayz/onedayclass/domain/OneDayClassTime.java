@@ -23,7 +23,7 @@ public class OneDayClassTime extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "onedayclass_time_id")
+    @Column(name = "class_time_id")
     private Long id;
 
     @Column(name = "class_date", nullable = false)
@@ -39,7 +39,7 @@ public class OneDayClassTime extends BaseEntity {
     private TimeStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_time_to_onedayclass"))
+    @JoinColumn(name = "class_id", foreignKey = @ForeignKey(name = "fk_onedayclass_time_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     @Builder

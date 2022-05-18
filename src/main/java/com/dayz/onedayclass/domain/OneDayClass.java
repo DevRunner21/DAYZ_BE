@@ -22,10 +22,10 @@ public class OneDayClass extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "onedayclass_id")
+    @Column(name = "class_id")
     private Long id;
 
-    @Column(name = "name", length = 50, nullable = false)
+    @Column(name = "name", length = 500, nullable = false)
     private String name;
 
     @Column(name = "intro", length = 1000, nullable = false)
@@ -40,10 +40,10 @@ public class OneDayClass extends BaseEntity {
     @Column(name = "max_people_number", nullable = false)
     private int maxPeopleNumber;
 
-    @Column(name = "category_id")
+    @Column(name = "category_id", nullable = false)
     private Long categoryId;
 
-    @Column(name = "atelier_id")
+    @Column(name = "atelier_id", nullable = false)
     private Long atelierId;
 
     @Builder.Default

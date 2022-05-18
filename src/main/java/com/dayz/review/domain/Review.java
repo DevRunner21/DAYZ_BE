@@ -31,10 +31,10 @@ public class Review extends BaseEntity {
     @Column(name = "score")
     private int score;
 
-    @Column(name = "member_id")
+    @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "onedayclass_id")
+    @Column(name = "class_id", nullable = false)
     private Long oneDayClassId;
 
     @Builder.Default

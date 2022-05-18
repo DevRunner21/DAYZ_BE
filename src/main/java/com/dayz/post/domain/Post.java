@@ -28,10 +28,10 @@ public class Post extends BaseEntity {
     @Column(name = "content", nullable = false, length = 1000)
     private String content;
 
-    @Column(name = "member_id")
+    @Column(name = "member_id", nullable = false)
     private Long memberId;
 
-    @Column(name = "onedayclass_id")
+    @Column(name = "class_id", nullable = false)
     private Long oneDayClassId;
 
     @Builder.Default

@@ -14,16 +14,16 @@ import org.springframework.util.Assert;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Where(clause = "use_flag = true")
-@Table(name = "onedayclass_iamge")
+@Table(name = "onedayclass_image")
 public class OneDayClassImage extends BaseImageEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "onedayclass_image_id")
+    @Column(name = "class_image_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "onedayclass_id", foreignKey = @ForeignKey(name = "fk_onedayclass_image_to_onedayclass"))
+    @JoinColumn(name = "class_id", foreignKey = @ForeignKey(name = "fk_onedayclass_image_to_onedayclass"))
     private OneDayClass oneDayClass;
 
     @Builder
