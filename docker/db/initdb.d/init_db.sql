@@ -62,7 +62,7 @@ CREATE TABLE curriculum
     use_flag       BIT           NOT NULL,
     content        VARCHAR(1000) NOT NULL,
     step           INTEGER       NOT NULL,
-    onedayclass_id BIGINT,
+    class_id BIGINT,
     PRIMARY KEY (curriculum_id)
 ) ENGINE = InnoDB;
 
@@ -94,7 +94,7 @@ CREATE TABLE member
 
 CREATE TABLE onedayclass
 (
-    onedayclass_id    BIGINT        NOT NULL AUTO_INCREMENT,
+    class_id          BIGINT        NOT NULL AUTO_INCREMENT,
     created_at        DATETIME      NOT NULL,
     updated_at        DATETIME,
     use_flag          BIT           NOT NULL,
@@ -103,35 +103,35 @@ CREATE TABLE onedayclass
     name              VARCHAR(50)   NOT NULL,
     price             INTEGER       NOT NULL,
     required_time     BIGINT        NOT NULL,
-    atelier_id        BIGINT,
-    category_id       BIGINT,
-    PRIMARY KEY (onedayclass_id)
+    atelier_id        BIGINT        NOT NULL,
+    category_id       BIGINT        NOT NULL,
+    PRIMARY KEY (class_id)
 ) ENGINE = InnoDB;
 
-CREATE TABLE onedayclass_iamge
+CREATE TABLE onedayclass_image
 (
-    onedayclass_image_id BIGINT       NOT NULL AUTO_INCREMENT,
+    class_image_id       BIGINT       NOT NULL AUTO_INCREMENT,
     created_at           DATETIME     NOT NULL,
     updated_at           DATETIME,
     use_flag             BIT          NOT NULL,
     image_file_name      VARCHAR(255) NOT NULL,
     sequence             INTEGER      NOT NULL,
-    onedayclass_id       BIGINT,
-    PRIMARY KEY (onedayclass_image_id)
+    class_id             BIGINT,
+    PRIMARY KEY (class_image_id)
 ) ENGINE = InnoDB;
 
 CREATE TABLE onedayclass_time
 (
-    onedayclass_time_id BIGINT   NOT NULL AUTO_INCREMENT,
+    class_time_id       BIGINT   NOT NULL AUTO_INCREMENT,
     created_at          DATETIME NOT NULL,
     updated_at          DATETIME,
     use_flag            BIT      NOT NULL,
     class_date          DATE     NOT NULL,
     end_time            BIGINT   NOT NULL,
     start_time          BIGINT   NOT NULL,
-    status              VARCHAR(255),
-    onedayclass_id      BIGINT,
-    PRIMARY KEY (onedayclass_time_id)
+    status              VARCHAR(255)    NOT NULL,
+    class_id            BIGINT   NOT NULL,
+    PRIMARY KEY (class_time_id)
 ) ENGINE = InnoDB;
 
 CREATE TABLE permission
@@ -140,7 +140,7 @@ CREATE TABLE permission
     created_at    DATETIME NOT NULL,
     updated_at    DATETIME,
     use_flag      BIT      NOT NULL,
-    name          VARCHAR(255),
+    name          VARCHAR(255)  NOT NULL,
     PRIMARY KEY (permission_id)
 ) ENGINE = InnoDB;
 
@@ -151,8 +151,8 @@ CREATE TABLE post
     updated_at     DATETIME,
     use_flag       BIT           NOT NULL,
     content        VARCHAR(1000) NOT NULL,
-    member_id      BIGINT,
-    onedayclass_id BIGINT,
+    member_id      BIGINT       NOT NULL,
+    class_id BIGINT,
     PRIMARY KEY (post_id)
 ) ENGINE = InnoDB;
 
@@ -164,22 +164,28 @@ CREATE TABLE post_image
     use_flag        BIT          NOT NULL,
     image_file_name VARCHAR(255) NOT NULL,
     sequence        INTEGER,
-    post_id         BIGINT,
+    post_id         BIGINT      NOT NULL,
     PRIMARY KEY (post_image_id)
 ) ENGINE = InnoDB;
 
 CREATE TABLE reservation
 (
-    reservation_id      BIGINT       NOT NULL AUTO_INCREMENT,
-    created_at          DATETIME     NOT NULL,
+    reservation_id      BIGINT          NOT NULL AUTO_INCREMENT,
+    created_at          DATETIME        NOT NULL,
     updated_at          DATETIME,
-    use_flag            BIT          NOT NULL,
-    people_number       INTEGER,
-    price               INTEGER,
-    reservation_date    DATE         NOT NULL,
-    status              VARCHAR(255) NOT NULL,
-    member_id           BIGINT,
-    onedayclass_time_id BIGINT,
+    use_flag            BIT             NOT NULL,
+    people_number       INTEGER         NOT NULL,
+    price               INTEGER         NOT NULL,
+    reservation_date    DATE            NOT NULL,
+    status              VARCHAR(255)    NOT NULL,
+    class_id            BIGINT          NOT NULL,
+    class_name          VARCHAR(50)     NOT NULL,
+    class_time_id       BIGINT          NOT NULL,
+    class_date          DATE            NOT NULL,
+    class_start_time    BIGINT          NOT NULL,
+    class_end_time      BIGINT          NOT NULL,
+    atelier_id          BIGINT          NOT NULL,
+    member_id           BIGINT          NOT NULL,
     PRIMARY KEY (reservation_id)
 ) ENGINE = InnoDB;
 
@@ -191,8 +197,8 @@ CREATE TABLE review
     use_flag       BIT           NOT NULL,
     content        VARCHAR(1000) NOT NULL,
     score          INTEGER,
-    member_id      BIGINT,
-    onedayclass_id BIGINT,
+    member_id      BIGINT       NOT NULL,
+    class_id BIGINT             NOT NULL,
     PRIMARY KEY (review_id)
 ) ENGINE = InnoDB;
 
@@ -204,7 +210,7 @@ CREATE TABLE review_image
     use_flag        BIT          NOT NULL,
     image_file_name VARCHAR(255) NOT NULL,
     sequence        INTEGER,
-    review_id       BIGINT,
+    review_id       BIGINT       NOT NULL,
     PRIMARY KEY (review_image_id)
 ) ENGINE = InnoDB;
 
@@ -226,20 +232,20 @@ ALTER TABLE atelier
         FOREIGN KEY (member_id)
             REFERENCES member (member_id);
 
-ALTER TABLE comment
-    ADD CONSTRAINT fk_comment_to_member
-        FOREIGN KEY (member_id)
-            REFERENCES member (member_id);
+# ALTER TABLE comment
+#     ADD CONSTRAINT fk_comment_to_member
+#         FOREIGN KEY (member_id)
+#             REFERENCES member (member_id);
 
-ALTER TABLE comment
-    ADD CONSTRAINT fk_comment_to_post
-        FOREIGN KEY (post_id)
-            REFERENCES post (post_id);
+# ALTER TABLE comment
+#     ADD CONSTRAINT fk_comment_to_post
+#         FOREIGN KEY (post_id)
+#             REFERENCES post (post_id);
 
 ALTER TABLE curriculum
     ADD CONSTRAINT fk_curriculum_to_onedayclass
-        FOREIGN KEY (onedayclass_id)
-            REFERENCES onedayclass (onedayclass_id);
+        FOREIGN KEY (class_id)
+            REFERENCES onedayclass (class_id);
 
 ALTER TABLE follow
     ADD CONSTRAINT fk_follow_to_atelier
@@ -261,60 +267,60 @@ ALTER TABLE member
         FOREIGN KEY (permission_id)
             REFERENCES permission (permission_id);
 
-ALTER TABLE onedayclass
-    ADD CONSTRAINT fk_onedayclass_to_atelier
-        FOREIGN KEY (atelier_id)
-            REFERENCES atelier (atelier_id);
+# ALTER TABLE onedayclass
+#     ADD CONSTRAINT fk_onedayclass_to_atelier
+#         FOREIGN KEY (atelier_id)
+#             REFERENCES atelier (atelier_id);
 
-ALTER TABLE onedayclass
-    ADD CONSTRAINT fk_onedayclass_to_category
-        FOREIGN KEY (category_id)
-            REFERENCES category (category_id);
+# ALTER TABLE onedayclass
+#     ADD CONSTRAINT fk_onedayclass_to_category
+#         FOREIGN KEY (category_id)
+#             REFERENCES category (category_id);
 
-ALTER TABLE onedayclass_iamge
+ALTER TABLE onedayclass_image
     ADD CONSTRAINT fk_onedayclass_image_to_onedayclass
-        FOREIGN KEY (onedayclass_id)
-            REFERENCES onedayclass (onedayclass_id);
+        FOREIGN KEY (class_id)
+            REFERENCES onedayclass (class_id);
 
 ALTER TABLE onedayclass_time
     ADD CONSTRAINT fk_onedayclass_time_to_onedayclass
-        FOREIGN KEY (onedayclass_id)
-            REFERENCES onedayclass (onedayclass_id);
+        FOREIGN KEY (class_id)
+            REFERENCES onedayclass (class_id);
 
-ALTER TABLE post
-    ADD CONSTRAINT fk_post_to_member
-        FOREIGN KEY (member_id)
-            REFERENCES member (member_id);
+# ALTER TABLE post
+#     ADD CONSTRAINT fk_post_to_member
+#         FOREIGN KEY (member_id)
+#             REFERENCES member (member_id);
 
-ALTER TABLE post
-    ADD CONSTRAINT fk_post_to_onedayclass
-        FOREIGN KEY (onedayclass_id)
-            REFERENCES onedayclass (onedayclass_id);
+# ALTER TABLE post
+#     ADD CONSTRAINT fk_post_to_onedayclass
+#         FOREIGN KEY (class_id)
+#             REFERENCES onedayclass (class_id);
 
 ALTER TABLE post_image
     ADD CONSTRAINT fk_post_image_to_post
         FOREIGN KEY (post_id)
             REFERENCES post (post_id);
 
-ALTER TABLE reservation
-    ADD CONSTRAINT fk_reservation_to_member
-        FOREIGN KEY (member_id)
-            REFERENCES member (member_id);
+# ALTER TABLE reservation
+#     ADD CONSTRAINT fk_reservation_to_member
+#         FOREIGN KEY (member_id)
+#             REFERENCES member (member_id);
+# 
+# ALTER TABLE reservation
+#     ADD CONSTRAINT fk_reservation_to_onedayclass_time
+#         FOREIGN KEY (class_time_id)
+#             REFERENCES onedayclass_time (class_time_id);
 
-ALTER TABLE reservation
-    ADD CONSTRAINT fk_reservation_to_onedayclass_time
-        FOREIGN KEY (onedayclass_time_id)
-            REFERENCES onedayclass_time (onedayclass_time_id);
-
-ALTER TABLE review
-    ADD CONSTRAINT fk_review_to_member
-        FOREIGN KEY (member_id)
-            REFERENCES member (member_id);
+# ALTER TABLE review
+#     ADD CONSTRAINT fk_review_to_member
+#         FOREIGN KEY (member_id)
+#             REFERENCES member (member_id);
 
 ALTER TABLE review
     ADD CONSTRAINT fk_review_to_onedayclass
-        FOREIGN KEY (onedayclass_id)
-            REFERENCES onedayclass (onedayclass_id);
+        FOREIGN KEY (class_id)
+            REFERENCES onedayclass (class_id);
 
 ALTER TABLE review_image
     ADD CONSTRAINT fk_review_image_to_review
