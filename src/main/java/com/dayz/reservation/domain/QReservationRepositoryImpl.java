@@ -54,7 +54,7 @@ public class QReservationRepositoryImpl implements QReservationRepository {
             ).from(reservation)
                 .innerJoin(member).on(reservation.memberId.eq(member.id))
                 .innerJoin(oneDayClassTime).on(reservation.oneDayClassTimeId.eq(oneDayClassTime.id))
-                .innerJoin(oneDayClassTime.oneDayClass, oneDayClass).fetchJoin()
+                .innerJoin(oneDayClassTime.oneDayClass, oneDayClass)
                 .where(member.id.eq(memberId))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

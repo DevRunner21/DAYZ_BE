@@ -1,6 +1,8 @@
 package com.dayz.reservation.converter;
 
+import com.dayz.common.enums.ReservationStatus;
 import com.dayz.member.domain.Member;
+import com.dayz.onedayclass.domain.OneDayClass;
 import com.dayz.onedayclass.domain.OneDayClassTime;
 import com.dayz.reservation.domain.Reservation;
 import com.dayz.reservation.dto.query.ReservationInfoProjection;
@@ -17,16 +19,26 @@ import org.springframework.stereotype.Component;
 public class ReservationConverter {
 
     public Reservation convertToReservation(
-        RegisterReservationRequest registerReservationRequest,
+        int price,
+        int peopleNumber,
+        ReservationStatus status,
         Member member,
+        OneDayClass oneDayClass,
         OneDayClassTime oneDayClassTime
     ) {
         return Reservation.builder()
-            .peopleNumber(registerReservationRequest.getPeopleNumber())
-            .price(registerReservationRequest.getPrice())
+            .peopleNumber(peopleNumber)
+            .price(price)
             .reservationDate(LocalDate.now())
-            .memberId(member.getId())
+            .status(status)
+            .oneDayClassId(oneDayClass.getId())
+            .oneDayClassName(oneDayClass.getName())
             .oneDayClassTimeId(oneDayClassTime.getId())
+            .oneDayClassDate(oneDayClassTime.getClassDate())
+            .oneDayClassStartTime(oneDayClassTime.getStartTime())
+            .oneDayClassEndTime(oneDayClassTime.getEndTime())
+            .atelierId(oneDayClass.getAtelierId())
+            .memberId(member.getId())
             .build();
     }
 

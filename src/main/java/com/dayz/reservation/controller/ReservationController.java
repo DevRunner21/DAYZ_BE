@@ -88,8 +88,13 @@ public class ReservationController {
         @ApiIgnore @LoginMemberId Long memberId,
         @Valid @RequestBody RegisterReservationRequest registerReservationRequest
     ) {
-        Long registeredReservationId = reservationService
-            .saveReservation(registerReservationRequest, memberId);
+        Long registeredReservationId =
+            reservationService.saveReservation(
+                registerReservationRequest.getClassTimeId(),
+                registerReservationRequest.getPrice(),
+                registerReservationRequest.getPeopleNumber(),
+                memberId
+            );
 
         return CommonApiResponse.ok(RegisterReservationResponse.of(registeredReservationId));
     }

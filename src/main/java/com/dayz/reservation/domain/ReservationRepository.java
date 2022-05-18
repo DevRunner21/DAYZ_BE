@@ -22,7 +22,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
 
     Page<ReservationInfoProjection> findReservationsByAtelier(Long atelierId, Pageable pageable);
 
-    @Query("select SUM(r.peopleNumber)"
+    @Query("select COALESCE(SUM(r.peopleNumber),0)"
         + " from Reservation r"
         + " inner join OneDayClassTime t"
         + "     on r.oneDayClassTimeId = t.id"
