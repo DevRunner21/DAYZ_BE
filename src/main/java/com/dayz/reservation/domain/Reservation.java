@@ -37,45 +37,29 @@ public class Reservation extends BaseEntity {
     @Column(name = "reservation_date", nullable = false)
     private LocalDate reservationDate;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_reservation_to_member"))
-//    private Member member;
+    @Column(name = "class_id", nullable = false)
+    private Long oneDayClassId;
 
-//    @ManyToOne(fetch = FetchType.LAZY)
-//    @JoinColumn(name = "onedayclass_time_id", foreignKey = @ForeignKey(name = "fk_reservation_to_onedayclass_time"))
-//    private OneDayClassTime oneDayClassTime;
+    @Column(name = "class_name", nullable = false, length = 50)
+    private String oneDayClassName;
 
-    @Column(name = "member_id")
-    private Long memberId;
+    @Column(name = "class_date", nullable = false)
+    private LocalDate oneDayClassDate;
 
-    @Column(name = "onedayclass_time_id")
+    @Column(name = "class_time_id", nullable = false)
     private Long oneDayClassTimeId;
 
-//    @Builder
-//    private Reservation(
-//        Long id,
-//        int peopleNumber,
-//        int price,
-//        ReservationStatus status,
-//        LocalDate reservationDate,
-//        Member member,
-//        OneDayClassTime oneDayClassTime
-//    ) {
-//        Assert.isTrue(peopleNumber > 0, "peopleNumber must be not positive.");
-//        Assert.isTrue(price > 0, "price must be not positive.");
-//        Assert.notNull(status, "status must be not null.");
-//        Assert.notNull(reservationDate, "reservationDate must be not null.");
-//        Assert.notNull(member, "member must be not null.");
-//        Assert.notNull(oneDayClassTime, "oneDayClassTime must be not null.");
-//
-//        this.id = id;
-//        this.peopleNumber = peopleNumber;
-//        this.price = price;
-//        this.status = status;
-//        this.reservationDate = reservationDate;
-//        this.member = member;
-//        this.oneDayClassTime = oneDayClassTime;
-//    }
+    @Column(name = "class_start_time", nullable = false)
+    private Long oneDayClassStartTime;
+
+    @Column(name = "class_end_time", nullable = false)
+    private Long oneDayClassEndTime;
+
+    @Column(name = "atelier_id", nullable = false)
+    private Long atelierId;
+
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
 
     @Builder
     private Reservation(
@@ -84,23 +68,42 @@ public class Reservation extends BaseEntity {
         int price,
         ReservationStatus status,
         LocalDate reservationDate,
-        Long memberId,
-        Long oneDayClassTimeId
+        Long oneDayClassId,
+        String oneDayClassName,
+        LocalDate oneDayClassDate,
+        Long oneDayClassTimeId,
+        Long oneDayClassStartTime,
+        Long oneDayClassEndTime,
+        Long atelierId,
+        Long memberId
     ) {
         Assert.isTrue(peopleNumber > 0, "peopleNumber must be not positive.");
         Assert.isTrue(price > 0, "price must be not positive.");
         Assert.notNull(status, "status must be not null.");
         Assert.notNull(reservationDate, "reservationDate must be not null.");
-        Assert.notNull(memberId, "memberId must be not null.");
+        Assert.notNull(oneDayClassId, "oneDayClassId must be not null.");
+        Assert.notNull(oneDayClassName, "oneDayClassName must be not null.");
+        Assert.notNull(oneDayClassDate, "oneDayClassDate must be not null.");
         Assert.notNull(oneDayClassTimeId, "oneDayClassTimeId must be not null.");
+        Assert.notNull(oneDayClassStartTime, "oneDayClassStartTime must be not null.");
+        Assert.notNull(oneDayClassEndTime, "oneDayClassEndTime must be not null.");
+        Assert.isTrue(oneDayClassStartTime < oneDayClassEndTime, "oneDayClassStartTime must be less than oneDayClassEndTime.");
+        Assert.notNull(atelierId, "atelierId must be not null.");
+        Assert.notNull(memberId, "memberId must be not null.");
 
         this.id = id;
         this.peopleNumber = peopleNumber;
         this.price = price;
         this.status = status;
         this.reservationDate = reservationDate;
-        this.memberId = memberId;
+        this.oneDayClassId = oneDayClassId;
+        this.oneDayClassName = oneDayClassName;
+        this.oneDayClassDate = oneDayClassDate;
         this.oneDayClassTimeId = oneDayClassTimeId;
+        this.oneDayClassStartTime = oneDayClassStartTime;
+        this.oneDayClassEndTime = oneDayClassEndTime;
+        this.atelierId = atelierId;
+        this.memberId = memberId;
     }
 
 }
